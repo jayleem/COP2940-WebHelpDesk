@@ -1,6 +1,7 @@
-<div class="container">
+<div *ngIf="issue$" class="container-fluid">
     <div class="row">
-        <div *ngIf="issue$" class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <div class="mt-5 ml-auto mr-auto col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+            <h4>Updating Ticket: {{issue$.id}}</h4>
             <form [formGroup]="updateIssueForm" (ngSubmit)="onSubmit()">
                 <div formGroupName="issueData">
                     <div class="form-group">
@@ -30,7 +31,23 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <label for="notes">Notes</label>
+                        <label for="priority">Priority</label>
+                        <select name="priority" id="priority" formControlName="priority" class="form-control">
+                            <option value="Low">Low</option>
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                        <span
+                            *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
+                            class="help-block">
+                            <!-- This is the best practice that I know of for accessing error codes -->
+                            <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
+                                required!</span>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Add Notes:</label>
                         <textarea name="notes" id="notes" cols="30" rows="10" formControlName="notes"
                             class="form-control"> </textarea>
                         <span

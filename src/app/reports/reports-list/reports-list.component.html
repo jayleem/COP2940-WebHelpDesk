@@ -1,5 +1,5 @@
-<h4 class="text-md-center">Viewing Issues (Realtime)</h4>
-<div class="row table-responsive-lg text-nowrap">
+<h4 class="text-center">Viewing Opened Tickets by {{ tech }} (Realtime)</h4>
+<div class="table-responsive-lg text-nowrap">
     <table class="table table-striped w-auto">
         <thead>
             <th>ID</th>
@@ -9,7 +9,6 @@
             <th>Technician</th>
             <th>Creation Date</th>
             <th>Completed Date</th>
-            <th>Actions</th>
         </thead>
         <tbody>
             <tr *ngFor="let issue of issues$">
@@ -25,11 +24,6 @@
                 <ng-template #notShown>
                     <td>{{issue.dateEnd.toDate() | date:'yyyy/MM/dd' }}</td>
                 </ng-template>
-                <td>
-                    <a class="btn btn-success nav-link m-1" routerLink="/issues/details/{{issue.id}}">Details</a>
-                    <a class="btn btn-warning nav-link m-1" routerLink="/issues/update/{{issue.id}}">Update</a>
-                    <a class="btn btn-danger nav-link m-1" (click)="deleteIssue(issue.id)">Delete</a>
-                </td>
             </tr>
         </tbody>
     </table>

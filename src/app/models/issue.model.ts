@@ -4,8 +4,14 @@ export interface Issue {
     title: string;
     dateStart: string;
     dateEnd: string;
-    desc: string;   
+    desc: {
+        summary: string,
+        reproduce: string,
+        expctRes: string,
+        actlRes: string
+      },  
     tech: string;
+    priority: string;
     status: string;
     notes: string[];
 }

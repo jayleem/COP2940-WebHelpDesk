@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IssuesService } from '../../shared/issues.service';
 import { Issue } from '../../models/issue.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-issues-list',
@@ -8,7 +9,9 @@ import { Issue } from '../../models/issue.model';
   styleUrls: ['./issues-list.component.scss']
 })
 export class IssuesListComponent implements OnInit {
-
+  //firestore subscription
+  //
+  firestoreSubscription: Subscription;
   issues$;
 
   constructor(private issuesService: IssuesService) { }
@@ -20,7 +23,7 @@ export class IssuesListComponent implements OnInit {
   //Calls the getIssues method in issuesService for a list of documents from the firebase database collection
   //
   getIssues() {
-    this.issuesService.getIssues().subscribe(data => {
+    this.firestoreSubscription = this.issuesService.getIssues().subscribe(data => {
       this.issues$ = data.map(e => {
         return { id: e.payload.doc.id, ...e.payload.doc.data() as {}} as Issue;
       })
@@ -31,5 +34,11 @@ export class IssuesListComponent implements OnInit {
   //
   deleteIssue(id) {
     this.issuesService.deleteIssue(id);   
+  }
+
+  // Unsubscribe from firestore real time listener
+  //
+  ngOnDestroy() {
+    this.firestoreSubscription.unsubscribe();
   }
 }

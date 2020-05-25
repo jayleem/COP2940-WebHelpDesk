@@ -1,1 +1,27 @@
-<p>reports works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="mt-5 mb-5 col-xs-12 col-sm-10 col-md-8 ml-auto mr-auto">
+            <form [formGroup]="newIssueForm" (ngSubmit)="onSubmit()">
+                <div formGroupName="reportData">
+                    <div class="form-group">
+                        <label for="tech">Find Open Issues by Technician:</label>
+                        <input type="text" id="tech" formControlName="tech" class="form-control">
+                        <span
+                            *ngIf="!newIssueForm.get('reportData.tech').valid && newIssueForm.get('reportData.tech').touched"
+                            class="help-block">
+                            <!-- This is the best practice that I know of for accessing error codes -->
+                            <span *ngIf="newIssueForm.get('reportData.tech').errors['required']">This field is
+                                required!</span>
+                        </span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Generate Report</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col ml-auto mr-auto">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

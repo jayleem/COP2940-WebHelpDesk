@@ -1,22 +1,35 @@
-<div *ngIf="issue$" class="card">
-    <div class="card-body">
-        <h5 class="card-title">ID: {{ issue$.id }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Title: {{ issue$.title }}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">Technician: {{ issue$.tech }}</h6>
-        <p class="card-text">Creation Date: {{ issue$.dateStart.toDate() | date:'yyyy/MM/dd' }}</p>
-        <p *ngIf="issue$.dateEnd === '-'; else notShown"></p>
-        <ng-template #notShown>
-            <p>Completed Date:{{issue$.dateEnd.toDate() | date:'yyyy/MM/dd' }}</p>
-        </ng-template>
-        <hr>
-        <div>
-            <h6>Description:</h6>
-            <p>{{ issue$.desc }}</p>
+<div *ngIf="issue$" class="container-fluid">
+    <div class="card">
+        <div class="card-header">Details</div>
+        <div class="card-body">
+            <p class="card-text">ID: {{ issue$.id }}</p>
+            <p class="card-text">Title: {{ issue$.title }}</p>
+            <p class="card-text">Priority: {{ issue$.priority }}</p>
+            <p class="card-text">Status: {{ issue$.status }}</p>
+            <p class="card-text">Technician: {{ issue$.tech }}</p>
+            <p class="card-text">Creation Date: {{ issue$.dateStart.toDate() | date:'yyyy/MM/dd' }}</p>
+            <p class="card-text" *ngIf="issue$.dateEnd === '-'; else notShown"></p>
+            <ng-template #notShown>
+                <p class="card-text">Completed Date: {{ issue$.dateEnd.toDate() | date:'yyyy/MM/dd' }}</p>
+            </ng-template>
         </div>
-        <hr>
-        <div *ngIf="issue$.notes">
-            <h6>Notes:</h6>
-            <p *ngFor="let note of issue$.notes">{{ note }}</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Description</div>
+        <div class="card-body">
+            <h5 class="card-title">Summary:</h5>
+            <p class="card-text">{{ issue$.desc.summary }}</p>
+            <h5 class="card-title">Steps to Reproduce::</h5>
+            <p class="card-text">{{ issue$.desc.reproduce }}</p>
+            <h5 class="card-title">Expected Results:</h5>
+            <p class="card-text">{{ issue$.desc.expctRes }}</p>
+            <h5 class="card-title">Actual Results:</h5>
+            <p class="card-text">{{ issue$.desc.actlRes }}</p>
         </div>
+    </div>
+    <div *ngIf="issue$.notes">
+        <h6>Notes:</h6>
+        <p *ngFor="let note of issue$.notes">{{ note }}</p>
     </div>
 </div>

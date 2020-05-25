@@ -24,6 +24,7 @@ import { IssuesDetailComponent } from './issues/issues-detail/issues-detail.comp
 import { IssuesNewComponent } from './issues/issues-new/issues-new.component';
 import { IssuesUpdateComponent } from './issues/issues-update/issues-update.component';
 import { IssuesComponent } from './issues/issues.component';
+import { ReportsListComponent } from './reports/reports-list/reports-list.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { IssuesComponent } from './issues/issues.component';
     IssuesDetailComponent,
     IssuesNewComponent,
     IssuesUpdateComponent,
+    ReportsListComponent,
   ],
   imports: [
     BrowserModule,

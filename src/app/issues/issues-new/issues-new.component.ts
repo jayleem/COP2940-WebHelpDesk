@@ -16,12 +16,14 @@ export class IssuesNewComponent implements OnInit {
 
   ngOnInit() {
     this.newIssueForm = new FormGroup({
-
       'issueData': new FormGroup({
         'title': new FormControl(null, [Validators.required]),
-        'desc': new FormControl(null, [Validators.required]),
-      }),
-      'status': new FormControl('Open')
+        'priority': new FormControl('Low', [Validators.required]),
+        'summary': new FormControl(null, [Validators.required]),
+        'reproduce': new FormControl(null, [Validators.required]),
+        'expctRes': new FormControl(null, [Validators.required]),
+        'actlRes': new FormControl(null, [Validators.required]),
+      })
     });
   }
 

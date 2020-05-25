@@ -6,6 +6,7 @@ import { IssuesComponent } from './issues/issues.component';
 import { IssuesDetailComponent } from './issues/issues-detail/issues-detail.component';
 import { IssuesUpdateComponent } from './issues/issues-update/issues-update.component';
 import { IssuesNewComponent } from './issues/issues-new/issues-new.component';
+import { ReportsListComponent } from './reports/reports-list/reports-list.component';
 
 
 const routes: Routes = [
@@ -18,7 +19,11 @@ const routes: Routes = [
       { path: 'update/:id', component: IssuesUpdateComponent },
     ]
   },
-  { path: 'reports', component: ReportsComponent }
+  {
+    path: 'reports', component: ReportsComponent, children: [
+      { path: 'list/:tech', component: ReportsListComponent }
+    ]
+  },
 ];
 
 @NgModule({
