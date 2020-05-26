@@ -1,63 +1,25 @@
-.nav-responsive {
-    display: flex;
-    flex-flow: column;
-    flex: 1 1 1fr;
-    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
-    margin: 0;
-    padding: 0;
-    grid-area: header;
-    min-height: 50px;
+/* CSS rules for font awesome icons on navbar */
+i {
+    margin-right: .5em;
 }
 
-.navbar-brand {
-    text-align: center;
-    display:inline-block;
-}
-
-.nav-toggler-container {
-    text-align: center;
-    flex: 1 1 100%;
-}
-
-.nav-toggler {
+i.fas.fa-bars {
     margin:0;
-    border: 0;
-    background: transparent;
-    font-size: 2rem;
+    font-size: 1.5em;
 }
 
-.nav-items {
-    flex: 1 1 100%;
+i.fas.fa-bars:hover {
+    color: #fff;
 }
 
-.nav-items ul, .nav-items ul li {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    width: 100%;
+/* Media Rules 
+
+   Might use this media query later
+
+*/
+@media ALL and (max-width: 1000px) {
+    .navbar-nav {
+        border: 0;
+    }
 }
 
-.nav-items ul li {
-    text-align: center;
-}
-
-.nav-dropdown {
-    flex: 1 1 100%;
-}
-
-.nav-responsive ul {
-    display: inline;
-}
-
-.nav-responsive ul li {
-    display: inline-block;
-}
-
-/* Dropdown Menu */
-.nav-items ul li ul {
-    display: none;
-}
-
-a {
-    cursor: pointer;
-}

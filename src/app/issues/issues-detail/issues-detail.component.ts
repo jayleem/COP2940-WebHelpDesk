@@ -10,11 +10,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./issues-detail.component.scss']
 })
 export class IssuesDetailComponent implements OnInit {
-  //firestore subscription
-  //
-  firestoreSubscription: Subscription;
-
-  issue$;
+  issues$;
+  errors;
   id;
 
   constructor(private issuesService: IssuesService, private route: ActivatedRoute) { }
@@ -28,15 +25,18 @@ export class IssuesDetailComponent implements OnInit {
 
   //Calls the getIssueById method in issuesService for a matching document by id from the firebase database collection
   //
-  getIssueById(id) {
-    this.firestoreSubscription = this.issuesService.getIssuesById(id).subscribe(data => {
-      this.issue$ = data;
-    });
-  }
-
-  // Unsubscribe from firestore real time listener
-  //
-  ngOnDestroy() {
-    this.firestoreSubscription.unsubscribe();
+  async getIssueById(id) {
+    await this.issuesService.getIssuesById(id)
+    .then(res => {
+      console.log(res);
+      this.issues$ = res;
+      //this.updateIssueForm.get('issueData.tech').setValue(`${res.tech}`);
+      //this.updateIssueForm.get('issueData.priority').setValue(`${res.priority}`);
+      //this.updateIssueForm.get('issueData.status').setValue(`${res.status}`);
+    })
+    .catch(err => {
+      this.issues$ = undefined;
+      this.errors = err;
+    })
   }
 }

@@ -18,6 +18,7 @@ export class IssuesNewComponent implements OnInit {
     this.newIssueForm = new FormGroup({
       'issueData': new FormGroup({
         'title': new FormControl(null, [Validators.required]),
+        'tech': new FormControl(null, [Validators.required, Validators.email]),
         'priority': new FormControl('Low', [Validators.required]),
         'summary': new FormControl(null, [Validators.required]),
         'reproduce': new FormControl(null, [Validators.required]),

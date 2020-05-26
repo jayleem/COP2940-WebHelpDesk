@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IssuesService } from 'src/app/shared/issues.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,12 +11,10 @@ import { Subscription, Observable } from 'rxjs';
 })
 
 export class IssuesUpdateComponent implements OnInit {
-  //firestore subscription
-  //
-  firestoreSubscription: Subscription;
   updateIssueForm: FormGroup;
   id: string;
-  issue$;
+  issues$;
+  errors;
 
   constructor(private issueService: IssuesService, private route: ActivatedRoute, private router: Router) { }
 
@@ -34,23 +32,22 @@ export class IssuesUpdateComponent implements OnInit {
     this.getIssueById(this.id);
   }
 
-  getIssueById(id) {
-    this.firestoreSubscription = this.issueService.getIssuesById(id).subscribe(data => {
-      this.issue$ = data;
-      this.updateIssueForm.get('issueData.tech').setValue(`${data.tech}`);
-      this.updateIssueForm.get('issueData.priority').setValue(`${data.priority}`);
-      this.updateIssueForm.get('issueData.status').setValue(`${data.status}`);
+  async getIssueById(id) {
+    await this.issueService.getIssuesById(id)
+    .then(res => {
+      this.issues$ = res;
+      this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.tech}`);
+      this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].data.priority}`);
+      this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].data.status}`);
+    })
+    .catch(err => {
+      this.issues$ = undefined;
+      this.errors = err;
     });
   }
 
   onSubmit() {
     this.issueService.updateIssue(this.id, this.updateIssueForm);
     this.router.navigate(['/issues/list']);
-  }
-
-  // Unsubscribe from firestore real time listener
-  //
-  ngOnDestroy() {
-    this.firestoreSubscription.unsubscribe();
   }
 }

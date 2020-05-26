@@ -1,5 +1,5 @@
-<h4 class="text-center">Viewing Opened Tickets by {{ tech }} (Realtime)</h4>
-<div class="table-responsive-lg text-nowrap">
+<div *ngIf="issues$; else showErrors" class="table-responsive-lg text-nowrap">
+    <h4 *ngIf="issues$.length >= 1;" class="text-center">{{ issues$.length }} Open Tickets Were Found</h4>
     <table class="table table-striped w-auto">
         <thead>
             <th>ID</th>
@@ -13,18 +13,23 @@
         <tbody>
             <tr *ngFor="let issue of issues$">
                 <td>{{issue.id}}</td>
-                <td>{{issue.title}}</td>
-                <td>{{issue.priority}}</td>
-                <td>{{issue.status}}</td>
-                <td>{{issue.tech}}</td>
-                <td>{{issue.dateStart.toDate() | date:'yyyy/MM/dd' }}</td>
-                <td *ngIf="issue.dateEnd === '-'; else notShown">
-                    {{issue.dateEnd}}
+                <td>{{issue.data.title}}</td>
+                <td>{{issue.data.priority}}</td>
+                <td>{{issue.data.status}}</td>
+                <td>{{issue.data.tech}}</td>
+                <td>{{issue.data.dateStart.toDate() | date:'yyyy/MM/dd' }}</td>
+                <td *ngIf="issue.data.dateEnd === '-'; else notShown">
+                    -
                 </td>
                 <ng-template #notShown>
-                    <td>{{issue.dateEnd.toDate() | date:'yyyy/MM/dd' }}</td>
+                    <td>{{issue.data.dateEnd.toDate() | date:'yyyy/MM/dd' }}</td>
                 </ng-template>
             </tr>
         </tbody>
     </table>
 </div>
+<ng-template #showErrors>
+    <div>
+        <h4 *ngIf="errors" class="text-center">{{ errors }}</h4>
+    </div>
+</ng-template>

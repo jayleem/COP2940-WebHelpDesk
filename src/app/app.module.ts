@@ -37,7 +37,7 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
     IssuesDetailComponent,
     IssuesNewComponent,
     IssuesUpdateComponent,
-    ReportsListComponent,
+    ReportsListComponent
   ],
   imports: [
     BrowserModule,

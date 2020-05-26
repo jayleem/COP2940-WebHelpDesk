@@ -1,0 +1,11 @@
+button {
+    width: 150px;
+    margin-right: 1em;
+}
+
+@media ALL and (max-width: 1000px) {
+    button {
+        border:2px solid orange;
+        margin-bottom: 1em;
+    }
+}

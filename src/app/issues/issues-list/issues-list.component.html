@@ -1,5 +1,40 @@
-<h4 class="text-md-center">Viewing Issues (Realtime)</h4>
-<div class="row table-responsive-lg text-nowrap">
+<div *ngIf="issues$; else showErrors" class="mt-5 table-responsive-lg text-nowrap">
+    <h4 class="text-center">{{ issues$.length }} Current Issues (Realtime)</h4>
+    <div class="row p-2 border">
+        <div class="col-4 input-group">
+            <label for="currentPriority">Priority:</label>
+            <select name="currentPriority" id="currentPriority" class="ml-2 form-control w-25"
+                [(ngModel)]="currentPriority" (change)="changePriority($event.target.value)">
+                <option value="Low">Low</option>
+                <option value="Normal">Normal</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+            </select>
+        </div>
+        <div class="col-4 input-group">
+            <label for="currentStatus">Status:</label>
+            <select name="currentStatus" id="currentStatus" class="ml-2 form-control w-25" [(ngModel)]="currentStatus"
+                (change)="changeStatus($event.target.value)">
+                <option value="Open">Open</option>
+                <option value="Pending">Pending</option>
+                <option value="Closed">Closed</option>
+            </select>
+        </div>
+        <!--Not sure about using number interval input. I might change this to select w/ options 10, 25, 50, 75, 100.-->
+        <div class="col-4 input-group">
+            <label for="itemsPerPage">Items Per Page:</label>
+            <input id="itemsPerPage" class="ml-2 input w-25 text-center" type="number" [min]="10" [max]="100" step="1"
+                [(ngModel)]="itemsPerPage" (onClick)="changePagesize(pageSize)">
+        </div>
+        <div class="row">
+            <div class="col-auto">
+                <a class="float-left btn btn-outline-secondary nav-link m-1" (click)="applyFilters()">Apply Filters</a>
+            </div>
+            <div class="col-auto">
+                <a class="float-left btn btn-outline-secondary nav-link m-1" (click)="clearFilters()">Clear Filters</a>
+            </div>
+        </div>
+    </div>
     <table class="table table-striped w-auto">
         <thead>
             <th>ID</th>
@@ -12,10 +47,18 @@
             <th>Actions</th>
         </thead>
         <tbody>
-            <tr *ngFor="let issue of issues$">
+            <tr 
+                [ngClass]="{'table-danger': issue.priority === 'Urgent'}"
+                *ngFor="let issue of issues$ | slice: pageSize |  slice: 0:itemsPerPage">
                 <td>{{issue.id}}</td>
                 <td>{{issue.title}}</td>
-                <td>{{issue.priority}}</td>
+                <td>
+                    {{issue.priority}} 
+                    <span 
+                        *ngIf="issue.priority === 'Urgent'">
+                        <i class="text-danger fas fa-exclamation-triangle"></i>
+                    </span>
+                </td>
                 <td>{{issue.status}}</td>
                 <td>{{issue.tech}}</td>
                 <td>{{issue.dateStart.toDate() | date:'yyyy/MM/dd' }}</td>
@@ -33,4 +76,18 @@
             </tr>
         </tbody>
     </table>
+    <div class="row justify-content-center">
+        <div class="input-group-addon">
+            <ngb-pagination [collectionSize]="issues$.length" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                (pageChange)="onPageChange(currentPage)"></ngb-pagination>
+        </div>
+    </div>
 </div>
+<ng-template #showErrors>
+    <div class="row">
+        <div class="col-6 ml-auto mr-auto">
+            <p class="text-center">Congratulations! There are currently no issues.</p>
+            <a class="btn btn-primary nav-link m-1" routerLink="/issues/new">Submit Issue</a>
+        </div>
+    </div>
+</ng-template>
