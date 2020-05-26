@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IssuesService } from '../../shared/issues.service';
 import { Issue } from '../../models/issue.model';
-import { Subscription, throwError, Observable } from 'rxjs';
-import { error } from 'protractor';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-issues-list',
@@ -13,15 +12,14 @@ export class IssuesListComponent implements OnInit {
   //Priority
   //
   currentPriority; //default priority
-  //Priority
+  //Status
   //
   currentStatus; //default status
   //Pagination
   //
   currentPage = 1;
   itemsPerPage = 10;
-  pageSize: number;
-
+  pageSize = 0;
   //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
@@ -49,31 +47,31 @@ export class IssuesListComponent implements OnInit {
   clearFilters() {
     this.currentPriority = null;
     this.currentStatus = null;
+    this.errors = null;
     this.getIssues();
   }
 
-  onPageChange(pageNum: number) {
-    this.pageSize = this.itemsPerPage * (pageNum - 1);
+  onPageChange(change: number) {
+    this.pageSize = this.itemsPerPage * (change - 1);
   }
 
-  changePagesize(num: number) {
-    this.itemsPerPage = this.pageSize + num;
+  changePagesize(change: string) {
+    this.itemsPerPage = this.pageSize + parseInt(change);
   }
 
 
   // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
-  // To get realtime data from Firestore we must use subscribe instead of converting the query to a promise
-  // If this looks weird idk what to say I usually work with Angular+Node and like my functions to be async promises :)
+  // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
+  //
+  //
   getIssues() {
     this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
       if (data.length > 0) {
         this.issues$ = data.map(e => {
-          console.log(e);
           return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
         });
       } else {
         this.errors = 'ERROR: No documents were found';
-        console.error('ERROR: No documents were found');
         this.issues$ = undefined;
       }
     }));
@@ -83,11 +81,10 @@ export class IssuesListComponent implements OnInit {
     this.firestoreSubscriptions.push(this.issuesService.getIssuesFiltered(this.currentPriority, this.currentStatus).subscribe(data => {
       if (data.length > 0) {
         this.issues$ = data;
-        console.log(this.issues$);
+        console.log('Data', data);
       } else {
+        console.log('Data', data);
         this.errors = 'ERROR: No documents were found';
-        console.error('ERROR: No documents were found');
-        this.issues$ = undefined;
       }
     }));
   }
@@ -96,7 +93,13 @@ export class IssuesListComponent implements OnInit {
   //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
   //
   deleteIssue(id) {
-    this.issuesService.deleteIssue(id);
+    this.issuesService.deleteIssue(id)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   // Unsubscribe from firestore real time listener

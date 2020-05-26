@@ -29,7 +29,13 @@ export class IssuesNewComponent implements OnInit {
   }
 
   onSubmit() {
-    this.issueService.addIssue(this.newIssueForm);
+    this.issueService.addIssue(this.newIssueForm)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
     this.router.navigate(['/issues/list']);
   }
 }

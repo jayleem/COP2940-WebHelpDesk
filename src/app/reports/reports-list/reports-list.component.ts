@@ -32,6 +32,7 @@ export class ReportsListComponent implements OnInit {
   async getIssueByTech(tech) {
     await this.issuesService.getIssuesByTech(tech)
       .then(res => {
+        console.log(res);
         this.issues$ = res;
       })
       .catch(err => {

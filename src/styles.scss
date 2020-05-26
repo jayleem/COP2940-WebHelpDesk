@@ -8,6 +8,22 @@ body, html {
 
 .container {
     min-height:100%;
+    margin: 0;
+}
+
+.container-fluid {
+    min-height:100%;
+    margin: 0;
+}
+
+.content-wrapper {
+    min-height:100%;
+    width: 85%;
+    padding: 0;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 120px;//push down footer
 }
 
 th,td {

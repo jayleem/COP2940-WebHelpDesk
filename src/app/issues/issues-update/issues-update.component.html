@@ -1,66 +1,65 @@
-<div *ngIf="issues$" class="container-fluid">
-    <div class="row">
-        <div class="mt-5 ml-auto mr-auto col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-            <h4>Updating Ticket: {{issues$.id}}</h4>
-            <form [formGroup]="updateIssueForm" (ngSubmit)="onSubmit()">
-                <div formGroupName="issueData">
-                    <div class="form-group">
-                        <label for="tech">Technician</label>
-                        <input type="text" id="tech" formControlName="tech" class="form-control">
-                        <span
-                            *ngIf="!updateIssueForm.get('issueData.tech').valid && updateIssueForm.get('issueData.tech').touched"
-                            class="help-block">
-                            <!-- This is the best practice that I know of for accessing error codes -->
-                            <span *ngIf="updateIssueForm.get('issueData.tech').errors['required']">This field is
-                                required!</span>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select name="status" id="status" formControlName="status" class="form-control">
-                            <option value="Open">Open</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                        <span
-                            *ngIf="!updateIssueForm.get('issueData.status').valid && updateIssueForm.get('issueData.status').touched"
-                            class="help-block">
-                            <!-- This is the best practice that I know of for accessing error codes -->
-                            <span *ngIf="updateIssueForm.get('issueData.status').errors['required']">This field is
-                                required!</span>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <label for="priority">Priority</label>
-                        <select name="priority" id="priority" formControlName="priority" class="form-control">
-                            <option value="Low">Low</option>
-                            <option value="Normal">Normal</option>
-                            <option value="High">High</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
-                        <span
-                            *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
-                            class="help-block">
-                            <!-- This is the best practice that I know of for accessing error codes -->
-                            <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
-                                required!</span>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Add Notes:</label>
-                        <textarea name="notes" id="notes" cols="30" rows="10" formControlName="notes"
-                            class="form-control"> </textarea>
-                        <span
-                            *ngIf="!updateIssueForm.get('issueData.notes').valid && updateIssueForm.get('issueData.notes').touched"
-                            class="help-block">
-                            <!-- This is the best practice that I know of for accessing error codes -->
-                            <span *ngIf="updateIssueForm.get('issueData.notes').errors['required']">This field is
-                                required!</span>
-                        </span>
-                    </div>
+<div *ngIf="issues$" class="row justify-content-center">
+    <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
+        <h4>Updating Ticket: {{issues$.id}}</h4>
+        <form [formGroup]="updateIssueForm" (ngSubmit)="updateIssueForm.valid && onSubmit()">
+            <div formGroupName="issueData">
+                <div class="form-group">
+                    <label for="tech">Technician</label>
+                    <input type="text" id="tech" formControlName="tech" class="form-control">
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.tech').valid && updateIssueForm.get('issueData.tech').touched"
+                        class="help-block">
+                        <!-- This is the best practice that I know of for accessing error codes -->
+                        <span *ngIf="updateIssueForm.get('issueData.tech').errors['required']">This field is
+                            required!</span>
+                    </span>
                 </div>
-                <button class="btn btn-primary" type="submit">Save</button>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" formControlName="status" class="form-control">
+                        <option value="Open">Open</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.status').valid && updateIssueForm.get('issueData.status').touched"
+                        class="help-block">
+                        <!-- This is the best practice that I know of for accessing error codes -->
+                        <span *ngIf="updateIssueForm.get('issueData.status').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select name="priority" id="priority" formControlName="priority" class="form-control">
+                        <option value="Low">Low</option>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
+                        class="help-block">
+                        <!-- This is the best practice that I know of for accessing error codes -->
+                        <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Add Notes:</label>
+                    <textarea name="notes" id="notes" cols="30" rows="10" formControlName="notes"
+                        class="form-control"> </textarea>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.notes').valid && updateIssueForm.get('issueData.notes').touched"
+                        class="help-block">
+                        <!-- This is the best practice that I know of for accessing error codes -->
+                        <span *ngIf="updateIssueForm.get('issueData.notes').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+            </div>
+            <button class="btn btn-primary mr-2" type="submit">Save</button>
+            <button class="btn btn-primary" routerLink="/issues/list">Cancel</button>
+        </form>
     </div>
 </div>

@@ -1,45 +1,52 @@
-<div *ngIf="issues$" class="container-fluid">
-    <div class="card">
-        <div class="card-header">Details</div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 text-left text-muted mb-sm-3">
-                    <p class="card-text">ID: {{ issues$[0].id }}</p>
-                    <p class="card-text">Title: {{ issues$[0].data.title }}</p>
-                    <p class="card-text">Priority: {{ issues$[0].data.priority }}</p>
-                </div>
-                <div class="col-md-6 text-left text-muted">
-                    <p class="card-text">Status: {{ issues$[0].data.status }}</p>
-                    <p class="card-text">Technician: {{ issues$[0].data.tech }}</p>
-                    <p class="card-text">Creation Date: {{ issues$[0].data.dateStart.toDate() | date:'yyyy/MM/dd' }}</p>
-                    <p class="card-text" *ngIf="issues$[0].data.dateEnd === '-'; else notShown"></p>
-                    <ng-template #notShown>
-                        <p class="card-text">Completed Date: {{ issues$[0].data.dateEnd.toDate() | date:'yyyy/MM/dd' }}
+<div *ngIf="issues$" class="row justify-content-center">
+    <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
+        <div class="card">
+            <div class="card-header">Details</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 text-left text-muted mb-sm-3">
+                        <p class="card-text">ID: {{ issues$[0].id }}</p>
+                        <p class="card-text">Title: {{ issues$[0].data.title }}</p>
+                        <p class="card-text">Priority: {{ issues$[0].data.priority }}</p>
+                    </div>
+                    <div class="col-md-6 text-left text-muted">
+                        <p class="card-text">Status: {{ issues$[0].data.status }}</p>
+                        <p class="card-text">Technician: {{ issues$[0].data.tech }}</p>
+                        <p class="card-text">Creation Date: {{ issues$[0].data.dateStart.toDate() | date:'yyyy/MM/dd' }}
                         </p>
-                    </ng-template>
+                        <p class="card-text" *ngIf="issues$[0].data.dateEnd === '-'; else notShown"></p>
+                        <ng-template #notShown>
+                            <p class="card-text">Completed Date:
+                                {{ issues$[0].data.dateEnd.toDate() | date:'yyyy/MM/dd' }}
+                            </p>
+                        </ng-template>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Description</div>
-        <div class="card-body">
-            <h5 class="card-title">Summary:</h5>
-            <p class="card-text">{{ issues$[0].data.desc.summary }}</p>
-            <h5 class="card-title">Steps to Reproduce::</h5>
-            <p class="card-text">{{ issues$[0].data.desc.reproduce }}</p>
-            <h5 class="card-title">Expected Results:</h5>
-            <p class="card-text">{{ issues$[0].data.desc.expctRes }}</p>
-            <h5 class="card-title">Actual Results:</h5>
-            <p class="card-text">{{ issues$[0].data.desc.actlRes }}</p>
+        <div class="card">
+            <div class="card-header">Description</div>
+            <div class="card-body">
+                <h5 class="card-title">Summary:</h5>
+                <p class="card-text">{{ issues$[0].data.desc.summary }}</p>
+                <h5 class="card-title">Steps to Reproduce::</h5>
+                <p class="card-text">{{ issues$[0].data.desc.reproduce }}</p>
+                <h5 class="card-title">Expected Results:</h5>
+                <p class="card-text">{{ issues$[0].data.desc.expctRes }}</p>
+                <h5 class="card-title">Actual Results:</h5>
+                <p class="card-text">{{ issues$[0].data.desc.actlRes }}</p>
+            </div>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Notes</div>
-        <div *ngIf="issues$[0].data.notes" class="card-body">
-            <p *ngFor="let note of issues$[0].data.notes" class="card-text">{{ note }}</p>
+        <div class="card">
+            <div class="card-header">Notes</div>
+            <div *ngIf="issues$[0].data.notes" class="card-body">
+                <p *ngFor="let note of issues$[0].data.notes" class="card-text">{{ note }}</p>
+            </div>
+        </div>
+        <div class="mt-2 row">
+            <div class="col-md-12">
+                <button class="btn btn-primary" routerLink="/issues/list">Go Back</button>
+            </div>
         </div>
     </div>
 </div>

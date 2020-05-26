@@ -20,7 +20,7 @@ export class IssuesUpdateComponent implements OnInit {
 
   ngOnInit() {
     this.updateIssueForm = new FormGroup({
-      
+
       'issueData': new FormGroup({
         'tech': new FormControl(null, [Validators.required]),
         'priority': new FormControl(null, [Validators.required]),
@@ -34,20 +34,27 @@ export class IssuesUpdateComponent implements OnInit {
 
   async getIssueById(id) {
     await this.issueService.getIssuesById(id)
-    .then(res => {
-      this.issues$ = res;
-      this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.tech}`);
-      this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].data.priority}`);
-      this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].data.status}`);
-    })
-    .catch(err => {
-      this.issues$ = undefined;
-      this.errors = err;
-    });
+      .then(res => {
+        this.issues$ = res;
+        this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.tech}`);
+        this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].data.priority}`);
+        this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].data.status}`);
+      })
+      .catch(err => {
+        this.issues$ = undefined;
+        this.errors = err;
+      });
   }
 
-  onSubmit() {
-    this.issueService.updateIssue(this.id, this.updateIssueForm);
+  async onSubmit() {
+    await this.issueService.updateIssue(this.id, this.updateIssueForm)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+        this.errors = err;
+      })
     this.router.navigate(['/issues/list']);
   }
 }

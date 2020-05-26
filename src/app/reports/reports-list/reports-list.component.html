@@ -1,35 +1,46 @@
-<div *ngIf="issues$; else showErrors" class="table-responsive-lg text-nowrap">
-    <h4 *ngIf="issues$.length >= 1;" class="text-center">{{ issues$.length }} Open Tickets Were Found</h4>
-    <table class="table table-striped w-auto">
-        <thead>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Technician</th>
-            <th>Creation Date</th>
-            <th>Completed Date</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let issue of issues$">
-                <td>{{issue.id}}</td>
-                <td>{{issue.data.title}}</td>
-                <td>{{issue.data.priority}}</td>
-                <td>{{issue.data.status}}</td>
-                <td>{{issue.data.tech}}</td>
-                <td>{{issue.data.dateStart.toDate() | date:'yyyy/MM/dd' }}</td>
-                <td *ngIf="issue.data.dateEnd === '-'; else notShown">
-                    -
-                </td>
-                <ng-template #notShown>
-                    <td>{{issue.data.dateEnd.toDate() | date:'yyyy/MM/dd' }}</td>
-                </ng-template>
-            </tr>
-        </tbody>
-    </table>
+<div *ngIf="!issues$; else notShown" class="row">
+    <div class="col-6 ml-auto mr-auto">
+        <p class="text-center">{{errors}}</p>
+    </div>
 </div>
-<ng-template #showErrors>
-    <div>
-        <h4 *ngIf="errors" class="text-center">{{ errors }}</h4>
+<ng-template #notShown>
+    <div class="row justify-content-center">
+        <div class="container table-responsive-lg text-nowrap">
+            <h4 class="text-center">Found {{ issues$.length }} Open Issues</h4>
+            <div class="row justify-content-center">
+                <table class="table table-striped sortable w-100">
+                    <thead>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Technician</th>
+                        <th>Creation Date</th>
+                        <th>Completed Date</th>
+                    </thead>
+                    <tbody>
+                        <tr [ngClass]="{'table-danger': issue.priority == 'Urgent'}" *ngFor="let issue of issues$">
+                            <td>{{issue.id}}</td>
+                            <td>{{issue.data.title}}</td>
+                            <td>
+                                {{issue.data.priority}}
+                                <span *ngIf="issue.priority == 'Urgent'">
+                                    <i class="text-danger fas fa-exclamation-triangle"></i>
+                                </span>
+                            </td>
+                            <td>{{issue.data.status}}</td>
+                            <td>{{issue.data.tech}}</td>
+                            <td>{{issue.data.dateStart.toDate() | date:'yyyy/MM/dd' }}</td>
+                            <td *ngIf="issue.data.dateEnd == '-'; else notShown">
+                                {{issue.data.dateEnd}}
+                            </td>
+                            <ng-template #notShown>
+                                <td>{{issue.data.dateEnd.toDate() | date:'yyyy/MM/dd' }}</td>
+                            </ng-template>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </ng-template>

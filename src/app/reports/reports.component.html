@@ -1,6 +1,6 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="mt-5 mb-5 col-xs-12 col-sm-10 col-md-8 ml-auto mr-auto">
+    <div class="row justify-content-center">
+        <div class="mt-5 mb-5 col-xs-12 col-sm-10 col-md-8">
             <form [formGroup]="newIssueForm" (ngSubmit)="onSubmit()">
                 <div formGroupName="reportData">
                     <div class="form-group">
@@ -16,15 +16,13 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
+                    <div class="col-md-12">
                         <button class="btn btn-primary" type="submit">Generate Report</button>
                         <button class="btn btn-primary" routerLink="/issues/list">Cancel</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="col ml-auto mr-auto">
-            <router-outlet></router-outlet>
-        </div>
-    </div>
+    <router-outlet></router-outlet>
 </div>
