@@ -10,7 +10,7 @@ import { firestore } from 'firebase/app';
 export class IssuesService {
   constructor(private db: AngularFirestore) { }
 
-  //Create new issue
+  //Create new issues
   //
   addIssue(data) {
     return new Promise((resolve, reject) => {
