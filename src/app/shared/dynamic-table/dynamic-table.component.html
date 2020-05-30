@@ -53,6 +53,9 @@
                             </i>
                             {{tableHeader}}
                         </th>
+                        <th>
+                            Actions
+                        </th>
                     </thead>
                     <tbody *ngIf="pagination; else notShown">
                         <tr *ngFor="let item of data | slice: pageSize |  slice: 0:itemsPerPage; let i = index;">
