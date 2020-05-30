@@ -4,6 +4,7 @@ export interface Issue {
     title: string;
     dateStart: string;
     dateEnd: string;
+    lastModified: string;
     desc: {
         summary: string,
         reproduce: string,

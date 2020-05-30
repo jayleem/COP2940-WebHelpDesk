@@ -8,15 +8,92 @@
         <div class="container table-responsive-lg text-nowrap">
             <h4 class="text-center">Found {{ issues$.length }} Open Issues</h4>
             <div class="row justify-content-center">
-                <table class="table table-striped sortable w-100">
+                <table class="table table-striped table-dark w-100">
                     <thead>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Technician</th>
-                        <th>Creation Date</th>
-                        <th>Completed Date</th>
+                        <th (click)="tableDynamicSort('id'); !colSorted ? colSorted = true : colSorted = false;
+                        !col0Sorted ? col0Sorted = true : col0Sorted = false;
+                        col1Sorted = false;
+                        col2Sorted = false;
+                        col3Sorted = false;
+                        col4Sorted = false;
+                        col5Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            ID
+                            <i [ngClass]="(col0Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('title'); !colSorted ? colSorted = true : colSorted = false;
+                        !col1Sorted ? col1Sorted = true : col1Sorted = false;
+                        col0Sorted = false;
+                        col2Sorted = false;
+                        col3Sorted = false;
+                        col4Sorted = false;
+                        col5Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            Title
+                            <i [ngClass]="(col1Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('priority'); !colSorted ? colSorted = true : colSorted = false;
+                        !col2Sorted ? col2Sorted = true : col2Sorted = false;
+                        col0Sorted = false;
+                        col1Sorted = false;
+                        col3Sorted = false;
+                        col4Sorted = false;
+                        col5Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            Priority
+                            <i [ngClass]="(col2Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('status'); !colSorted ? colSorted = true : colSorted = false;
+                        !col3Sorted ? col3Sorted = true : col3Sorted = false;
+                        col0Sorted = false;
+                        col1Sorted = false;
+                        col2Sorted = false;
+                        col4Sorted = false;
+                        col5Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            Status
+                            <i [ngClass]="(col3Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('status'); !colSorted ? colSorted = true : colSorted = false;
+                        !col4Sorted ? col4Sorted = true : col4Sorted = false;
+                        col0Sorted = false;
+                        col1Sorted = false;
+                        col2Sorted = false;
+                        col3Sorted = false;
+                        col5Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            Technician
+                            <i [ngClass]="(col4Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('status'); !colSorted ? colSorted = true : colSorted = false;
+                        !col5Sorted ? col5Sorted = true : col5Sorted = false;
+                        col0Sorted = false;
+                        col1Sorted = false;
+                        col2Sorted = false;
+                        col3Sorted = false;
+                        col4Sorted = false;
+                        col6Sorted = false;
+                        ">
+                            Created
+                            <i [ngClass]="(col5Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
+                        <th (click)="tableDynamicSort('status'); !colSorted ? colSorted = true : colSorted = false;
+                        !col6Sorted ? col6Sorted = true : col6Sorted = false;
+                        col0Sorted = false;
+                        col1Sorted = false;
+                        col2Sorted = false;
+                        col3Sorted = false;
+                        col4Sorted = false;
+                        col5Sorted = false;
+                        ">
+                            Completed
+                            <i [ngClass]="(col6Sorted) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' "></i>
+                        </th>
                     </thead>
                     <tbody>
                         <tr [ngClass]="{'table-danger': issue.priority == 'Urgent'}" *ngFor="let issue of issues$">

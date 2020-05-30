@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { IssuesService } from '../../shared/issues.service';
-import { Issue } from '../../models/issue.model';
 import { Subscription } from 'rxjs';
+import { IssuesService } from 'src/app/shared/issues.service';
+import { Issue } from 'src/app/models/issue.model';
 
 @Component({
   selector: 'app-issues-list',
@@ -9,56 +9,24 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./issues-list.component.scss']
 })
 export class IssuesListComponent implements OnInit {
-  //Priority
-  //
-  currentPriority; //default priority
-  //Status
-  //
-  currentStatus; //default status
-  //Pagination
-  //
-  currentPage = 1;
-  itemsPerPage = 10;
-  pageSize = 0;
   //firestore subscription
   //
-  firestoreSubscriptions: Subscription[] = [];
-  issues$;
-  errors;
+  public firestoreSubscriptions: Subscription[] = [];
+  //firestore observable data
+  //
+  public issues$;
+  //errors
+  //
+  public errors;
 
+  //data
+  //
+  public issues = [];
   constructor(private issuesService: IssuesService) { }
 
   ngOnInit() {
     this.issues$ = this.getIssues();
   }
-
-  changePriority(change: string) {
-    this.currentPriority = change;
-  }
-
-  changeStatus(change: string) {
-    this.currentStatus = change;
-  }
-
-  applyFilters() {
-    this.getIssuesFiltered();
-  }
-
-  clearFilters() {
-    this.currentPriority = null;
-    this.currentStatus = null;
-    this.errors = null;
-    this.getIssues();
-  }
-
-  onPageChange(change: number) {
-    this.pageSize = this.itemsPerPage * (change - 1);
-  }
-
-  changePagesize(change: string) {
-    this.itemsPerPage = this.pageSize + parseInt(change);
-  }
-
 
   // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
   // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
@@ -74,39 +42,69 @@ export class IssuesListComponent implements OnInit {
         this.errors = 'ERROR: No documents were found';
         this.issues$ = undefined;
       }
+      this.filterData();
     }));
   }
 
-  getIssuesFiltered() {
-    this.firestoreSubscriptions.push(this.issuesService.getIssuesFiltered(this.currentPriority, this.currentStatus).subscribe(data => {
+  getIssuesFiltered(priority, status) {
+    this.firestoreSubscriptions.push(this.issuesService.getIssuesFiltered(priority, status).subscribe(data => {
       if (data.length > 0) {
         this.issues$ = data;
-        console.log('Data', data);
       } else {
-        console.log('Data', data);
         this.errors = 'ERROR: No documents were found';
       }
+      this.filterData();
     }));
   }
 
-
-  //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
+  //Note the data here is filtered specifically for the table in issues-list component
   //
-  deleteIssue(id) {
-    this.issuesService.deleteIssue(id)
-    .then(res => {
-      console.log(res);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  }
+  filterData() {
+    this.issues = [];
+    this.issues$.map(e => {
+      //add only unique issues
+      //
+      if (!this.issues.some(el => el.id === e.id)) {
+        this.issues.push(
+          {
+            id: e.id,
+            title: e.title,
+            tech: e.tech,
+            priority: e.priority,
+            status: e.status,
+            dateStart: e.dateStart,
+            dateEnd: e.dateEnd
+          });        
+        }
+      });
+    };
 
-  // Unsubscribe from firestore real time listener
-  //
-  ngOnDestroy() {
-    for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
-      this.firestoreSubscriptions[i].unsubscribe();
+    filtersChanged(event) {
+      if (event.filters) {
+        this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
+      } else {
+        this.getIssues()
+      }
+    }
+
+    //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
+    //
+    deleteIssue(event) {      
+      const id = event.id;
+      this.issuesService.deleteIssue(id)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+
+    // Unsubscribe from firestore real time listener
+    //
+    ngOnDestroy() {
+      for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
+        this.firestoreSubscriptions[i].unsubscribe();
+      }
     }
   }
-}

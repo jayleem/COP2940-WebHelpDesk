@@ -1,0 +1,117 @@
+<div *ngIf="data" class="container-fluid-shadow">
+    <div *ngIf="filterControl" class="row mt-5 justify-content-center">
+        <div class="col">
+            <h4 class="text-center">Found {{ data.length }} issues (Realtime)</h4>
+            <div class="row">
+                <div class="col input-group">
+                    <label for="currentPriority">Priority:</label>
+                    <select name="currentPriority" id="currentPriority" class="mr-2 form-control"
+                        [(ngModel)]="currentPriority" (change)="changePriority($event.target.value)">
+                        <option value="Low">Low</option>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+                    <label for="currentStatus">Status:</label>
+                    <select name="currentStatus" id="currentStatus" class="mr-2 form-control"
+                        [(ngModel)]="currentStatus" (change)="changeStatus($event.target.value)">
+                        <option value="Open">Open</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                    <label for="itemsPerPage">Items Per Page:</label>
+                    <select name="itemsPerPage" id="itemsPerPage" class="mr-2 form-control" [(ngModel)]="itemsPerPage"
+                        (change)="changePagesize($event.target.value)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="75">75</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12 col-xs-8 col-sm-10">
+                    <a class="float-left btn m-1" (click)="applyFilters()">Apply
+                        Filters</a>
+                    <a class="float-left btn m-1" (click)="clearFilters()">Clear
+                        Filters</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5 justify-content-center">
+        <div class="col">
+            <div class="table-responsive-md">
+                <table class="table table-sm table-striped table-dark text-nowrap ml-auto mr-auto">
+                    <thead>
+                        <th *ngFor="let tableHeader of tableHeaders; let i = index;">
+                            <i *ngIf="tableHeader !== 'Actions'"
+                                [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false;
+                                !colSorted[i] ? switchSort(i, true) : switchSort(i, false);
+                                ">
+                            </i>
+                            {{tableHeader}}
+                        </th>
+                    </thead>
+                    <tbody *ngIf="pagination; else notShown">
+                        <tr *ngFor="let item of data | slice: pageSize |  slice: 0:itemsPerPage; let i = index;">
+                            <td *ngFor="let property of item | keyvalue: kvpNoSort">
+                                <!-- This may not be the best way of catching dates but it works -->                                
+                                <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
+                                    <span *ngIf="property.value != '-'; else noFormat">
+                                        {{property.value.toDate() |  date:'yyyy/MM/dd'}}
+                                    </span>
+                                </span>
+                                <ng-template #noFormat>
+                                    <span>
+                                        {{property.value}}
+                                    </span>
+                                </ng-template>
+                            </td>
+                            <!-- Actions column custom implementation. I'm not really sure if there is a better way of doing this -->
+                            <td>
+                               <a class="btn btn-success nav-link m-1"
+                                    routerLink="/issues/details/{{item.id}}">Details</a>
+                                <a class="btn btn-warning nav-link m-1"
+                                    routerLink="/issues/update/{{item.id}}">Update</a>
+                                <a class="btn btn-danger nav-link m-1" (click)="onDelete(item.id)">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <ng-template #notShown>
+                        <tbody>
+                            <tr *ngFor="let item of data">
+                                <td *ngFor="let property of item | keyvalue: kvpNoSort">
+                                    <!-- This may not be the best way of catching dates but it works -->
+                                    <span *ngIf="property.key === 'progress'; else checkDate">
+                                        {{property.value | percent}}
+                                    </span>
+                                    <ng-template #checkDate>
+                                        <span
+                                            *ngIf="property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
+                                            <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd';">
+                                                <span *ngIf="property.value != '-';">
+                                                    {{property.value.toDate() |  date:'yyyy/MM/dd'}}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </ng-template>
+                                    <ng-template #noFormat>
+                                        {{property.value}}
+                                    </ng-template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="data && pagination" class="mt-4 mb-2 row justify-content-center">
+    <div class="input-group-addon">
+        <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+            (pageChange)="onPageChange(currentPage)"></ngb-pagination>
+    </div>
+</div>

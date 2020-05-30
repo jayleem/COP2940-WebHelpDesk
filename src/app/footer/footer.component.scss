@@ -1,10 +1,7 @@
-footer {
-    padding: 0;
-    margin: 0;
-
-    .row {
-        height: 60px;
-        margin: auto;
-        margin-top: 30px;
+#footer {
+    height:60px;
+    .copyright {
+        border:2px solid orange;
+        margin-top:5px;
     }
 }

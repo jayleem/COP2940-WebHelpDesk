@@ -7,12 +7,17 @@ import { IssuesDetailComponent } from './issues/issues-detail/issues-detail.comp
 import { IssuesUpdateComponent } from './issues/issues-update/issues-update.component';
 import { IssuesNewComponent } from './issues/issues-new/issues-new.component';
 import { ReportsListComponent } from './reports/reports-list/reports-list.component';
+import { RouteNotFoundComponent } from './route-not-found/route-not-found.component';
+import { HomeComponent } from './home/home.component';
+import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/issues', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent},
   {
     path: 'issues', component: IssuesComponent, children: [
+      { path: 'dashboard', component: IssuesDashboardComponent},
       { path: 'list', component: IssuesListComponent },
       { path: 'new', component: IssuesNewComponent },
       { path: 'details/:id', component: IssuesDetailComponent },
@@ -24,6 +29,8 @@ const routes: Routes = [
       { path: 'list/:tech', component: ReportsListComponent }
     ]
   },
+  { path: '404', component: RouteNotFoundComponent },
+  { path: '**', redirectTo: '404' }
 ];
 
 @NgModule({

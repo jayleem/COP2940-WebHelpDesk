@@ -15,6 +15,7 @@ export class IssuesUpdateComponent implements OnInit {
   id: string;
   issues$;
   errors;
+  modifiedDate: Date;
 
   constructor(private issueService: IssuesService, private route: ActivatedRoute, private router: Router) { }
 
@@ -25,10 +26,11 @@ export class IssuesUpdateComponent implements OnInit {
         'tech': new FormControl(null, [Validators.required]),
         'priority': new FormControl(null, [Validators.required]),
         'status': new FormControl(null, [Validators.required]),
-        'notes': new FormControl(null),
+        'notes': new FormControl(null, [Validators.maxLength(255)])
       }),
     });
     this.id = this.route.snapshot.paramMap.get('id');
+    this.modifiedDate = new Date();
     this.getIssueById(this.id);
   }
 
@@ -47,14 +49,13 @@ export class IssuesUpdateComponent implements OnInit {
   }
 
   async onSubmit() {
-    await this.issueService.updateIssue(this.id, this.updateIssueForm)
+    await this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         console.log(res);
+        this.router.navigate(['/issues/list']);
       })
       .catch(err => {
-        console.log(err);
         this.errors = err;
       })
-    this.router.navigate(['/issues/list']);
   }
 }

@@ -25,6 +25,7 @@ export class IssuesService {
                 tech: data.get('issueData.tech').value,
                 dateStart: new Date(),
                 dateEnd: '-',
+                lastModified: new Date(),
                 desc: {
                   summary: data.get('issueData.summary').value,
                   reproduce: data.get('issueData.reproduce').value,
@@ -122,9 +123,10 @@ export class IssuesService {
 
   //Update issue using id and data params
   //
-  updateIssue(id: string, data) {
-    const status = data.get('issueData.status').value;
+  updateIssue(id: string, formData, modifiedDate: Date) {
+    const status = formData.get('issueData.status').value;
     let dateEnd;
+    let modifiedDateTimestamp = Math.round(modifiedDate.getTime() / 1000);
     if (status != 'Closed') {
       dateEnd = '-';
     } else {
@@ -139,17 +141,24 @@ export class IssuesService {
           if (doc.empty) {
             reject("Error: Update Failed");
           } else {
-            doc.docs.forEach((doc) => {
-              const docRef = this.db.collection('issues').doc(doc.id)
-                .update(
-                  {
-                    tech: data.get('issueData.tech').value,
-                    priority: data.get('issueData.priority').value,
-                    status: data.get('issueData.status').value,
-                    dateEnd: dateEnd,
-                    notes: firestore.FieldValue.arrayUnion(data.get('issueData.notes').value)
-                  });
-              resolve("Success: Updated Issue");
+            doc.docs.forEach(doc => {
+              const data = doc.data();
+              if (modifiedDateTimestamp > data.lastModified.seconds) {
+                console.log(true)
+                const docRef = this.db.collection('issues').doc(doc.id)
+                  .update(
+                    {
+                      tech: formData.get('issueData.tech').value,
+                      priority: formData.get('issueData.priority').value,
+                      status: formData.get('issueData.status').value,
+                      lastModified: new Date(),
+                      dateEnd: dateEnd,
+                      notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
+                    });
+                resolve("Success: Updated Issue");
+              } else {
+                reject({ title: "Database Error", subTitle: "Update Failed", message: "The document was modified while you were making changes." });
+              }
             })
           }
         }).catch(err => {

@@ -3,11 +3,14 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
+  date: Date;
 
-  constructor() { }
+  constructor() {
+    this.date = new Date();
+  }
 
   ngOnInit(): void {
   }

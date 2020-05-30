@@ -9,6 +9,9 @@ import { HeaderComponent} from './header/header.component';
 import { FooterComponent} from './footer/footer.component';
 import { IssuesListComponent } from './issues/issues-list/issues-list.component';
 import { ReportsComponent } from './reports/reports.component';
+import { RouteNotFoundComponent } from './route-not-found/route-not-found.component';
+import { HomeComponent } from './home/home.component';
+import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
 
 //Angular Bootstrap
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -26,6 +29,13 @@ import { IssuesUpdateComponent } from './issues/issues-update/issues-update.comp
 import { IssuesComponent } from './issues/issues.component';
 import { ReportsListComponent } from './reports/reports-list/reports-list.component';
 
+//ng-2 charts
+import { ChartsModule } from 'ng2-charts';
+import { DynamicPieChartComponent } from './shared/dynamic-pie-chart/dynamic-pie-chart.component';
+import { DynamicBarChartComponent } from './shared/dynamic-bar-chart/dynamic-bar-chart.component';
+import { DynamicLineChartComponent } from './shared/dynamic-line-chart/dynamic-line-chart.component';
+import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +47,14 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
     IssuesDetailComponent,
     IssuesNewComponent,
     IssuesUpdateComponent,
-    ReportsListComponent
+    ReportsListComponent,
+    RouteNotFoundComponent,
+    HomeComponent,
+    IssuesDashboardComponent,
+    DynamicPieChartComponent,
+    DynamicBarChartComponent,
+    DynamicLineChartComponent,
+    DynamicTableComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +63,8 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ChartsModule
   ],
   providers: [IssuesService],
   bootstrap: [AppComponent]

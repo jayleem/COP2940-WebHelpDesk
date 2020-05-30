@@ -9,9 +9,13 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.title').valid && newIssueForm.get('issueData.title').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.title').errors['required']">This field is
                             required!</span>
+                        <span
+                            *ngIf="newIssueForm.get('issueData.title').errors['minlength'] || newIssueForm.get('issueData.title').errors['maxlength']">
+                            Input must be between 10 and 50 characters. char count.
+                            {{newIssueForm.get('issueData.title').value.length}}
+                        </span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -21,7 +25,6 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.tech').valid && newIssueForm.get('issueData.tech').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.tech').errors['required']">This field is
                             required!</span>
                         <span *ngIf="newIssueForm.get('issueData.tech').errors['email']">Not a valid email
@@ -39,7 +42,6 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.priority').valid && newIssueForm.get('issueData.priority').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.priority').errors['required']">This field is
                             required!</span>
                     </span>
@@ -52,9 +54,13 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.summary').valid && newIssueForm.get('issueData.summary').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.summary').errors['required']">This field is
                             required!</span>
+                        <span
+                            *ngIf="newIssueForm.get('issueData.summary').errors['minlength'] || newIssueForm.get('issueData.summary').errors['maxlength']">
+                            Input must be between 15 and 255 characters. char count.
+                            {{newIssueForm.get('issueData.summary').value.length}}
+                        </span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -64,9 +70,13 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.reproduce').valid && newIssueForm.get('issueData.reproduce').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.reproduce').errors['required']">This field is
                             required!</span>
+                        <span
+                            *ngIf="newIssueForm.get('issueData.reproduce').errors['minlength'] || newIssueForm.get('issueData.reproduce').errors['maxlength']">
+                            Input must be between 15 and 255 characters. char count.
+                            {{newIssueForm.get('issueData.reproduce').value.length}}
+                        </span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -76,9 +86,13 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.expctRes').valid && newIssueForm.get('issueData.expctRes').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.expctRes').errors['required']">This field is
                             required!</span>
+                        <span
+                            *ngIf="newIssueForm.get('issueData.expctRes').errors['minlength'] || newIssueForm.get('issueData.expctRes').errors['maxlength']">
+                            Input must be between 15 and 255 characters. char count.
+                            {{newIssueForm.get('issueData.expctRes').value.length}}
+                        </span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -88,14 +102,20 @@
                     <span
                         *ngIf="!newIssueForm.get('issueData.actlRes').valid && newIssueForm.get('issueData.actlRes').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="newIssueForm.get('issueData.actlRes').errors['required']">This field is
                             required!</span>
+                        <span
+                            *ngIf="newIssueForm.get('issueData.actlRes').errors['minlength'] || newIssueForm.get('issueData.actlRes').errors['maxlength']">
+                            Input must be between 15 and 255 characters. char count.
+                            {{newIssueForm.get('issueData.actlRes').value.length}}
+                        </span>
                     </span>
                 </div>
             </div>
-            <button class="btn btn-primary mr-2" type="submit">Submit</button>
-            <button class="btn btn-primary" routerLink="/issues/list">Cancel</button>
+            <div class="col btn-group-custom" role="group" aria-label="failed update options">
+                <button class="btn w-25 mr-2" type="submit">Submit</button>
+                <a class="btn w-25" routerLink="/issues/list">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

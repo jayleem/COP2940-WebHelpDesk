@@ -1,4 +1,4 @@
-<div *ngIf="issues$" class="row justify-content-center">
+<div *ngIf="issues$ && !errors" class="row justify-content-center">
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
         <h4>Updating Ticket: {{issues$.id}}</h4>
         <form [formGroup]="updateIssueForm" (ngSubmit)="updateIssueForm.valid && onSubmit()">
@@ -9,7 +9,6 @@
                     <span
                         *ngIf="!updateIssueForm.get('issueData.tech').valid && updateIssueForm.get('issueData.tech').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="updateIssueForm.get('issueData.tech').errors['required']">This field is
                             required!</span>
                     </span>
@@ -24,7 +23,6 @@
                     <span
                         *ngIf="!updateIssueForm.get('issueData.status').valid && updateIssueForm.get('issueData.status').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="updateIssueForm.get('issueData.status').errors['required']">This field is
                             required!</span>
                     </span>
@@ -40,7 +38,6 @@
                     <span
                         *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
                             required!</span>
                     </span>
@@ -52,14 +49,34 @@
                     <span
                         *ngIf="!updateIssueForm.get('issueData.notes').valid && updateIssueForm.get('issueData.notes').touched"
                         class="help-block">
-                        <!-- This is the best practice that I know of for accessing error codes -->
                         <span *ngIf="updateIssueForm.get('issueData.notes').errors['required']">This field is
                             required!</span>
                     </span>
                 </div>
             </div>
-            <button class="btn btn-primary mr-2" type="submit">Save</button>
-            <button class="btn btn-primary" routerLink="/issues/list">Cancel</button>
+            <button class="btn w-25 mr-2" type="submit">Save</button>
+            <button class="btn w-25" routerLink="/issues/list">Cancel</button>
         </form>
+    </div>
+</div>
+<div *ngIf="errors" class="errors container-fluid">
+    <div class="row">
+        <div class="col">
+            <span class="text-center">
+                <p><i class="fas fa-exclamation-triangle"></i></p>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-center">
+            <h4>{{ errors.title }}</h4>
+            <h6>{{ errors.subTitle }}</h6>
+            <p>{{ errors.message }}</p>
+        </div>
+    </div>
+    <div class="row btn-group-custom justify-content-center w-100" role="group" aria-label="...">
+        <a class="btn w-25 m-1" routerLink="/issues/list">View Open Tickets</a>
+        <a class="btn w-25 m-1" routerLink="/issues/update/{{id}}">Load Updated Issue</a>
+        <a class="btn w-25 m-1" routerLink="/issues/details/{{id}}">View Updated Issue</a>
     </div>
 </div>
