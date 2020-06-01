@@ -31,9 +31,6 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
 
 //ng-2 charts
 import { ChartsModule } from 'ng2-charts';
-import { DynamicPieChartComponent } from './shared/dynamic-pie-chart/dynamic-pie-chart.component';
-import { DynamicBarChartComponent } from './shared/dynamic-bar-chart/dynamic-bar-chart.component';
-import { DynamicLineChartComponent } from './shared/dynamic-line-chart/dynamic-line-chart.component';
 import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.component';
 
 @NgModule({
@@ -51,9 +48,6 @@ import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.comp
     RouteNotFoundComponent,
     HomeComponent,
     IssuesDashboardComponent,
-    DynamicPieChartComponent,
-    DynamicBarChartComponent,
-    DynamicLineChartComponent,
     DynamicTableComponent
   ],
   imports: [

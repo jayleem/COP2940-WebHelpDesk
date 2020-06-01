@@ -1,5 +1,5 @@
-<div class="container-fluid container-dashboard mt-2 ml-auto mr-auto">
-    <div class="row dashboard-widget">
+<div class="container-fluid mt-2">
+    <div class="row dashboard-widgets">
         <div class="col-8 text-left">
             <h4>Welcome placeholder@example.com</h4>
         </div>
@@ -51,9 +51,16 @@
                 <div class="card-header bg-dark text-light">Issues by Priority</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas baseChart [data]="pieChartData2" [labels]="pieChartLabels2" [chartType]="pieChartType2"
-                            [options]="pieChartOptions2" [plugins]="pieChartPlugins2" [legend]="pieChartLegend2"
-                            [colors]="pieChartColors"> >
+                        <canvas 
+                            width=1 
+                            height=1 
+                            baseChart [data]="pieChartData2" 
+                            [labels]="pieChartLabels2" 
+                            [chartType]="pieChartType2"
+                            [options]="pieChartOptions2" 
+                            [plugins]="pieChartPlugins2" 
+                            [legend]="pieChartLegend2"
+                            [colors]="pieChartColors">
                         </canvas>
                     </div>
                 </div>
@@ -64,8 +71,16 @@
                 <div class="card-header bg-dark text-light">Issues by Status</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-                            [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend"
+                        <canvas 
+                            width=1 
+                            height=1 
+                            baseChart 
+                            [data]="pieChartData" 
+                            [labels]="pieChartLabels" 
+                            [chartType]="pieChartType"
+                            [options]="pieChartOptions" 
+                            [plugins]="pieChartPlugins" 
+                            [legend]="pieChartLegend"
                             [colors]="pieChartColors">
                         </canvas>
                     </div>

@@ -78,7 +78,7 @@ export class IssuesDashboardComponent implements OnInit {
     borderColor: ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent']
   }];
 
-  //priority pie chart
+  //Priority pie chart
   //
   pieChartOptions2 = {
     responsive: true,

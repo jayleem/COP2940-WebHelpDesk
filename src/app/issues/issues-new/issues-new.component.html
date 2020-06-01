@@ -1,10 +1,11 @@
 <div class="row justify-content-center">
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
-        <h4>Bug Report:</h4>
+        <h4>Bug Tracker</h4>
+        <h4>Report a new Bug:</h4>
         <form [formGroup]="newIssueForm" (ngSubmit)="newIssueForm.valid && onSubmit()">
             <div formGroupName="issueData">
                 <div class="form-group">
-                    <label for="title">Title</label>
+                    <label for="title">Title<span class="ml-1 text-danger">*</span></label>
                     <input type="text" id="title" formControlName="title" class="form-control">
                     <span
                         *ngIf="!newIssueForm.get('issueData.title').valid && newIssueForm.get('issueData.title').touched"
@@ -19,7 +20,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="tech">Technician</label>
+                    <label for="tech">Technician<span class="ml-1 text-danger">*</span></label>
                     <input type="email" name="email" id="technician" formControlName="tech" class="form-control"
                         placeholder="tech123@example.com">
                     <span
@@ -48,7 +49,7 @@
                 </div>
                 <div class="form-group">
                     <p for="desc">Description</p>
-                    <label for="summary">Summary</label>
+                    <label for="summary">Summary<span class="ml-1 text-danger">*</span></label>
                     <textarea name="summary" id="summary" cols="30" rows="5" formControlName="summary"
                         class="form-control"> </textarea>
                     <span
@@ -64,7 +65,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="reproduce">Steps to Reproduce</label>
+                    <label for="reproduce">Steps to Reproduce<span class="ml-1 text-danger">*</span></label>
                     <textarea name="reproduce" id="reproduce" cols="30" rows="5" formControlName="reproduce"
                         class="form-control"> </textarea>
                     <span
@@ -80,7 +81,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="expctRes">Expected Results</label>
+                    <label for="expctRes">Expected Results<span class="ml-1 text-danger">*</span></label>
                     <textarea name="expctRes" id="expctRes" cols="30" rows="5" formControlName="expctRes"
                         class="form-control"> </textarea>
                     <span
@@ -96,7 +97,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="actlRes">Actual Results</label>
+                    <label for="actlRes">Actual Results<span class="ml-1 ml-1 text-danger">*</span></label>
                     <textarea name="actlRes" id="actlRes" cols="30" rows="5" formControlName="actlRes"
                         class="form-control"> </textarea>
                     <span

@@ -6,7 +6,6 @@ body, html {
     height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #203848 !important;
 }
 
 .container {
@@ -21,23 +20,12 @@ body, html {
     padding: 0;
 }
 
-.content-wrapper {
-    min-height: 100%;
-    padding: 0;
-    margin: 0;
-    margin-bottom:60px;
-}
-
 .main-content {
-    min-height: 100%;
-    width:85%;
+    min-height: 100vh;
     padding: 0;
     margin: 0;
-    margin-left: auto;
-    margin-right: auto;
+    padding-bottom: 60px; //same height as footer
 }
-
-
 
 th,td {
    text-align: center;
@@ -70,68 +58,31 @@ i {
     }
 }
 
-//Bootstrap theme w/o editing bootstrap SASS vars
-.bg-light {
-    background: #203848 !important;
-    color: #39BEC1 !important;
+.row {
+    margin: auto;
 }
-.bg-dark {
-    background: #1C2A35 !important;
-    color: #39BEC1 !important;
-}
-.navbar-dark {
-    background: #1C2A35 !important;
-    ul, li , a, i {
-        color: #39BEC1 !important;
-    }
-    ul>li>a:hover {
-        opacity: .5;
+.sidebar {
+    ul>li>a.nav-link:not(.active) {
+        opacity: .5 !important;
     }
 }
-.navbar-light {
-    background: #DFE4F0 !important;
-}
-.card {
-    background: #203848 !important;
-    border:0;
-}
-.form-control {
-    background: #DFE4F0 !important;
-}
-.table-dark {
-    th {
-        background-color: #1C2A35 !important;
-        color: #39BEC1 !important;
-        border: 0 !important;
-    }
-    td {
-        color: #39BEC1 !important;
-        border: 0 !important;
-    }
-}
-.table-striped>tbody>tr:nth-child(even)>td {
-    background-color: #1C2A35 !important;
-  }
-.table-striped>tbody>tr:nth-child(odd)>td {
-   background-color: #203848 !important;
- }
- //ng-pagination
- .page-item {
+//ng-pagination
+.page-item {
     .page-link {
         color: #39BEC1 !important; 
         background-color: #203848 !important;
         border: 0 !important;
     }
- }
- .page-item.active {
- .page-link { 
+}
+.page-item.active {
+    .page-link { 
         color: #32dadd  !important; 
         border: 1px solid #32dadd !important;
     }
- }
+}
 .page-item.disabled {
     .page-link { 
-           opacity: .5;
+        opacity: .5;
     }
 }
 .text-light {
@@ -168,9 +119,59 @@ i {
     font-size: 1em;
     font-weight: 400;
 }
-.form-control.ng-invalid.ng-touched {
-    border-left:6px solid red !important;
+//Bootstrap theme w/o editing bootstrap SASS vars
+body, html {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    background-color: #203848 !important;
 }
-.form-control.ng-valid.ng-touched {
-    border-left:6px solid green !important;
+.bg-light {
+    background: #203848 !important;
+    color: #39BEC1 !important;
 }
+.bg-dark {
+    background: #1C2A35 !important;
+    color: #39BEC1 !important;
+}
+.navbar-dark {
+    background: #1C2A35 !important;
+    ul, li , a, i {
+        color: #39BEC1 !important;
+    }
+    ul>li>a:hover {
+        opacity: .5;
+    }
+}
+.navbar-light {
+    background: #DFE4F0 !important;
+    ul, li , a, i {
+        color: #000 !important;
+    }
+    ul>li>a:hover {
+        opacity: .5;
+    }
+}
+.card {
+    background: #203848 !important;
+    border:0;
+}
+.form-control {
+    background: #DFE4F0 !important;
+}
+.table-dark {
+    th {
+        background-color: #1C2A35 !important;
+        color: #39BEC1 !important;
+        border: 0 !important;
+    }
+    td {
+        color: #39BEC1 !important;
+        border: 0 !important;
+    }
+}
+.table-striped>tbody>tr:nth-child(even)>td {
+    background-color: #1C2A35 !important;
+  }
+.table-striped>tbody>tr:nth-child(odd)>td {
+   background-color: #203848 !important;
+ }

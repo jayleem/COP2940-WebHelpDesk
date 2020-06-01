@@ -1,17 +1,19 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col">
+        <div class="col-sm-8 col-md-12">
             <app-dynamic-table 
-            [tableHeaders]="['Id','Title','Technician','Priority','Status','Date Start','Date End']"
-            [tableDataFields]="['id','title','tech','priority','status','dateStart','dateEnd']"
-            [data]="issues"
-            [filterControl]=true
-            [pagination]=true
-            (onFiltersApplied)="filtersChanged($event)"
-            (onFiltersCleared)="filtersChanged($event)"   
-            (onDeleteClicked)="deleteIssue($event)"         
-        >
-        </app-dynamic-table>   
+                [tableHeaders]="['Id','Title','Technician','Priority','Status','Date Start','Date End']"
+                [tableDataFields]="['id','title','tech','priority','status','dateStart','dateEnd']" 
+                [tableLabel]=true
+                [actions]=true
+                [actionHeader]="'Actions'"
+                [data]="issues"
+                [filterControl]=true 
+                [pagination]=true 
+                (onFiltersApplied)="filtersChanged($event)"
+                (onFiltersCleared)="filtersChanged($event)" 
+                (onDeleteClicked)="deleteIssue($event)">
+            </app-dynamic-table>
         </div>
     </div>
 </div>

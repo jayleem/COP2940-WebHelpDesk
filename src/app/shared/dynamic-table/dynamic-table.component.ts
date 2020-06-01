@@ -7,17 +7,21 @@ This is a hacky attempt at a dynamic table component for this project
     Place this component in a HTML template.
     <app-dynamic-table
 
-    [tableHeaders]="[]" <-- Declare table headers here
+    [tableHeaders]="[]" //Declare table headers here
 
-    [tableDataFields]="[]" <-- Data fields here this is used for sorting and should match the object properties
+    [tableDataFields]="[]" //Data fields here this is used for sorting and should match the object properties
 
-    [data]="" <-- Data should be passed as a variable from the parent object to this component 
+    [actions]=true //Enables action column 
+    
+    [actionHeader]="'Actions'" //Name of column which will contain actions like update, delete, etc.
+
+    [data]="" //Data should be passed as a variable from the parent object to this component 
                   e.g Parent Component: myData: { id = 1, name = "John Smith" }
                       In the Parent Component HTML set the [data] option as follows [data]="myData"
 
-    [filterControl]=boolean <-- Enables filter controls although this may require custom implementation
+    [filterControl]=boolean //Enables filter controls although this may require custom implementation
 
-    [pagination]=boolean <-- Enables ng-pagination just google it.
+    [pagination]=boolean //Enables ng-pagination just google it.
 
     ></app-dynamic-table>
 */
@@ -35,6 +39,10 @@ export class DynamicTableComponent implements OnInit {
   //vars received from parent component
   @Input() tableHeaders: string[] = [];
   @Input() tableDataFields: string[] = [];
+  @Input() tableLabel: boolean;
+  @Input() actions: boolean;
+  @Input() actionHeader: string;
+  @Input() extraDataFields: string[] = []
   @Input() data: any[] = []
   @Input() filterControl: boolean;
   @Input() pagination: boolean;
@@ -80,19 +88,19 @@ export class DynamicTableComponent implements OnInit {
   }
 
   applyFilters() {
-   this.onFiltersApplied.emit({filters: {currentPriority: this.currentPriority, currentStatus: this.currentStatus }})
+    this.onFiltersApplied.emit({ filters: { currentPriority: this.currentPriority, currentStatus: this.currentStatus } })
   }
 
   clearFilters() {
     this.currentPriority = null;
     this.currentStatus = null;
     this.errors = null;
-    this.onFiltersCleared.emit({filters: null })
+    this.onFiltersCleared.emit({ filters: null })
   }
 
-  onDelete(id){
-    this.onDeleteClicked.emit({id:id});
-   }
+  onDelete(id) {
+    this.onDeleteClicked.emit({ id: id });
+  }
 
   onPageChange(change: number) {
     this.pageSize = this.itemsPerPage * (change - 1);
@@ -130,7 +138,7 @@ export class DynamicTableComponent implements OnInit {
     this.data.sort(this.dynamicSort(key));
   }
 
-  kvpNoSort(a, b) {    
+  kvpNoSort(a, b) {
     return 0;
   }
 }

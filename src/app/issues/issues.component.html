@@ -1,33 +1,27 @@
-<div class="container-fluid w-85">
+<div class="container-fluid">
     <div class="row">
-        <div class="col">
-            <div class="navbar navbar-expand-lg bg-light navbar-light shadow-sm">
-                <div class="btn-group float-left col-sm-12">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/issues/dashboard" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{exact: true}"><i
-                                    class="mr-1 fas fa-tachometer-alt"></i>Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/issues/list" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>View Issues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/issues/new" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
-                                Issue</a>
-                        </li>
-                    </ul>
-                </div>
+        <nav class="col-md-2 d-md-block navbar-light sidebar mr-2 shadow">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/issues/dashboard" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i
+                                class="mr-1 fas fa-tachometer-alt"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/issues/list" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>View Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/issues/new" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
+                            Issue</a>
+                    </li>
+                </ul>
             </div>
-        </div>
-    </div>
-    <div class="main-content">
-        <div class="row">
-            <div class="col">
-                <router-outlet></router-outlet>
-            </div>
+        </nav>
+        <div class="col-md-9 main-content">
+            <router-outlet></router-outlet>
         </div>
     </div>
 </div>

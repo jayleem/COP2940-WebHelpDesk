@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="main-content">
     <div class="row justify-content-center">
         <div class="mt-5 mb-5 col-xs-12 col-sm-10 col-md-8">
             <form [formGroup]="newIssueForm" (ngSubmit)="onSubmit()">
@@ -18,7 +18,7 @@
                 <div class="row justify-content-center">
                     <div class="col btn-group-custom" role="group" aria-label="failed update options">
                         <button class="btn w-25" type="submit">Generate Report</button>
-                        <a class="btn w-25" routerLink="/issues/list">Cancel</a>
+                        <a class="btn w-25" routerLink="/issues/dashboard">Cancel</a>
                     </div>
                 </div>
             </form>
