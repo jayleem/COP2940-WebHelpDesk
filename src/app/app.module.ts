@@ -10,7 +10,7 @@ import { FooterComponent} from './footer/footer.component';
 import { IssuesListComponent } from './issues/issues-list/issues-list.component';
 import { ReportsComponent } from './reports/reports.component';
 import { RouteNotFoundComponent } from './route-not-found/route-not-found.component';
-import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
 
 //Angular Bootstrap
@@ -19,6 +19,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 //Firebase
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth'
 
 //Env config
 import { environment } from 'src/environments/environment';
@@ -32,6 +33,9 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
 //ng-2 charts
 import { ChartsModule } from 'ng2-charts';
 import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.component';
+import { AuthService } from './shared/services/auth.service';
+import { AuthGuardService } from './shared/services/auth-guard.service';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -46,9 +50,10 @@ import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.comp
     IssuesUpdateComponent,
     ReportsListComponent,
     RouteNotFoundComponent,
-    HomeComponent,
+    LoginComponent,
     IssuesDashboardComponent,
-    DynamicTableComponent
+    DynamicTableComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -56,11 +61,12 @@ import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.comp
     NgbModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
+    AngularFireAuthModule,
     FormsModule,
     ReactiveFormsModule,
     ChartsModule
   ],
-  providers: [IssuesService],
+  providers: [IssuesService, AuthService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

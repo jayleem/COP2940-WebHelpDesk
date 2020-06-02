@@ -8,15 +8,18 @@ import { IssuesUpdateComponent } from './issues/issues-update/issues-update.comp
 import { IssuesNewComponent } from './issues/issues-new/issues-new.component';
 import { ReportsListComponent } from './reports/reports-list/reports-list.component';
 import { RouteNotFoundComponent } from './route-not-found/route-not-found.component';
-import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
+import { AuthGuardService } from './shared/services/auth-guard.service';
+import { RegisterComponent } from './register/register.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent},
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent},
+  { path: 'register', component: RegisterComponent},
   {
-    path: 'issues', component: IssuesComponent, children: [
+    path: 'issues', component: IssuesComponent, canActivate: [AuthGuardService], children: [
       { path: 'dashboard', component: IssuesDashboardComponent},
       { path: 'list', component: IssuesListComponent },
       { path: 'new', component: IssuesNewComponent },

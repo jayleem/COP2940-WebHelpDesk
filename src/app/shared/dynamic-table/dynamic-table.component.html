@@ -56,7 +56,7 @@
     </div>
     <div class="row table-responsive">
         <div class="col">
-            <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Viewing {{ data.length }} issues in Realtime</h4>
+            <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Viewing {{ data.length }} Issues in Realtime</h4>
             <table class="table table-sm table-striped table-dark text-nowrap">
                 <thead>
                     <th *ngFor="let tableHeader of tableHeaders; let i = index;">
@@ -89,8 +89,7 @@
                             escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
                         <td *ngIf="actions">
                             <div class="btn-group-vertical-custom">
-                                <button class="btn m-1" routerLink="/issues/details/{{item.id}}">Details</button>
-                                <button class="btn m-1" routerLink="/issues/update/{{item.id}}">Update</button>
+                                <button class="btn m-1" routerLink="/issues/details/{{item.id}}">View</button>
                                 <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
                             </div>
                         </td>
