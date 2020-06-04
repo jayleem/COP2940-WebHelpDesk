@@ -1,3 +1,7 @@
+//AuthGuardService
+//Checks that a user is currently logged in
+//
+
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';

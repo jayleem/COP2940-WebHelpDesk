@@ -48,14 +48,15 @@ export class ReportsListComponent implements OnInit {
   }
 
   getIssuesFiltered(priority, status) {
-    this.firestoreSubscriptions.push(this.issuesService.getIssuesFiltered(priority, status).subscribe(data => {
-      if (data.length > 0) {
-        this.issues$ = data;
+    this.issuesService.getIssuesFiltered(priority, status)
+    .then(issues => {
+      if (issues.length > 0) {
+        this.issues$ = issues;
       } else {
         this.errors = 'ERROR: No documents were found';
       }
       this.filterData();
-    }));
+    });
   }
 
   //Note the data here is filtered specifically for the table in issues-list component

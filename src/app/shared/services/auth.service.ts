@@ -1,7 +1,11 @@
+//AuthService
+//Performs various authorization user login, registration, etc. 
+//
+
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -51,17 +55,46 @@ export class AuthService {
   }
 
   //getUser method
+  //
   getUser() {
     return this.user;
   }
+
   setUser(value) {
     this.user = value;
   }
+
   //getUser method
+  //
   getLoggedIn(): Observable<boolean> {
     return this.loggedIn.asObservable();
   }
+
   setLoggedIn(value: boolean) {
     return this.loggedIn.next(value);
+  }
+
+  //get user meta data
+  //
+  getMetadata() {
+    return this.firebaseAuth.currentUser;
+  }
+
+  //reauthenticate user
+  //must be async or it wil return a zone aware promise
+  //
+  async reauthenticateUser(password: string) {
+    const username = await this.firebaseAuth.currentUser.then(res => { return res.email });
+    const oldPassword = password;
+
+    let reauthenticated = this.firebaseAuth.signInWithEmailAndPassword(username, oldPassword)
+      .then(res => {
+        return true;
+      })
+      .catch(err => {
+        return false;
+      })
+
+    return reauthenticated;
   }
 }

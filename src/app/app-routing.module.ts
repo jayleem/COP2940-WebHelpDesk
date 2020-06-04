@@ -13,6 +13,8 @@ import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashb
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { RegisterComponent } from './register/register.component';
 import { LoginGuardService } from './shared/services/login-guard.service';
+import { ProfileComponent } from './profile/profile.component';
+import { ProfileGuardService } from './shared/services/profile-guard.service';
 
 
 const routes: Routes = [
@@ -28,6 +30,7 @@ const routes: Routes = [
       { path: 'update/:id', component: IssuesUpdateComponent },
     ]
   },
+  { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuardService, ProfileGuardService]},
   {
     path: 'reports', component: ReportsComponent, children: [
       { path: 'list/:tech', component: ReportsListComponent }

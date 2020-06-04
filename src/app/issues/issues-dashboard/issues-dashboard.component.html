@@ -91,7 +91,7 @@
                 <div class="card-header bg-dark text-light">Technician Performance</div>
                 <div class="card-body">
                     <app-dynamic-table 
-                        [tableHeaders]="['Technician', 'Open', 'Closed', 'Pending', 'Progress']"
+                        [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
                         [tableDataFields]="['tech','open','pending','closed', 'progress']"
                         [data]="techs"
                         [filterControl]=false

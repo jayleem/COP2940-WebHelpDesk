@@ -1,0 +1,24 @@
+<div class="container-fluid vh-100">
+    <div *ngIf="user$" class="row justify-content-center">
+        <div class="mt-5 col col-xs-12 col-sm-10">
+            <div class="card shadow">
+                <div class="card-header">User Details</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-10 text-left">
+                            <div *ngFor="let user of user$">
+                                <p class="card-text">Username: {{ user.data.username }}</p>
+                                <p class="card-text">Name: {{ user.data.fName }} {{ user.data.lName }}</p>
+                                <p class="card-text">Joined: {{ metadata.creationTime }}</p>
+                                <p class="card-text">Last Login: {{ metadata.lastSignInTime }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-10 text-left mt-2">
+                            <button class="btn" (click)="onSubmit()">Change Password</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
