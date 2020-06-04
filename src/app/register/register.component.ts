@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -9,28 +10,40 @@ import { AuthService } from '../shared/services/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-  credentialDataForm: FormGroup;
-  errorMessage = "This email address is already registered. If you have forgotten your password you may reset it by clicking below.";
+  registerForm: FormGroup;
+  errorMessage;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
 
-  pwdRegex = '^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d]).*$'
+  emailRegex = '.+\@.+\..+' //No need for complex email regex
+  pwdRegex = '^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\d]).*$'//password requirements
   ngOnInit() {
-    this.credentialDataForm = new FormGroup({
-      'credentialData': new FormGroup({
-        'email': new FormControl(null, [Validators.required, Validators.email]),
-        'password': new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.pwdRegex)])
+    this.registerForm = new FormGroup({
+      'registrationData': new FormGroup({
+        'fName': new FormControl(null, [Validators.required]),
+        'lName': new FormControl(null, [Validators.required]),
+        'email': new FormControl(null, [Validators.required, Validators.pattern(this.emailRegex)]),
+        'password': new FormControl(null, [Validators.required, Validators.pattern(this.pwdRegex)])
       })
     });
   }
 
   onSubmit() {
-    const email = this.credentialDataForm.get('credentialData.email').value;
-    const password = this.credentialDataForm.get('credentialData.password').value;
+    const fName = this.registerForm.get('registrationData.fName').value;
+    const lName = this.registerForm.get('registrationData.lName').value;
+    const email = this.registerForm.get('registrationData.email').value;
+    const password = this.registerForm.get('registrationData.password').value;
 
     this.authService.signUp(email, password)
     .then(res => {
-      console.log(res);
+      const uid = res.user.uid;
+      const username = res.user.email;
+      const payload = {
+        uid: res.user.uid,
+        username: res.user.email,
+        fName: this        
+      }
+      this.userService.addUser(fName, lName, uid, username);
     })
     .catch(err => {
       this.errorMessage = "Email address is already registered. If you have forgotten your password you may reset it by clicking below."
@@ -38,7 +51,7 @@ export class RegisterComponent implements OnInit {
   };
 
   resetPassword() {
-    const email = this.credentialDataForm.get('credentialData.email').value;
+    const email = this.registerForm.get('registrationData.email').value;
     this.authService.resetPassword(email)
     .then(res => {
       this.errorMessage = `An email containing further instructions to reset your password has been sent to ${email}.`

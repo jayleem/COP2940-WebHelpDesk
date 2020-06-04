@@ -12,12 +12,13 @@ import { LoginComponent } from './login/login.component';
 import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { RegisterComponent } from './register/register.component';
+import { LoginGuardService } from './shared/services/login-guard.service';
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent},
-  { path: 'register', component: RegisterComponent},
+  { path: 'login', component: LoginComponent, canActivate: [LoginGuardService] },
+  { path: 'register', component: RegisterComponent, canActivate: [LoginGuardService]},
   {
     path: 'issues', component: IssuesComponent, canActivate: [AuthGuardService], children: [
       { path: 'dashboard', component: IssuesDashboardComponent},

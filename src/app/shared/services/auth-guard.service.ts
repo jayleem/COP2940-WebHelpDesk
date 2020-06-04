@@ -9,12 +9,18 @@ export class AuthGuardService {
 
   constructor(private router: Router, private fireAuthService: AuthService) { }
 
-  canActivate(): boolean {
-    if (!this.fireAuthService.getUser()) {
-      this.router.navigate(['/login']);
-      return false;
-    } else {
-      return true;
-    }
+  canActivate() {
+    let auth;
+    this.fireAuthService.getLoggedIn().subscribe(res => {
+      if (!res) {
+        this.router.navigate(['/login'])
+        auth = false;
+      } else {
+        auth = true;
+      }
+    })
+    return auth;
   }
+
+  ngOnDestroy() { }
 }

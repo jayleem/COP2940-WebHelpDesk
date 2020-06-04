@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IssuesService } from 'src/app/shared/issues.service';
+import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -30,9 +30,6 @@ export class IssuesDetailComponent implements OnInit {
     .then(res => {
       console.log(res);
       this.issues$ = res;
-      //this.updateIssueForm.get('issueData.tech').setValue(`${res.tech}`);
-      //this.updateIssueForm.get('issueData.priority').setValue(`${res.priority}`);
-      //this.updateIssueForm.get('issueData.status').setValue(`${res.status}`);
     })
     .catch(err => {
       this.issues$ = undefined;

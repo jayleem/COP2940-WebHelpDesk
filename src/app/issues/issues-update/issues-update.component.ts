@@ -1,8 +1,10 @@
 import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { IssuesService } from 'src/app/shared/issues.service';
+import { IssuesService } from 'src/app/shared/services/issues.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
+import { UserService } from 'src/app/shared/services/user.service';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-issues-update',
@@ -11,13 +13,15 @@ import { Subscription, Observable } from 'rxjs';
 })
 
 export class IssuesUpdateComponent implements OnInit {
+  firestoreSubscriptions: Subscription[] = [];
+  techs$: any;
   updateIssueForm: FormGroup;
   id: string;
   issues$;
   errors;
   modifiedDate: Date;
 
-  constructor(private issueService: IssuesService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private issueService: IssuesService, private userService: UserService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.updateIssueForm = new FormGroup({
@@ -32,10 +36,26 @@ export class IssuesUpdateComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.modifiedDate = new Date();
     this.getIssueById(this.id);
+    this.techs$ = this.getUsers()
   }
 
-  async getIssueById(id) {
-    await this.issueService.getIssuesById(id)
+  //get users
+  //
+  getUsers() {
+    this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
+      if (data.length > 0) {
+        this.techs$ = data.map(e => {
+          return { ...e.payload.doc.data() as {} } as User;
+        });
+      } else {
+        console.log('ERROR: No documents were found');
+        this.techs$ = undefined;
+      }
+    }));
+  }
+
+  getIssueById(id) {
+    this.issueService.getIssuesById(id)
       .then(res => {
         this.issues$ = res;
         this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.tech}`);
@@ -48,8 +68,8 @@ export class IssuesUpdateComponent implements OnInit {
       });
   }
 
-  async onSubmit() {
-    await this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
+  onSubmit() {
+    this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         console.log(res);
         this.router.navigate(['/issues/list']);

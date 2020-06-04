@@ -23,7 +23,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth'
 
 //Env config
 import { environment } from 'src/environments/environment';
-import { IssuesService } from './shared/issues.service';
+import { IssuesService } from './shared/services/issues.service';
 import { IssuesDetailComponent } from './issues/issues-detail/issues-detail.component';
 import { IssuesNewComponent } from './issues/issues-new/issues-new.component';
 import { IssuesUpdateComponent } from './issues/issues-update/issues-update.component';
@@ -36,6 +36,7 @@ import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.comp
 import { AuthService } from './shared/services/auth.service';
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { RegisterComponent } from './register/register.component';
+import { LoginGuardService } from './shared/services/login-guard.service';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,7 @@ import { RegisterComponent } from './register/register.component';
     ReactiveFormsModule,
     ChartsModule
   ],
-  providers: [IssuesService, AuthService, AuthGuardService],
+  providers: [IssuesService, AuthService, AuthGuardService, LoginGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

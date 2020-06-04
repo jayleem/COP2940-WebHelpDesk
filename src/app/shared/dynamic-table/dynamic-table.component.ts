@@ -28,7 +28,7 @@ This is a hacky attempt at a dynamic table component for this project
 
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IssuesService } from '../issues.service';
+import { IssuesService } from '../services/issues.service';
 
 @Component({
   selector: 'app-dynamic-table',

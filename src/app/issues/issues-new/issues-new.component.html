@@ -20,17 +20,12 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="tech">Technician<span class="ml-1 text-danger">*</span></label>
-                    <input type="email" name="email" id="technician" formControlName="tech" class="form-control"
-                        placeholder="tech123@example.com">
-                    <span
-                        *ngIf="!newIssueForm.get('issueData.tech').valid && newIssueForm.get('issueData.tech').touched"
-                        class="help-block">
-                        <span *ngIf="newIssueForm.get('issueData.tech').errors['required']">This field is
-                            required!</span>
-                        <span *ngIf="newIssueForm.get('issueData.tech').errors['email']">Not a valid email
-                            address!</span>
-                    </span>
+                    <label for="tech">Assigned Technician<span class="ml-1 text-danger">*</span></label>
+                    <select class="form-control" name="tech" id="tech" formControlName="tech">
+                        <option *ngFor="let tech of techs$" [ngValue]="tech.username">
+                            {{tech.username}}
+                        </option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="priority">Priority</label>

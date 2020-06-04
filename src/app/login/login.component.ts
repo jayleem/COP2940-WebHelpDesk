@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
- onSubmit() {
+  onSubmit() {
     //reset error message
     //
     this.errorMessage = "";
@@ -34,14 +34,12 @@ export class LoginComponent implements OnInit {
     const password = this.credentialDataForm.get('credentialData.password').value;
     //login user with provided credentials
     //
-    this.authService.signIn(email, password)
-    .then(res => {
-      console.log(res);
-      this.router.navigate(['issues/dashboard']);
-    })
-    .catch(err => {
-      this.errorMessage = "Invalid username or password."
-      console.log(err);
-    })
+    const login = this.authService.signIn(email, password)
+      .then(res => {
+        this.router.navigate(['issues/dashboard']);
+      })
+      .catch(err => {
+        this.errorMessage = "Invalid username or password."
+      })
   }
 }

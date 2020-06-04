@@ -1,87 +1,67 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user: any;
-  private loggedIn: any;
+  private user = new Subject<any>();
+  private loggedIn = new BehaviorSubject<boolean>(false);
 
   constructor(private firebaseAuth: AngularFireAuth, private router: Router) {
     this.firebaseAuth.authState.subscribe(user => {
       if (user) {
-        this.user = {
+        const data = {
           uid: user.uid,
           email: user.email
         }
-        this.loggedIn = true;
+        this.setUser(data);
+        this.setLoggedIn(true);
       } else {
-        this.loggedIn = false;
-        this.user = false;
+        this.setLoggedIn(false);
+        this.setUser(null);
       }
     });
   }
 
   //Signup method
   //
-  signUp(email: string, password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const result = this.firebaseAuth.createUserWithEmailAndPassword(email, password);
-      if (!result) {
-        reject('Register user failed')
-      } else {
-        resolve(result);
-      }
-    });
+  signUp(email: string, password: string) {
+    return this.firebaseAuth.createUserWithEmailAndPassword(email, password);
   }
 
   //Sign in method
   //
-  signIn(email: string, password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const result = this.firebaseAuth.signInWithEmailAndPassword(email, password);
-      if (!result) {
-        reject('Login failed')
-      } else {
-        resolve(result);
-      }
-    });
+  signIn(email: string, password: string) {
+    return this.firebaseAuth.signInWithEmailAndPassword(email, password);
   }
 
   //signOut method
   //
   signOut() {
-    this.firebaseAuth.signOut()
-      .then(res => {
-        console.log('User signed out')
-        return this.router.navigate(['/login'])
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    return this.firebaseAuth.signOut();
   }
 
   //resetPassword method
   //
   resetPassword(email: string) {
-    return new Promise((resolve, reject) => {
-      const result = this.firebaseAuth.sendPasswordResetEmail(email);
-      if (!result) {
-        reject('Reset failed')
-      } else {
-        resolve(result);
-      }
-    });
+    return this.firebaseAuth.sendPasswordResetEmail(email);
   }
 
   //getUser method
   getUser() {
     return this.user;
   }
+  setUser(value) {
+    this.user = value;
+  }
   //getUser method
-  isLoggedIn() {
-    return this.loggedIn;
+  getLoggedIn(): Observable<boolean> {
+    return this.loggedIn.asObservable();
+  }
+  setLoggedIn(value: boolean) {
+    return this.loggedIn.next(value);
   }
 }

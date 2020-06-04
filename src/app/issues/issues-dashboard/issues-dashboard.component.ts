@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartType } from 'chart.js';
 import { Label, SingleDataSet } from 'ng2-charts';
-import { IssuesService } from 'src/app/shared/issues.service';
+import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Subscription } from 'rxjs';
 import { Issue } from 'src/app/models/issue.model';
 
@@ -137,7 +137,7 @@ export class IssuesDashboardComponent implements OnInit {
       } else if (e.tech === techObj.tech && e.status === 'Pending') {
         this.techs[index].pending++;
         this.ticketStats.status.pending++;
-      } else if (e.tech === techObj.tech && e.status === 'Closed') {
+      } else {
         this.techs[index].closed++;
         this.ticketStats.status.closed++;
       }
@@ -147,7 +147,7 @@ export class IssuesDashboardComponent implements OnInit {
         this.ticketStats.priority.normal++;
       } else if (e.priority === 'High') {
         this.ticketStats.priority.high++;
-      } else if (e.priority.urgent === 'Urgent') {
+      } else {
         this.ticketStats.priority.urgent++;
       }
     });
@@ -157,6 +157,7 @@ export class IssuesDashboardComponent implements OnInit {
   //set chart data
   //
   setChartData() {
+    console.log(this.ticketStats.priority.urgent);
     for (const tech in this.techs) {
       this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending);
     }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { IssuesService } from '../shared/issues.service';
+import { IssuesService } from '../shared/services/issues.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReportsListComponent } from './reports-list/reports-list.component';

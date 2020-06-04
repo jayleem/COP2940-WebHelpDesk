@@ -13,18 +13,27 @@ export class HeaderComponent {
   loggedIn: any;
   user: any;
 
-  constructor(private authService: AuthService, private route: Router) {
-    this.loggedIn = this.authService.isLoggedIn();
-    this.user = this.authService.getUser();
-    console.log(this.user, this.loggedIn)
+  constructor(private authService: AuthService, private router: Router) {
+    this.authService.getLoggedIn().subscribe(res => {
+      this.loggedIn = res;
+      if (this.loggedIn) {
+        this.user = this.authService.getUser();
+      }
+    });
   }
 
 
   ngOnInit(): void { }
 
   signOut() {
-    this.authService.signOut();
-    console.log('clicked');
+    this.authService.signOut()
+      .then(res => {
+        console.log(res);
+        this.router.navigate(['login']);
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   ngOnDestroy() {
