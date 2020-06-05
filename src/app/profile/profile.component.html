@@ -9,12 +9,77 @@
                             <div *ngFor="let user of user$">
                                 <p class="card-text">Username: {{ user.data.username }}</p>
                                 <p class="card-text">Name: {{ user.data.fName }} {{ user.data.lName }}</p>
+                                <p class="card-text">Role: {{ user.data.role }}</p>
                                 <p class="card-text">Joined: {{ metadata.creationTime }}</p>
                                 <p class="card-text">Last Login: {{ metadata.lastSignInTime }}</p>
                             </div>
                         </div>
-                        <div class="col-md-10 text-left mt-2">
-                            <button class="btn" (click)="onSubmit()">Change Password</button>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-sm-10 col-md-8">
+                            <form [formGroup]="updateCredentialsForm"
+                                (ngSubmit)="updateCredentialsForm.valid && onSubmit()">
+                                <div formGroupName="updateCredentialData">
+                                    <div class="form-group">
+                                        <label for="oldPassword">Current Password<span
+                                                class="ml-1 text-danger">*</span></label>
+                                        <input type="password" id="oldPassword" formControlName="oldPassword"
+                                            class="form-control">
+                                        <span
+                                            *ngIf="!updateCredentialsForm.get('updateCredentialData.oldPassword').valid && updateCredentialsForm.get('updateCredentialData.oldPassword').touched"
+                                            class="help-block">
+                                            <span
+                                                *ngIf="updateCredentialsForm.get('updateCredentialData.oldPassword').errors['required']">
+                                                This field is required.
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="div">
+                                        Your new password must be at least 8 characters long, contain at least one number, one
+                                        uppercase character, and one special character. After changing your password you will be returned to the login page.
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="newPassword">New Password<span
+                                                class="ml-1 text-danger">*</span></label>
+                                        <input type="password" id="newPassword" formControlName="newPassword"
+                                            class="form-control">
+                                        <span
+                                            *ngIf="!updateCredentialsForm.get('updateCredentialData.newPassword').valid && updateCredentialsForm.get('updateCredentialData.newPassword').touched"
+                                            class="help-block">
+                                            <span
+                                                *ngIf="updateCredentialsForm.get('updateCredentialData.newPassword').errors['pattern']">
+                                                Your password must be at least 8 characters long, contain at least one
+                                                number, one
+                                                uppercase character, and one special character.
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm New Password<span
+                                                class="ml-1 text-danger">*</span></label>
+                                        <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                                            class="form-control">
+                                        <span
+                                            *ngIf="!updateCredentialsForm.get('updateCredentialData.confirmPassword').valid && updateCredentialsForm.get('updateCredentialData.confirmPassword').touched"
+                                            class="help-block">
+                                            <span
+                                                *ngIf="updateCredentialsForm.get('updateCredentialData.confirmPassword').errors['pattern']">
+                                                Your password must be at least 8 characters long, contain at least one
+                                                number, one
+                                                uppercase character, and one special character.
+                                            </span>
+                                            <span
+                                                *ngIf="updateCredentialsForm.get('updateCredentialData.confirmPassword').errors['passwordMismatch'] && !updateCredentialsForm.get('updateCredentialData.confirmPassword').errors['pattern']">
+                                                Passwords dont match
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10 text-left p-0 m-0 mt-2">
+                                    <button [attr.disabled]="!updateCredentialsForm.valid ? true : null" class="btn mr-2" type="submit">Change Password</button>
+                                    <a class="btn" routerLink="/dashboard/home">Back to Dashboard</a>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

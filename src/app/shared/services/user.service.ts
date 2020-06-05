@@ -63,6 +63,7 @@ export class UserService {
               resolve(promises);
             }
           })
+        return ref;
       }
       catch (error) {
         reject(error);

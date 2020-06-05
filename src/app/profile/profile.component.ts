@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
@@ -9,6 +10,7 @@ import { AuthService } from '../shared/services/auth.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  updateCredentialsForm: FormGroup;
 
   user$: any;
   errors: string;
@@ -16,10 +18,19 @@ export class ProfileComponent implements OnInit {
   metadata: any;
 
   constructor(private userService: UserService, private authService: AuthService, private route: ActivatedRoute) { }
+  pwdRegex = '^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\d]).*$'//password requirements
 
   //Get the current route snapshot id paramater
   //
   ngOnInit() {
+    this.updateCredentialsForm = new FormGroup({
+      'updateCredentialData': new FormGroup({
+        'oldPassword': new FormControl(null, [Validators.required]),
+        'newPassword': new FormControl(null, [Validators.required, Validators.pattern(this.pwdRegex)]),
+        'confirmPassword': new FormControl(null, [Validators.required, Validators.pattern(this.pwdRegex), this.confirmPassword.bind(this)])
+      })
+    });
+
     this.id = this.route.snapshot.paramMap.get('id');
     this.getUserById(this.id);
     this.getMetadata();
@@ -54,17 +65,32 @@ export class ProfileComponent implements OnInit {
       });
   }
 
+  //Custom validation method
+  confirmPassword(control: FormControl): { [s: string] :boolean } {
+    //if passwords dont match fail validation
+    if(this.updateCredentialsForm) {
+      const newPassword = this.updateCredentialsForm.get('updateCredentialData.newPassword').value;
+      const confirmPassword = this.updateCredentialsForm.get('updateCredentialData.confirmPassword').value;
+      return this.updateCredentialsForm.get('updateCredentialData.newPassword').value != this.updateCredentialsForm.get('updateCredentialData.confirmPassword').value ? { 'passwordMismatch': true }: null;
+    } else {
+      return null;
+    }
+  }
+
   onSubmit() {
-    let password = "P4$$w0rd"
-    this.authService.reauthenticateUser(password)
-    .then(res => {
-      //update password here
-      console.log(res)
-    })
-    .catch(err => {
-      //do something here like sign out or just display an error
-      console.log(err)
-    });
+    const oldPassword = this.updateCredentialsForm.get('updateCredentialData.oldPassword').value;
+    const newPassword = this.updateCredentialsForm.get('updateCredentialData.newPassword').value;
+
+    this.authService.reauthenticateUser(oldPassword)
+      .then(res => {
+        //update password here
+        this.authService.updatePassword(newPassword);
+        this.authService.signOut()
+      })
+      .catch(err => {
+        //do something on failure
+        console.log(err)
+      });
   }
 }
 

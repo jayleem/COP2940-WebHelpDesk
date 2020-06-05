@@ -89,7 +89,7 @@
                             escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
                         <td *ngIf="actions">
                             <div class="btn-group-vertical-custom">
-                                <button class="btn m-1" routerLink="/issues/details/{{item.id}}">View</button>
+                                <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
                                 <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
                             </div>
                         </td>

@@ -17,10 +17,12 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
 import { ReportsComponent } from './reports/reports.component';
 import { RouteNotFoundComponent } from './route-not-found/route-not-found.component';
 import { LoginComponent } from './login/login.component';
-import { IssuesDashboardComponent } from './issues/issues-dashboard/issues-dashboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { DynamicTableComponent } from './shared/dynamic-table/dynamic-table.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
+import { DashboardAnalyticsComponent } from './dashboard/dashboard-analytics/dashboard-analytics.component';
+import { DashboardAdminAnalyticsComponent } from './dashboard/admin/dashboard-admin-analytics/dashboard-admin-analytics.component';
 
 //Services
 import { IssuesService } from './shared/services/issues.service';
@@ -44,6 +46,8 @@ import { environment } from 'src/environments/environment';
 
 //ng-2 charts
 import { ChartsModule } from 'ng2-charts';
+import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
+import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
 
 @NgModule({
   declarations: [
@@ -59,10 +63,14 @@ import { ChartsModule } from 'ng2-charts';
     ReportsListComponent,
     RouteNotFoundComponent,
     LoginComponent,
-    IssuesDashboardComponent,
+    DashboardComponent,
     DynamicTableComponent,
     RegisterComponent,
-    ProfileComponent
+    ProfileComponent,
+    DashboardAnalyticsComponent,
+    DashboardAdminAnalyticsComponent,
+    DashboardAdminIssuesListComponent,
+    DashboardAdminUsersListComponent,
   ],
   imports: [
     BrowserModule,

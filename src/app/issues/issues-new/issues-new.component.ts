@@ -46,7 +46,6 @@ export class IssuesNewComponent implements OnInit {
         console.log('ERROR: No documents were found');
         this.techs$ = undefined;
       }
-      console.log(this.techs$)
     }));
   }
 

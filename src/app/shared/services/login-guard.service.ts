@@ -18,7 +18,7 @@ export class LoginGuardService {
             if (!res) {
                 auth = true;
             } else {
-                this.router.navigate(['issues/dashboard']);
+                this.router.navigate(['/dashboard/home']);
                 auth = false;
             }
         });

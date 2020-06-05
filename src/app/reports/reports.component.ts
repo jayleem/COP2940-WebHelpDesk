@@ -25,7 +25,7 @@ export class ReportsComponent implements OnInit {
 
   onSubmit() {
     const tech = this.newIssueForm.value.reportData.tech;
-    this.router.navigate([`/reports/list/${tech}`]);
+    this.router.navigate([`/dashboard/admin/reports/user/${tech}`]);
   }
 
 }

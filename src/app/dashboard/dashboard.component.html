@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-sm col-md-2 d-md-block navbar-light sidebar shadow">
+            <div class="bootstrap">
+                <ul class="nav flex-column">
+                    <li *ngIf="role === 'admin'" class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/admin/home" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-cog"></i>Admin</a>
+
+                    </li>
+                    <hr *ngIf="role === 'admin'" class="w-100 m-0 p-0">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/home" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i
+                                class="mr-1 fas fa-tachometer-alt"></i>Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/issues" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>View Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
+                            Issue</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="col-md-10 main-content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

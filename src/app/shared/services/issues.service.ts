@@ -101,7 +101,7 @@ export class IssuesService {
 
   //Get issues by the tech parameter
   //
-  getIssuesByTech(tech): Promise<any> {
+  getReportOnTech(tech): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues', ref => ref.where('tech', '==', tech).where('status', '==', 'Open'))
@@ -122,6 +122,35 @@ export class IssuesService {
             }
           })
         resolve(ref);
+      }
+      catch (error) {
+        reject('No results found');
+      }
+    });
+  }
+
+  getIssuesByTech(tech): Promise<any> {
+    console.log(tech);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ref = await this.db.collection('issues', ref => ref.where('tech', '==', tech))
+          .get()
+          .toPromise()
+          .then((doc) => {
+            if (doc.empty) {
+              reject('No results found');
+            } else {
+              let promises = [];
+              doc.forEach(issue => {
+                promises.push({
+                  id: issue.id,
+                  data: issue.data()
+                })
+                resolve(promises);
+              })
+            }
+          })
+        return ref;
       }
       catch (error) {
         reject('No results found');

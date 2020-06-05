@@ -1,0 +1,124 @@
+<div class="container-fluid mt-2">
+    <div class="row dashboard-widgets justify-content-between">
+        <div class="col-md-6 text-left">
+            <a routerLink="/issues">
+                <i class="mr-1 fas fa-file-alt"></i>
+                Manage Issues
+            </a>
+            <a routerLink="/users">
+                <i class="mr-1 fas fa-user"></i>
+                Manage Users
+            </a>
+        </div>
+        <div class="col-md-6 text-right">
+            <a routerLink="/reports">
+                <i class="mr-1 fas fa-chart-line"></i>
+                Generate Report
+            </a>
+        </div>
+    </div>
+    <div class="row dashboard-widget">
+        <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Open Issues</div>
+                <div class="card-body">
+                    <h2 class="card-text text-center">{{ticketStats.status.open}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Pending Issues</div>
+                <div class="card-body">
+                    <h2 class="card-text text-center">{{ticketStats.status.pending}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Closed Issues</div>
+                <div class="card-body">
+                    <h2 class="card-text text-center">{{ticketStats.status.closed}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Progress</div>
+                <div class="card-body">
+                    <h2 class="text-center m-0 p-0">{{progress | percent}}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row dashboard-widget">
+        <div class="col-sm-12 col-md-6 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Issues by Priority</div>
+                <div class="card-body">
+                    <div class="chart-wrapper">
+                        <canvas 
+                            width=1 
+                            height=1 
+                            baseChart [data]="pieChartData2" 
+                            [labels]="pieChartLabels2" 
+                            [chartType]="pieChartType2"
+                            [options]="pieChartOptions2" 
+                            [plugins]="pieChartPlugins2" 
+                            [legend]="pieChartLegend2"
+                            [colors]="pieChartColors">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 mb-1 mb-md-0">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Issues by Status</div>
+                <div class="card-body">
+                    <div class="chart-wrapper">
+                        <canvas 
+                            width=1 
+                            height=1 
+                            baseChart 
+                            [data]="pieChartData" 
+                            [labels]="pieChartLabels" 
+                            [chartType]="pieChartType"
+                            [options]="pieChartOptions" 
+                            [plugins]="pieChartPlugins" 
+                            [legend]="pieChartLegend"
+                            [colors]="pieChartColors">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row dashboard-widget">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Technician Performance</div>
+                <div class="card-body">
+                    <app-dynamic-table 
+                        [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
+                        [tableDataFields]="['tech','open','pending','closed', 'progress']"
+                        [data]="techs"
+                        [filterControl]=false
+                        [pagination]=false
+                    >
+                    </app-dynamic-table>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row dashboard-widget">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-light">Recent Activity</div>
+                <div class="card-body">
+                    <p>//TODO should show latest 5-10 changes to the database</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

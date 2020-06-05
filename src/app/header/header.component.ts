@@ -28,7 +28,6 @@ export class HeaderComponent {
   signOut() {
     this.authService.signOut()
       .then(res => {
-        console.log(res);
         this.router.navigate(['login']);
       })
       .catch(err => {

@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartType } from 'chart.js';
-import { Label, SingleDataSet } from 'ng2-charts';
-import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Subscription } from 'rxjs';
+import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
+import { Label, SingleDataSet } from 'ng2-charts';
+import { ChartType } from 'chart.js';
 
 @Component({
-  selector: 'app-issues-dashboard',
-  templateUrl: './issues-dashboard.component.html',
-  styleUrls: ['./issues-dashboard.component.scss']
+  selector: 'app-issues-admin',
+  templateUrl: './issues-admin.component.html',
+  styleUrls: ['./issues-admin.component.scss']
 })
-export class IssuesDashboardComponent implements OnInit {
-  //firestore subscription
+export class IssuesAdminComponent implements OnInit {
+
+ //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
   issues$;
@@ -157,7 +158,6 @@ export class IssuesDashboardComponent implements OnInit {
   //set chart data
   //
   setChartData() {
-    console.log(this.ticketStats.priority.urgent);
     for (const tech in this.techs) {
       this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending);
     }
@@ -173,4 +173,5 @@ export class IssuesDashboardComponent implements OnInit {
       this.firestoreSubscriptions[i].unsubscribe();
     }
   }
+
 }

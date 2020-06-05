@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   //reauthenticate user
-  //must be async or it wil return a zone aware promise
+  //must be async or it wil return a ZoneAwarePromise 
   //
   async reauthenticateUser(password: string) {
     const username = await this.firebaseAuth.currentUser.then(res => { return res.email });
@@ -96,5 +96,19 @@ export class AuthService {
       })
 
     return reauthenticated;
+  }
+
+  //update user password
+  //
+  async updatePassword(password: string) {
+    const newPassword = password;
+    const currentUser = await this.firebaseAuth.currentUser
+    .then (currentUser => {
+      currentUser.updatePassword(newPassword);
+      return "Success: Password Changed";
+    })
+    .catch(err => {
+      return err;
+    })
   }
 }
