@@ -1,0 +1,16 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <app-dynamic-table 
+                [tableHeaders]="['Id','Title','Technician','Priority','Status','Date Start','Date End']"
+                [tableDataFields]="['id','title','tech','priority','status','dateStart','dateEnd']" 
+                [tableLabel]=true
+                [actions]=true
+                [actionHeader]="'Actions'"
+                [data]="issues"
+                [filterControl]=false 
+                [pagination]=true >
+            </app-dynamic-table>
+        </div>
+    </div>
+</div>

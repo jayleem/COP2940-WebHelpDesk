@@ -72,7 +72,7 @@ export class IssuesUpdateComponent implements OnInit {
     this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         console.log(res);
-        this.router.navigate(['/issues/list']);
+        this.router.navigate(['dashboard/issues']);
       })
       .catch(err => {
         this.errors = err;

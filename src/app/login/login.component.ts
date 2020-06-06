@@ -36,8 +36,12 @@ export class LoginComponent implements OnInit {
     //
     const login = this.authService.signIn(email, password)
       .then(res => {
-        console.log(res);
-        this.router.navigate(['/dashboard/home']);
+        let accountStatus = this.authService.getAccountStatus();
+        if (accountStatus) {
+          this.router.navigate(['/dashboard/home']);
+        } else {
+          this.errorMessage = "Your account has been disabled. Contact an administrator for assistance."
+        }
       })
       .catch(err => {
         this.errorMessage = "Invalid username or password."

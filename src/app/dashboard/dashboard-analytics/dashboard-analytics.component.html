@@ -8,7 +8,7 @@
     <div class="row dashboard-widget">
         <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Open Issues</div>
+                <div class="card-header bg-dark text-light">My Open Issues</div>
                 <div class="card-body">
                     <h2 class="card-text text-center">{{ticketStats.status.open}}</h2>
                 </div>
@@ -16,7 +16,7 @@
         </div>
         <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Pending Issues</div>
+                <div class="card-header bg-dark text-light">My Pending Issues</div>
                 <div class="card-body">
                     <h2 class="card-text text-center">{{ticketStats.status.pending}}</h2>
                 </div>
@@ -24,7 +24,7 @@
         </div>
         <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Closed Issues</div>
+                <div class="card-header bg-dark text-light">My Closed Issues</div>
                 <div class="card-body">
                     <h2 class="card-text text-center">{{ticketStats.status.closed}}</h2>
                 </div>
@@ -32,7 +32,7 @@
         </div>
         <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Progress</div>
+                <div class="card-header bg-dark text-light">My Progress</div>
                 <div class="card-body">
                     <h2 class="text-center m-0 p-0">{{progress | percent}}</h2>
                 </div>
@@ -42,7 +42,7 @@
     <div class="row dashboard-widget">
         <div class="col-sm-12 col-md-6 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Issues by Priority</div>
+                <div class="card-header bg-dark text-light">My Issues by Priority</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
                         <canvas width=1 height=1 baseChart [data]="pieChartData2" [labels]="pieChartLabels2"
@@ -55,7 +55,7 @@
         </div>
         <div class="col-sm-12 col-md-6 mb-1 mb-md-0">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Issues by Status</div>
+                <div class="card-header bg-dark text-light">My Issues by Status</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
                         <canvas width=1 height=1 baseChart [data]="pieChartData" [labels]="pieChartLabels"

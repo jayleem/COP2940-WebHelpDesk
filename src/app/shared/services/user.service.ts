@@ -23,7 +23,8 @@ export class UserService {
               lName: lName,
               userId: uid,
               username: username,
-              role: "unassigned" //default role
+              role: "unassigned", //default role
+              accountStatus: "disabled" //default status
             })
         resolve("Success: Added Issue");
       }
@@ -63,7 +64,6 @@ export class UserService {
               resolve(promises);
             }
           })
-        return ref;
       }
       catch (error) {
         reject(error);
@@ -71,4 +71,30 @@ export class UserService {
     });
   }
 
+  //update user based on userID
+  //
+  updateUser(id: string, formData): Promise<any> {
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ref = await this.db.collection('users', ref => ref.where('userId', '==', id))
+        .get()
+        .toPromise()
+        .then(users => {
+          users.forEach(user => {
+            user.ref
+            .update(
+              {
+                role: formData.get('userData.role').value,
+                status: formData.get('userData.status').value,
+              });
+          })
+        });
+        resolve("Success: Updated User");
+      }
+      catch (error) {
+        reject(error);
+      }
+    })
+  }
 }

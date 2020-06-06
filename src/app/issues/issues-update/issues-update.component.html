@@ -1,7 +1,7 @@
 <div *ngIf="issues$ && !errors" class="row justify-content-center">
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
         <h4>Bug Tracker</h4>
-        <h4>Updating Bug: ID#{{id}}</h4>
+        <h4>Updating Issue: ID#{{id}}</h4>
         <form [formGroup]="updateIssueForm" (ngSubmit)="updateIssueForm.valid && onSubmit()">
             <div formGroupName="issueData">
                 <div class="form-group">

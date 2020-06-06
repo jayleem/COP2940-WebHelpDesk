@@ -58,7 +58,7 @@ export class IssuesNewComponent implements OnInit {
     .catch(err => {
       console.log(err);
     });
-    this.router.navigate(['/issues/list']);
+    this.router.navigate(['/dashboard/issues']);
   }
 
   ngOnDestroy() {

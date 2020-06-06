@@ -4,7 +4,7 @@
             <form [formGroup]="newIssueForm" (ngSubmit)="onSubmit()">
                 <div formGroupName="reportData">
                     <div class="form-group">
-                        <label for="tech">Find Open Issues by Technician:</label>
+                        <label for="tech">Search Open Issues by Technician:</label>
                         <input type="text" id="tech" formControlName="tech" class="form-control">
                         <span
                             *ngIf="!newIssueForm.get('reportData.tech').valid && newIssueForm.get('reportData.tech').touched"

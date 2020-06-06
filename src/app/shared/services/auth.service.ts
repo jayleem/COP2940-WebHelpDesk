@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, observable, of } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +14,35 @@ import { BehaviorSubject, Observable, Subject, observable, of } from 'rxjs';
 export class AuthService {
   private user = new Subject<any>();
   private loggedIn = new BehaviorSubject<boolean>(false);
+  private accountStatus;
 
-  constructor(private firebaseAuth: AngularFireAuth, private router: Router) {
+  constructor(private firebaseAuth: AngularFireAuth, private userService: UserService, private router: Router) {
     this.firebaseAuth.authState.subscribe(user => {
       if (user) {
         const data = {
           uid: user.uid,
           email: user.email
         }
-        this.setUser(data);
-        this.setLoggedIn(true);
+        this.userService.getUserById(data.uid)
+          .then(user => {
+            if (user[0].data.accountStatus === 'enabled') {
+              this.setAccountStatus(user[0].data.accountStatus);
+              this.setUser(data);
+              this.setLoggedIn(true);
+            } else {
+              this.setAccountStatus('disabled');
+              this.setLoggedIn(false);
+              this.setUser(null);
+              this.signOut();
+            }
+          });
       } else {
+        this.setAccountStatus('disabled');
         this.setLoggedIn(false);
         this.setUser(null);
+        this.signOut(); 
       }
-    });
+    })
   }
 
   //Signup method
@@ -62,6 +77,14 @@ export class AuthService {
 
   setUser(value) {
     this.user = value;
+  }
+
+  getAccountStatus() {
+    return this.accountStatus;
+  }
+
+  setAccountStatus(value) {
+    this.accountStatus = value;
   }
 
   //getUser method
@@ -103,12 +126,13 @@ export class AuthService {
   async updatePassword(password: string) {
     const newPassword = password;
     const currentUser = await this.firebaseAuth.currentUser
-    .then (currentUser => {
-      currentUser.updatePassword(newPassword);
-      return "Success: Password Changed";
-    })
-    .catch(err => {
-      return err;
-    })
+      .then(currentUser => {
+        currentUser.updatePassword(newPassword);
+        return "Success: Password Changed";
+      })
+      .catch(err => {
+        return err;
+      })
   }
+
 }

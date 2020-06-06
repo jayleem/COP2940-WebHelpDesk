@@ -79,7 +79,7 @@
                                     {{property.value.toDate() |  date:'yyyy/MM/dd'}}
                                 </span>
                             </span>
-                            <ng-template #noFormat>
+                            <ng-template  #noFormat>
                                 <span>
                                     {{property.value}}
                                 </span>
@@ -87,10 +87,16 @@
                         </td>
                         <!-- Actions custom implementation. I'm not really how to make routerlinks/click functions dynamic as
                             escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
-                        <td *ngIf="actions">
+                        <td *ngIf="actionsType === 'issues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
                                 <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
+                            </div>
+                        </td>
+                        <td *ngIf="actionsType === 'users'">
+                            <div class="btn-group-vertical-custom">
+                                <button class="btn m-1" routerLink="/dashboard/admin/users/details/{{item.id}}">View</button>
+
                             </div>
                         </td>
                     </tr>

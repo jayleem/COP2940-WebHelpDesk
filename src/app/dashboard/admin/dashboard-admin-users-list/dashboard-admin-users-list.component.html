@@ -1,1 +1,18 @@
-<p>dashboard-admin-users-list works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <app-dynamic-table 
+                [tableHeaders]="['Id','Name','Role','Username']"
+                [tableDataFields]="['id','name', 'role', 'username']" 
+                [tableLabel]=true
+                [actions]=true
+                [actionsType]="'users'"
+                [actionHeader]="'Actions'"
+                [data]="users"
+                [filterControl]=false 
+                [pagination]=true 
+                (onDeleteClicked)="deleteIssue($event)">
+            </app-dynamic-table>
+        </div>
+    </div>
+</div>

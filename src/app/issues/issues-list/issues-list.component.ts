@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { UserService } from 'src/app/shared/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-issues-list',
@@ -22,35 +25,51 @@ export class IssuesListComponent implements OnInit {
   //data
   //
   public issues = [];
-  constructor(private issuesService: IssuesService) { }
-
-  ngOnInit() {
-    this.issues$ = this.getIssues();
+  //Get user and role
+  //I don't think this is a very good way of doing things. I should just bind the user and role to data from the parent component.
+  //
+  user: any;
+  role: any;
+  name: any;
+  constructor(private issuesService: IssuesService, private authService: AuthService, private userService: UserService, private router: Router) {
+    this.user = this.authService.getUser();
+    this.userService.getUserById(this.user.uid)
+      .then(res => {
+        this.role = res[0].data.role;
+        this.name = res[0].data.fName + " " + res[0].data.lName;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
-  // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
-  // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
-  //
-  //
-  getIssues() {
-    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
+  ngOnInit() {
+    this.getIssuesByTech();
+  }  
+
+  getIssuesByTech() {
+    const tech = this.user.email;
+    this.issuesService.getIssuesByTech(tech)
+    .then(data => {
       if (data.length > 0) {
         this.issues$ = data.map(e => {
-          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+          return { id: e.id, ...e.data as {} } as Issue;
         });
       } else {
         this.errors = 'ERROR: No documents were found';
         this.issues$ = undefined;
       }
       this.filterData();
-    }));
+    });
   }
 
   getIssuesFiltered(priority, status) {
     this.issuesService.getIssuesFiltered(priority, status)
     .then(issues => {
       if (issues.length > 0) {
-        this.issues$ = issues;
+        this.issues$ = issues.map(e => {
+          return { id: e.id, ...e.data as {} } as Issue;
+        });
       } else {
         this.errors = 'ERROR: No documents were found';
       }
@@ -58,7 +77,7 @@ export class IssuesListComponent implements OnInit {
     });
   }
 
-  //Note the data here is filtered specifically for the table in issues-list component
+    //Note the data here is filtered specifically for the table in issues-list component
   //
   filterData() {
     this.issues = [];
@@ -66,6 +85,7 @@ export class IssuesListComponent implements OnInit {
       //add only unique issues
       //
       if (!this.issues.some(el => el.id === e.id)) {
+
         this.issues.push(
           {
             id: e.id,
@@ -78,13 +98,15 @@ export class IssuesListComponent implements OnInit {
           });        
         }
       });
-    };
+    }
 
+  //Note the data here is filtered specifically for the table in issues-list component
+  //
     filtersChanged(event) {
       if (event.filters) {
         this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
       } else {
-        this.getIssues()
+        this.getIssuesByTech()
       }
     }
 

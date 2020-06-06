@@ -12,6 +12,8 @@ This is a hacky attempt at a dynamic table component for this project
     [tableDataFields]="[]" //Data fields here this is used for sorting and should match the object properties
 
     [actions]=true //Enables action column 
+
+    [actionsType]="'users'" //Action content based off this variable when used with *ngIf in the dynamic table template
     
     [actionHeader]="'Actions'" //Name of column which will contain actions like update, delete, etc.
 
@@ -42,6 +44,7 @@ export class DynamicTableComponent implements OnInit {
   @Input() tableLabel: boolean;
   @Input() actions: boolean;
   @Input() actionHeader: string;
+  @Input() actionsType: string;
   @Input() extraDataFields: string[] = []
   @Input() data: any[] = []
   @Input() filterControl: boolean;

@@ -48,6 +48,7 @@ import { environment } from 'src/environments/environment';
 import { ChartsModule } from 'ng2-charts';
 import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
 import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
+import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-ad
     DashboardAdminAnalyticsComponent,
     DashboardAdminIssuesListComponent,
     DashboardAdminUsersListComponent,
+    DashboardAdminUsersDetailsComponent,
   ],
   imports: [
     BrowserModule,

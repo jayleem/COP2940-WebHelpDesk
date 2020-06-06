@@ -17,6 +17,8 @@ import { DashboardAdminAnalyticsComponent } from './dashboard/admin/dashboard-ad
 import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
 import { ReportsListComponent } from './reports/reports-list/reports-list.component';
 import { ReportsComponent } from './reports/reports.component';
+import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
+import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
 
 
 const routes: Routes = [
@@ -32,7 +34,8 @@ const routes: Routes = [
       { path: 'issues/update/:id', component: IssuesUpdateComponent },
       { path: 'admin/home', component: DashboardAdminAnalyticsComponent },
       { path: 'admin/issues', component: DashboardAdminIssuesListComponent },
-      { path: 'admin/users', component: DashboardAdminIssuesListComponent },
+      { path: 'admin/users', component: DashboardAdminUsersListComponent },
+      { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent },
       {
         path: 'admin/reports', component: ReportsComponent, children: [
           { path: 'user/:id', component: ReportsListComponent }

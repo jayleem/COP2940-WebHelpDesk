@@ -92,6 +92,14 @@ i {
     color: #000 !important;
     background-color: #DFE4F0 !important;
 }
+.btn-custom {
+    color: #32dadd !important;
+    background-color: transparent !important;
+    border: 0;
+}
+.btn-custom:hover {
+    opacity: .5;
+}
 .btn:hover {
     opacity: .5;
 }

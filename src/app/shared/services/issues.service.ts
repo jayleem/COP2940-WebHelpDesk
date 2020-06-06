@@ -84,14 +84,23 @@ export class IssuesService {
   getIssuesFiltered(priority: string, status: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const ref = await this.db.collection('issues', ref => ref.where('priority', '==', priority).where('status', '==', status)).snapshotChanges()
-          .pipe(
-            map(actions => actions.map(a => {
-              const data = a.payload.doc.data() as Issue;
-              const id = a.payload.doc.id;
-              return { id, ...data };
-            })));
-        resolve(ref);
+        const ref = await this.db.collection('issues', ref => ref.where('priority', '==', priority).where('status', '==', status))
+        .get()
+        .toPromise()
+        .then((doc) => {
+          if (doc.empty) {
+            reject('No results found');
+          } else {
+            let promises = [];
+            doc.forEach(issue => {
+              promises.push({
+                id: issue.id,
+                data: issue.data()
+              })
+            })
+            resolve(promises);
+          }
+        })
       }
       catch (error) {
         reject(error);
@@ -117,11 +126,10 @@ export class IssuesService {
                   id: issue.id,
                   data: issue.data()
                 })
-                return promises;
               })
+              resolve(promises)
             }
           })
-        resolve(ref);
       }
       catch (error) {
         reject('No results found');
@@ -130,7 +138,6 @@ export class IssuesService {
   }
 
   getIssuesByTech(tech): Promise<any> {
-    console.log(tech);
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues', ref => ref.where('tech', '==', tech))
@@ -146,11 +153,10 @@ export class IssuesService {
                   id: issue.id,
                   data: issue.data()
                 })
-                resolve(promises);
               })
+              resolve(promises)
             }
           })
-        return ref;
       }
       catch (error) {
         reject('No results found');
@@ -174,15 +180,15 @@ export class IssuesService {
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues').doc(id)
-        .update(
-          {
-            tech: formData.get('issueData.tech').value,
-            priority: formData.get('issueData.priority').value,
-            status: formData.get('issueData.status').value,
-            lastModified: new Date(),
-            dateEnd: dateEnd,
-            notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
-          });
+          .update(
+            {
+              tech: formData.get('issueData.tech').value,
+              priority: formData.get('issueData.priority').value,
+              status: formData.get('issueData.status').value,
+              lastModified: new Date(),
+              dateEnd: dateEnd,
+              notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
+            });
         resolve("Success: Updated Issue");
       }
       catch (error) {
