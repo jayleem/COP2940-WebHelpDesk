@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ChartType } from 'chart.js';
-import { Label, SingleDataSet } from 'ng2-charts';
+import { ChartType, ChartDataSets } from 'chart.js';
+import { Label, SingleDataSet, MultiDataSet } from 'ng2-charts';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Subscription } from 'rxjs';
 import { Issue } from 'src/app/models/issue.model';
@@ -38,7 +38,6 @@ export class DashboardAnalyticsComponent implements OnInit {
   };
   techs = [];
 
-  recentActivityStats;
 
   //Get user and role
   //I don't think this is a very good way of doing things. I should just bind the user and role to data from the parent component.
@@ -46,12 +45,14 @@ export class DashboardAnalyticsComponent implements OnInit {
   user: any;
   role: any;
   name: any;
+  recentHistory: any;
   constructor(private issuesService: IssuesService, private authService: AuthService, private userService: UserService, private router: Router) {
     this.user = this.authService.getUser();
     this.userService.getUserById(this.user.uid)
       .then(res => {
         this.role = res[0].data.role;
         this.name = res[0].data.fName + " " + res[0].data.lName;
+        this.recentHistory = res[0].data.recentHistory;
       })
       .catch(err => {
         console.log(err);
@@ -66,20 +67,20 @@ export class DashboardAnalyticsComponent implements OnInit {
   getIssuesByTech() {
     const tech = this.user.email;
     this.issuesService.getIssuesByTech(tech)
-    .then(data => {
-      if (data.length > 0) {
-        this.issues$ = data.map(e => {
-          return { id: e.id, ...e.data as {} } as Issue;
-        });
-      } else {
-        this.errors = 'ERROR: No documents were found';
-        this.issues$ = undefined;
-      }
-      this.updateChartData();
-    })
-    .catch(err => {
-      console.log(err)
-    });
+      .then(data => {
+        if (data.length > 0) {
+          this.issues$ = data.map(e => {
+            return { id: e.id, ...e.data as {} } as Issue;
+          });
+        } else {
+          this.errors = 'ERROR: No documents were found';
+          this.issues$ = undefined;
+        }
+        this.updateChartData();
+      })
+      .catch(err => {
+        console.log(err)
+      });
   }
 
   //Charts
@@ -122,6 +123,43 @@ export class DashboardAnalyticsComponent implements OnInit {
     backgroundColor: ['#29066B', '#7D3AC1', '#AF4BCE', '#DB4CB2', '#EB548C', '#EA7369', '#F0A58F', '#FCEAE6'],
     borderColor: ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent']
   }];
+
+  //line chart
+  lineChartOptions = {
+    responsive: true,
+    elements: {
+      line: {
+        tension: 0
+      }
+    }
+  };
+
+  //createData
+  lineChartData = [
+    { data: [130, 300, 160, 400, 200, 100, 350], label: 'Last Week', borderDash: [10, 5] },
+    { data: [160, 250, 180, 450, 210, 110, 400], label: 'This Week' }
+  ];
+
+  lineChartLabels = ['1', '2', '3', '4', '5', '6', '7'];
+
+  lineChartColors: Array<any> = [
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#7D3AC1',
+      pointBackgroundColor: '#7D3AC1',
+      pointBorderColor: '#AF4BCE',
+      pointHoverBackgroundColor: '#7D3AC1',
+      pointHoverBorderColor: '#AF4BCE'
+    },
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#EB548C',
+      pointBackgroundColor: '#EB548C',
+      pointBorderColor: '#EA7369',
+      pointHoverBackgroundColor: '#EB548C',
+      pointHoverBorderColor: '#EA7369'
+    }
+  ];
 
   updateChartData() {
     //reset the chart data vars

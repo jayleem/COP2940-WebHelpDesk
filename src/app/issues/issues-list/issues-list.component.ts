@@ -94,7 +94,8 @@ export class IssuesListComponent implements OnInit {
             priority: e.priority,
             status: e.status,
             dateStart: e.dateStart,
-            dateEnd: e.dateEnd
+            dateEnd: e.dateEnd,
+            //summary: e.desc.summary
           });        
         }
       });
@@ -117,6 +118,8 @@ export class IssuesListComponent implements OnInit {
       this.issuesService.deleteIssue(id)
         .then(res => {
           console.log(res);
+          this.userService.updateUserHistory(this.user.uid, "Deleted", id);
+          this.getIssuesByTech();
         })
         .catch(err => {
           console.log(err);

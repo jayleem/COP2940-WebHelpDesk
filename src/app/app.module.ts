@@ -49,6 +49,7 @@ import { ChartsModule } from 'ng2-charts';
 import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
 import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
 import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
+import { RoleGuardService } from './shared/services/role-guard.service';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,7 @@ import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard
     ReactiveFormsModule,
     ChartsModule
   ],
-  providers: [IssuesService, AuthService, AuthGuardService, LoginGuardService, UserService, ProfileGuardService],
+  providers: [IssuesService, AuthService, AuthGuardService, LoginGuardService, UserService, ProfileGuardService, RoleGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

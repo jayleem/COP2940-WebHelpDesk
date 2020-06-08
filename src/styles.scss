@@ -22,6 +22,7 @@ body, html {
 
 .main-content {
     min-height: 100vh;
+    width: 85%;
     padding: 0;
     margin: 0;
     padding-bottom: 60px; //same height as footer
@@ -173,6 +174,7 @@ body, html {
         border: 0 !important;
     }
     td {
+        background-color: #203848 !important;
         color: #39BEC1 !important;
         border: 0 !important;
     }

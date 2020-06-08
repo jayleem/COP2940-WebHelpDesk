@@ -9,20 +9,20 @@ import { AuthService } from './auth.service';
     providedIn: 'root'
 })
 export class LoginGuardService {
+    private auth: boolean;
 
     constructor(private router: Router, private fireAuthService: AuthService) { }
 
-    canActivate() {
-        let auth;
+    canActivate(): boolean {
         this.fireAuthService.getLoggedIn().subscribe(res => {
             if (!res) {
-                auth = true;
+                this.auth = true;
             } else {
                 this.router.navigate(['/dashboard/home']);
-                auth = false;
+                this.auth = false;
             }
         });
-        return auth;
+        return this.auth;
     }
 
     ngOnDestroy() {

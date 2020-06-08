@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-issues-update',
@@ -17,13 +18,15 @@ export class IssuesUpdateComponent implements OnInit {
   techs$: any;
   updateIssueForm: FormGroup;
   id: string;
+  user: any;
   issues$;
   errors;
   modifiedDate: Date;
 
-  constructor(private issueService: IssuesService, private userService: UserService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private issueService: IssuesService, private userService: UserService, private fireAuthService: AuthService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.user = this.fireAuthService.getUser();
     this.updateIssueForm = new FormGroup({
 
       'issueData': new FormGroup({
@@ -72,6 +75,11 @@ export class IssuesUpdateComponent implements OnInit {
     this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         console.log(res);
+        //Update user history
+        //
+        this.userService.updateUserHistory(this.user.uid, "Updated", this.id);
+        //Navigate back to issues
+        //
         this.router.navigate(['dashboard/issues']);
       })
       .catch(err => {

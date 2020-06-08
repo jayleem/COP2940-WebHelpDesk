@@ -19,6 +19,7 @@ import { ReportsListComponent } from './reports/reports-list/reports-list.compon
 import { ReportsComponent } from './reports/reports.component';
 import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
 import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
+import { RoleGuardService } from './shared/services/role-guard.service';
 
 
 const routes: Routes = [
@@ -32,10 +33,11 @@ const routes: Routes = [
       { path: 'issues/new', component: IssuesNewComponent },
       { path: 'issues/details/:id', component: IssuesDetailComponent },
       { path: 'issues/update/:id', component: IssuesUpdateComponent },
-      { path: 'admin/home', component: DashboardAdminAnalyticsComponent },
-      { path: 'admin/issues', component: DashboardAdminIssuesListComponent },
-      { path: 'admin/users', component: DashboardAdminUsersListComponent },
-      { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent },
+      //ADMIN ROUTES
+      { path: 'admin/home', component: DashboardAdminAnalyticsComponent, canActivate: [RoleGuardService] },
+      { path: 'admin/issues', component: DashboardAdminIssuesListComponent, canActivate: [RoleGuardService] },
+      { path: 'admin/users', component: DashboardAdminUsersListComponent, canActivate: [RoleGuardService] },
+      { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent, canActivate: [RoleGuardService] },
       {
         path: 'admin/reports', component: ReportsComponent, children: [
           { path: 'user/:id', component: ReportsListComponent }

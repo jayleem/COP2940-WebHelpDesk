@@ -97,4 +97,44 @@ export class UserService {
       }
     })
   }
+
+    //update user based on userID
+  //
+  updateUserHistory(id: string, action: string, issueId: string): Promise<any> {
+    const historyItem = {
+      date: new Date(),
+      action: action,
+      issueId: issueId
+    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ref = await this.db.collection('users', ref => ref.where('userId', '==', id))
+        .get()
+        .toPromise()
+        .then(users => {
+          users.forEach(user => {      
+            let arrRecentHistory = user.get('recentHistory');
+            //Update user history 
+            //
+            if(arrRecentHistory.length < 10) {
+              user.ref.update(
+                {
+                  recentHistory: firestore.FieldValue.arrayUnion(historyItem)
+                });
+            } else {
+              //Remove oldest value then update user history
+              //
+              user.ref.update({ recentHistory: firestore.FieldValue.arrayRemove(arrRecentHistory[0]) });
+              user.ref.update({ recentHistory: firestore.FieldValue.arrayUnion(historyItem) });
+            }
+            resolve("Success: Updated User History");            
+          })
+        });
+      }
+      catch (error) {
+        reject(error);
+      }
+    })
+  }
 }

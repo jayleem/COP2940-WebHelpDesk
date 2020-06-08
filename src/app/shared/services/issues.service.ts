@@ -36,7 +36,7 @@ export class IssuesService {
               status: 'Open',
               notes: null
             })
-        resolve("Success: Issued added");
+        resolve(ref.id);
       }
       catch (error) {
         reject("Error: Adding issue failed");

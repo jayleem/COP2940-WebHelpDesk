@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-issues-new',
@@ -17,9 +18,11 @@ export class IssuesNewComponent implements OnInit {
   public techs$: any;
   newIssueForm: FormGroup;
 
-  constructor(private issueService: IssuesService, private userService: UserService, private router: Router) { }
+  private user;
+  constructor(private issueService: IssuesService, private userService: UserService, private fireAuthService: AuthService, private router: Router) { }
 
   ngOnInit() {
+    this.user = this.fireAuthService.getUser();
     this.newIssueForm = new FormGroup({
       'issueData': new FormGroup({
         'title': new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(50)]),
@@ -49,11 +52,11 @@ export class IssuesNewComponent implements OnInit {
     }));
   }
 
-
   onSubmit() {
     this.issueService.addIssue(this.newIssueForm)
     .then(res => {
-      console.log(res);
+      const id = res;
+      this.userService.updateUserHistory(this.user.uid, "Created", id);
     })
     .catch(err => {
       console.log(err);

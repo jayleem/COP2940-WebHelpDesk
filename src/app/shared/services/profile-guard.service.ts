@@ -10,23 +10,25 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class ProfileGuardService {
+  private auth: boolean;
 
   constructor(private router: Router, private fireAuthService: AuthService) { }
 
-  canActivate(route: ActivatedRoute, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRoute, state: RouterStateSnapshot): boolean {
     let id = route.url[1].path;
-    let auth = this.fireAuthService.getMetadata()
+    this.fireAuthService.getMetadata()
       .then(res => {
         if (res.uid === id) {
-          return true;
+          this.auth = true;
         } else {
-          return false;
+          this.auth = false;
+          this.router.navigate(['/dashboard/home']);
         }
       })
       .catch(err => {
-        return false;
+        this.auth = false;
       })
-    return auth;
+    return this.auth;
   }
 
   ngOnDestroy() { }

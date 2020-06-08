@@ -1,4 +1,3 @@
-
 <div class="container-fluid mt-2">
     <div class="row dashboard-widget">
         <div class="col-sm mb-1 mb-md-0">
@@ -45,9 +44,9 @@
                 <div class="card-header bg-dark text-light">My Issues by Priority</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas width=1 height=1 baseChart [data]="pieChartData2" [labels]="pieChartLabels2"
-                            [chartType]="pieChartType2" [options]="pieChartOptions2" [plugins]="pieChartPlugins2"
-                            [legend]="pieChartLegend2" [colors]="pieChartColors">
+                        <canvas baseChart [data]="pieChartData2" [labels]="pieChartLabels2" [chartType]="pieChartType2"
+                            [options]="pieChartOptions2" [plugins]="pieChartPlugins2" [legend]="pieChartLegend2"
+                            [colors]="pieChartColors">
                         </canvas>
                     </div>
                 </div>
@@ -58,9 +57,9 @@
                 <div class="card-header bg-dark text-light">My Issues by Status</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas width=1 height=1 baseChart [data]="pieChartData" [labels]="pieChartLabels"
-                            [chartType]="pieChartType" [options]="pieChartOptions" [plugins]="pieChartPlugins"
-                            [legend]="pieChartLegend" [colors]="pieChartColors">
+                        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                            [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend"
+                            [colors]="pieChartColors">
                         </canvas>
                     </div>
                 </div>
@@ -72,6 +71,16 @@
             <div class="card shadow">
                 <div class="card-header bg-dark text-light">My Performance</div>
                 <div class="card-body">
+                    <div class="chart-wrapper">
+                        <canvas id="lineChart" baseChart width="1" height="1"
+                            [chartType]="'line'"
+                            [datasets]="lineChartData"
+                            [labels]="lineChartLabels"
+                            [options]="lineChartOptions"
+                            [legend]="true"
+                            [colors]="lineChartColors">
+                        </canvas>
+                    </div>
                     <app-dynamic-table [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
                         [tableDataFields]="['tech','open','pending','closed', 'progress']" [data]="techs"
                         [filterControl]=false [pagination]=false>
@@ -80,12 +89,30 @@
             </div>
         </div>
     </div>
+
     <div class="row dashboard-widget">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">My Activity</div>
+                <div class="card-header bg-dark text-light">My Recent Activity</div>
                 <div class="card-body">
-                    <p>//TODO should show recent activty of user</p>
+                    <div *ngIf="recentHistory" class="row table-responsive">
+                        <div class="col">
+                            <table class="table table-sm table-striped table-dark text-nowrap">
+                                <thead>
+                                    <th>Date</th>
+                                    <th>Action Taken</th>
+                                    <th>ID</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of recentHistory | slice:0:10">
+                                        <td>{{item.date.toDate() | date:'yyyy/MM/dd'}}</td>
+                                        <td>{{item.action}}</td>
+                                        <td>{{item.issueId}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

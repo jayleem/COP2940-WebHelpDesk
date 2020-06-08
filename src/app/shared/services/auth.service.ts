@@ -21,12 +21,14 @@ export class AuthService {
       if (user) {
         const data = {
           uid: user.uid,
-          email: user.email
+          email: user.email,
+          role: ''
         }
         this.userService.getUserById(data.uid)
           .then(user => {
             if (user[0].data.accountStatus === 'enabled') {
               this.setAccountStatus(user[0].data.accountStatus);
+              data.role = user[0].data.role;
               this.setUser(data);
               this.setLoggedIn(true);
             } else {

@@ -57,15 +57,8 @@
                 <div class="card-header bg-dark text-light">Issues by Priority</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas 
-                            width=1 
-                            height=1 
-                            baseChart [data]="pieChartData2" 
-                            [labels]="pieChartLabels2" 
-                            [chartType]="pieChartType2"
-                            [options]="pieChartOptions2" 
-                            [plugins]="pieChartPlugins2" 
-                            [legend]="pieChartLegend2"
+                        <canvas baseChart [data]="pieChartData2" [labels]="pieChartLabels2" [chartType]="pieChartType2"
+                            [options]="pieChartOptions2" [plugins]="pieChartPlugins2" [legend]="pieChartLegend2"
                             [colors]="pieChartColors">
                         </canvas>
                     </div>
@@ -77,16 +70,8 @@
                 <div class="card-header bg-dark text-light">Issues by Status</div>
                 <div class="card-body">
                     <div class="chart-wrapper">
-                        <canvas 
-                            width=1 
-                            height=1 
-                            baseChart 
-                            [data]="pieChartData" 
-                            [labels]="pieChartLabels" 
-                            [chartType]="pieChartType"
-                            [options]="pieChartOptions" 
-                            [plugins]="pieChartPlugins" 
-                            [legend]="pieChartLegend"
+                        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                            [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend"
                             [colors]="pieChartColors">
                         </canvas>
                     </div>
@@ -99,14 +84,10 @@
             <div class="card shadow">
                 <div class="card-header bg-dark text-light">Technician Performance</div>
                 <div class="card-body">
-                    <app-dynamic-table 
-                        [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
-                        [tableDataFields]="['tech','open','pending','closed', 'progress']"
-                        [data]="techs"
-                        [filterControl]=false
-                        [pagination]=false
-                    >
-                    </app-dynamic-table>                    
+                    <app-dynamic-table [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
+                        [tableDataFields]="['tech','open','pending','closed', 'progress']" [data]="techs"
+                        [filterControl]=false [pagination]=false>
+                    </app-dynamic-table>
                 </div>
             </div>
         </div>
