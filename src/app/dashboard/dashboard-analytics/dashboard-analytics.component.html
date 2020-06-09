@@ -71,7 +71,7 @@
             <div class="card shadow">
                 <div class="card-header bg-dark text-light">My Performance</div>
                 <div class="card-body">
-                    <div class="chart-wrapper">
+                    <div *ngIf="lineChartData" class="chart-wrapper mb-4">
                         <canvas id="lineChart" baseChart width="1" height="1"
                             [chartType]="'line'"
                             [datasets]="lineChartData"

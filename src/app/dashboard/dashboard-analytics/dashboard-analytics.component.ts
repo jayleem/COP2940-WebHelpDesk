@@ -37,6 +37,7 @@ export class DashboardAnalyticsComponent implements OnInit {
     }
   };
   techs = [];
+  dates = [];
 
 
   //Get user and role
@@ -60,6 +61,7 @@ export class DashboardAnalyticsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setDates();
     this.getIssuesByTech();
   }
 
@@ -124,23 +126,32 @@ export class DashboardAnalyticsComponent implements OnInit {
     borderColor: ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent']
   }];
 
-  //line chart
+  //TODO: create two data sets
+  //one represents tickets from last week
+  //another will represent tickets from the current week
+  //display data as line chart
+  //
   lineChartOptions = {
     responsive: true,
     elements: {
       line: {
-        tension: 0
+        tension: 0 //disables bezier curve
       }
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          autoSkip: false,
+          maxRotation: 45,
+          minRotation: 45
+        }
+      }]
     }
   };
 
   //createData
-  lineChartData = [
-    { data: [130, 300, 160, 400, 200, 100, 350], label: 'Last Week', borderDash: [10, 5] },
-    { data: [160, 250, 180, 450, 210, 110, 400], label: 'This Week' }
-  ];
-
-  lineChartLabels = ['1', '2', '3', '4', '5', '6', '7'];
+  lineChartData;
+  lineChartLabels;
 
   lineChartColors: Array<any> = [
     {
@@ -158,8 +169,38 @@ export class DashboardAnalyticsComponent implements OnInit {
       pointBorderColor: '#EA7369',
       pointHoverBackgroundColor: '#EB548C',
       pointHoverBorderColor: '#EA7369'
+    },
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#F0A58F',
+      pointBackgroundColor: '#F0A58F',
+      pointBorderColor: '#FCEAE6',
+      pointHoverBackgroundColor: '#F0A58F',
+      pointHoverBorderColor: '#FCEAE6'
     }
   ];
+
+  //vars for generating dates for the line chart
+  //
+  lastWeek = [];
+  thisWeek = [];
+  setDates() {
+    let curr = new Date;
+
+    //get the monday of this week
+    //
+    let firstDayThisWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1)));
+    //get the previous weeks monday
+    //
+    let firstDayLastWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1) - 7));
+    //generate days between the first and last day of the given week
+    //
+    for (let i = 1; i <= 7; i++) {
+      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toISOString().substring(0, 10));
+      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toISOString().substring(0, 10));
+    }
+  }
+
 
   updateChartData() {
     //reset the chart data vars
@@ -177,6 +218,34 @@ export class DashboardAnalyticsComponent implements OnInit {
     //could also write more efficient code here but i'm not getting paid for this 
     //
     this.issues$.map(e => {
+
+      //add only unique dates
+      //
+      if (e.dateEnd != "-") {
+        let date = new Date(e.dateEnd.seconds * 1000).toISOString().substring(0, 10);
+        if (!this.dates.some(el => el.date === date)) {
+          this.dates.push(
+            {
+              date: date,
+              open: 0,
+              pending: 0,
+              closed: 0,
+              progress: 0
+            });
+        }
+        //get index of current date on issue
+        //
+        const dateIndex = this.dates.findIndex(el => el.date === date)
+        let dateObj = this.dates[dateIndex];
+        if (date === dateObj.date && e.status === 'Open') {
+          this.dates[dateIndex].open++;
+        } else if (date === dateObj.date && e.status === 'Pending') {
+          this.dates[dateIndex].pending++;
+        } else {
+          this.dates[dateIndex].closed++;
+        }
+      }
+
       //add only unique technicans
       //
       if (!this.techs.some(el => el.tech === e.tech)) {
@@ -217,15 +286,53 @@ export class DashboardAnalyticsComponent implements OnInit {
     this.setChartData();
   }
 
-  //set chart data
+  //set charts data
   //
   setChartData() {
+    //setting line chart data
+    //
+    let thisWeeksData = [];
+    let lastWeeksData = [];
+
+    //TO-DO: have multiple x-axis labels for the current week and last week
+    //
+    this.lineChartLabels = this.thisWeek;
+
+    for (const date in this.lastWeek) {
+      const index = this.dates.findIndex(el => el.date === this.lastWeek[date])
+      let item = this.dates[index];
+      if (item) {
+        lastWeeksData.push(item.closed);
+      } else {
+        lastWeeksData.push(0);
+      }
+    }
+
+    for (const date in this.thisWeek) {
+      const index = this.dates.findIndex(el => el.date === this.thisWeek[date])
+      let item = this.dates[index];
+      if (item) {
+        thisWeeksData.push(item.closed);
+      } else {
+        thisWeeksData.push(0);
+      }
+    }
+    console.log(lastWeeksData);
+
+    this.lineChartData = [
+      { label: "Last Week", data: lastWeeksData, borderDash: [10, 6] },
+      { label: "This Week", data: thisWeeksData}
+    ]
+    //
+
+    //setting pie chart data
+    //
     for (const tech in this.techs) {
-      this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending);
+      this.techs[tech].progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
     }
     this.pieChartData = [this.ticketStats.status.open, this.ticketStats.status.closed, this.ticketStats.status.pending];
     this.pieChartData2 = [this.ticketStats.priority.low, this.ticketStats.priority.normal, this.ticketStats.priority.high, this.ticketStats.priority.urgent];
-    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending);
+    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
   }
 
   // Unsubscribe from firestore real time listener
