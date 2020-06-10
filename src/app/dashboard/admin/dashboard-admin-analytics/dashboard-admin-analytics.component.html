@@ -80,10 +80,19 @@
         </div>
     </div>
     <div class="row dashboard-widget">
-        <div class="col-12">
+        <div class="col-sm-12">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Technician Performance</div>
+                <div class="card-header bg-dark text-light">All Issues from {{this.lastWeek[0] | date:'MM/dd/yyyy'}} to
+                    {{this.thisWeek[6] | date:'MM/dd/yyyy'}} </div>
                 <div class="card-body">
+                    <div class="col-sm-12">
+                        <div *ngIf="lineChartData" id="lineChart" class="chart-wrapper mb-4">
+                            <canvas baseChart width="1" height="1" [chartType]="'line'"
+                                [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+                                [legend]="true" [colors]="lineChartColors">
+                            </canvas>
+                        </div>
+                    </div>
                     <app-dynamic-table [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
                         [tableDataFields]="['tech','open','pending','closed', 'progress']" [data]="techs"
                         [filterControl]=false [pagination]=false>
@@ -93,11 +102,32 @@
         </div>
     </div>
     <div class="row dashboard-widget">
-        <div class="col-12">
+        <div class="col-sm-12">
             <div class="card shadow">
-                <div class="card-header bg-dark text-light">Recent Activity</div>
+                <div class="card-header bg-dark text-light">Recent Technican Activity</div>
                 <div class="card-body">
-                    <p>//TODO should show latest 5-10 changes to the database</p>
+                    <div class="container-fluid">
+                        <div class="row table-responsive">
+                            <div class="col">
+                                <table class="table table-sm table-striped table-dark text-nowrap">
+                                    <thead>
+                                        <th>Date</th>
+                                        <th>Technician</th>
+                                        <th>Action Taken</th>
+                                        <th>ID</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of userHistory | slice:0:10">
+                                            <td>{{item.history.date.toDate() | date:'MM/dd/yyyy'}}</td>
+                                            <td>{{item.username}}</td>
+                                            <td>{{item.history.action}}</td>
+                                            <td>{{item.history.issueId}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

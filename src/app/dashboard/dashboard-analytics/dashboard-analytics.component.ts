@@ -140,12 +140,20 @@ export class DashboardAnalyticsComponent implements OnInit {
     },
     scales: {
       xAxes: [{
+        stacked: true,
         ticks: {
           autoSkip: false,
           maxRotation: 45,
           minRotation: 45
         }
+      }],
+      yAxes: [{
+        stacked:true
       }]
+    },
+    data: {
+      labels: '',
+      datasets: ''
     }
   };
 
@@ -294,9 +302,15 @@ export class DashboardAnalyticsComponent implements OnInit {
     let thisWeeksData = [];
     let lastWeeksData = [];
 
-    //TO-DO: have multiple x-axis labels for the current week and last week
+    // TO-DO: have multiple x-axis labels for the current week and last week
+    // multi line labels must be nested arrays e.g [['1','2'],'3','4', '5','6','7']
+    // combine both week arrays given the format above
     //
-    this.lineChartLabels = this.thisWeek;
+    let combinedLabels = [];
+    this.thisWeek.map((e, i) => {
+      combinedLabels.push([e, this.lastWeek[i]]);
+    });
+    this.lineChartLabels = combinedLabels;
 
     for (const date in this.lastWeek) {
       const index = this.dates.findIndex(el => el.date === this.lastWeek[date])
@@ -317,22 +331,22 @@ export class DashboardAnalyticsComponent implements OnInit {
         thisWeeksData.push(0);
       }
     }
-    console.log(lastWeeksData);
 
     this.lineChartData = [
       { label: "Last Week", data: lastWeeksData, borderDash: [10, 6] },
-      { label: "This Week", data: thisWeeksData}
+      { label: "This Week", data: thisWeeksData }
     ]
-    //
-
     //setting pie chart data
     //
-    for (const tech in this.techs) {
-      this.techs[tech].progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
-    }
     this.pieChartData = [this.ticketStats.status.open, this.ticketStats.status.closed, this.ticketStats.status.pending];
     this.pieChartData2 = [this.ticketStats.priority.low, this.ticketStats.priority.normal, this.ticketStats.priority.high, this.ticketStats.priority.urgent];
-    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
+    this.progress = (this.ticketStats.status.open + this.ticketStats.status.pending) / this.ticketStats.status.closed;
+    //set progress for techs
+    //
+    for (const tech in this.techs) {
+      this.techs[tech].progress = (this.techs[tech].open + this.techs[tech].pending) / this.techs[tech].closed;
+      isFinite(this.techs[tech].progress) ? null : this.techs[tech].progress = 0;
+    }
   }
 
   // Unsubscribe from firestore real time listener

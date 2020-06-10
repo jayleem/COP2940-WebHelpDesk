@@ -4,6 +4,9 @@ import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { Label, SingleDataSet } from 'ng2-charts';
 import { ChartType } from 'chart.js';
+import { ThrowStmt } from '@angular/compiler';
+import { UserService } from 'src/app/shared/services/user.service';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-dashboard-admin-analytics',
@@ -12,10 +15,11 @@ import { ChartType } from 'chart.js';
 })
 export class DashboardAdminAnalyticsComponent implements OnInit {
 
- //firestore subscription
+  //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
   issues$;
+  users$;
   errors;
   //data vars
   //
@@ -34,13 +38,16 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     }
   };
   techs = [];
+  dates = [];
 
   recentActivityStats;
 
-  constructor(private issuesService: IssuesService) { }
+  constructor(private issuesService: IssuesService, private userService: UserService) { }
 
   ngOnInit() {
+    this.setDates();
     this.getIssues();
+    this.getUsers();
   }
 
 
@@ -56,6 +63,46 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       }
       this.updateChartData();
     }));
+  }
+
+  getUsers() {
+    this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
+      if (data.length > 0) {
+        this.users$ = data.map(e => {
+          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+        });
+      } else {
+        this.errors = 'ERROR: No documents were found';
+        this.users$ = undefined;
+      }
+      this.updateRecentHistory();
+    }));
+  }
+
+  //generate user history for admin user activity
+  //this could be extremely performance intensive depending on the amount of technicans/users
+  //there more likely is a better way of doing this.
+  //note: the array is spliced to only display 10 of the most recent changes in the HTML template
+  //
+  userHistory = [];
+  updateRecentHistory() {
+    
+    for(const user in this.users$) {
+      for (const item in this.users$[user].recentHistory)
+      this.userHistory.push(
+        {
+          username: this.users$[user].username,
+          history:this.users$[user].recentHistory[item]
+        });
+    }
+    
+    //sorts the array by date values
+    //
+    this.userHistory.sort((a,b) => {
+      let c = new Date(a);
+      let d = new Date(b);
+      return (c < d) ? -1 : ((c > d) ? 1 : 0);
+    });
   }
 
   //Charts
@@ -99,6 +146,82 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     borderColor: ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent']
   }];
 
+  //TODO: create two data sets
+  //one represents tickets from last week
+  //another will represent tickets from the current week
+  //display data as line chart
+  //
+  lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    elements: {
+      line: {
+        //tension: 0 //disables bezier curve
+      }
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          autoSkip: false,
+          maxRotation: 45,
+          minRotation: 45
+        }
+      }]
+    }
+  };
+
+  //createData
+  lineChartData;
+  lineChartLabels;
+
+  lineChartColors: Array<any> = [
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#29066B',
+      pointBackgroundColor: '#29066B',
+      pointBorderColor: '#29066B',
+      pointHoverBackgroundColor: '#29066B',
+      pointHoverBorderColor: '#29066B'
+    },
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#DB4CB2',
+      pointBackgroundColor: '#DB4CB2',
+      pointBorderColor: '#DB4CB2',
+      pointHoverBackgroundColor: '#DB4CB2',
+      pointHoverBorderColor: '#DB4CB2'
+    },
+    {
+      backgroundColor: 'transparent',
+      borderColor: '#EA7369',
+      pointBackgroundColor: '#EA7369',
+      pointBorderColor: '#EA7369',
+      pointHoverBackgroundColor: '#EA7369',
+      pointHoverBorderColor: '#EA7369'
+    }
+  ];
+
+  //vars for generating dates for the line chart
+  //
+  lastWeek = [];
+  thisWeek = [];
+  setDates() {
+    let curr = new Date;
+
+    //get the monday of this week
+    //
+    let firstDayThisWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1)));
+    //get the previous weeks monday
+    //
+    let firstDayLastWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1) - 7));
+    //generate days between the first and last day of the given week
+    //
+    for (let i = 1; i <= 7; i++) {
+      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toISOString().substring(0, 10));
+      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toISOString().substring(0, 10));
+    }
+  }
+
   updateChartData() {
     //reset the chart data vars
     //
@@ -115,6 +238,38 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     //could also write more efficient code here but i'm not getting paid for this 
     //
     this.issues$.map(e => {
+
+      //add only unique dates
+      //
+      let date;
+      if (e.dateEnd != "-") {
+        date = new Date(e.dateEnd.seconds * 1000).toISOString().substring(0, 10);
+      } else {
+        date = new Date(e.dateStart.seconds * 1000).toISOString().substring(0, 10);
+      };
+      if (!this.dates.some(el => el.date === date)) {
+        this.dates.push(
+          {
+            date: date,
+            open: 0,
+            pending: 0,
+            closed: 0,
+            progress: 0
+          });
+      }
+      //get index of current date on issue
+      //
+      const dateIndex = this.dates.findIndex(el => el.date === date)
+      let dateObj = this.dates[dateIndex];
+      if (date === dateObj.date && e.status === 'Open') {
+        this.dates[dateIndex].open++;
+      } else if (date === dateObj.date && e.status === 'Pending') {
+        this.dates[dateIndex].pending++;
+      } else {
+        this.dates[dateIndex].closed++;
+      }
+
+
       //add only unique technicans
       //
       if (!this.techs.some(el => el.tech === e.tech)) {
@@ -158,12 +313,71 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   //set chart data
   //
   setChartData() {
-    for (const tech in this.techs) {
-      this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending);
+    //setting line chart data
+    //
+    let twoWeeksDataOpen = [];
+    let twoWeeksDataPending = [];
+    let twoWeeksDataClosed = [];
+
+    // TO-DO: have multiple x-axis labels for the current week and last week
+    // multi line labels must be nested arrays e.g [['1','2'],'3','4', '5','6','7']
+    // combine both week arrays given the format above
+    //
+    let combinedLabels = [];
+    this.thisWeek.map((e, i) => {
+      combinedLabels.push(e);
+      combinedLabels.push(this.lastWeek[i]);
+    });
+    combinedLabels.sort((a,b) => {
+      let c = new Date(a);
+      let d = new Date(b);
+      return (c < d) ? -1 : ((c > d) ? 1 : 0);
+    });
+    this.lineChartLabels = combinedLabels;
+
+    let combinedDates = [];
+    this.thisWeek.map((e, i) => {
+      combinedDates.push(e);
+      combinedDates.push(this.lastWeek[i]);
+    });
+    combinedDates.sort((a,b) => {
+      let c = new Date(a);
+      let d = new Date(b);
+      return (c < d) ? -1 : ((c > d) ? 1 : 0);
+    });
+
+    for (const date in combinedDates) {
+      const index = this.dates.findIndex(el => el.date === combinedDates[date])
+      let item = this.dates[index];
+
+      if (item) {
+        twoWeeksDataOpen.push(item.open);
+        twoWeeksDataPending.push(item.pending);
+        twoWeeksDataClosed.push(item.closed);
+      } else {
+        twoWeeksDataOpen.push(null);
+        twoWeeksDataPending.push(null);
+        twoWeeksDataClosed.push(null);
+      }
     }
+
+    this.lineChartData = [
+      { label: "Open", data: twoWeeksDataOpen, spanGaps: true },
+      { label: "Pending", data: twoWeeksDataPending, spanGaps: true },
+      { label: "Closed", data: twoWeeksDataClosed, spanGaps: true }
+    ]
+
+    //setting pie chart data
+    //
     this.pieChartData = [this.ticketStats.status.open, this.ticketStats.status.closed, this.ticketStats.status.pending];
     this.pieChartData2 = [this.ticketStats.priority.low, this.ticketStats.priority.normal, this.ticketStats.priority.high, this.ticketStats.priority.urgent];
-    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending);
+    this.progress = (this.ticketStats.status.open + this.ticketStats.status.pending) / this.ticketStats.status.closed;
+    //set progress for techs
+    //
+    for (const tech in this.techs) {
+      this.techs[tech].progress = (this.techs[tech].open + this.techs[tech].pending) / this.techs[tech].closed;
+      isFinite(this.techs[tech].progress) ? null : this.techs[tech].progress = 0;
+    }
   }
 
   // Unsubscribe from firestore real time listener
