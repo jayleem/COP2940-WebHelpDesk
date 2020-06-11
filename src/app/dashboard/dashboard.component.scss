@@ -1,5 +1,30 @@
 .sidebar{
     max-width:250px;
+    box-shadow: 6px 0px 2px 0px rgba(0,0,0,.15);
+}
+
+p,a {
+    margin:0;
+    padding: .5em;
+}
+
+li {
+    .nav-link:hover {
+        border-left: 4px #39bec1 solid !important;
+        background-color: #1C2A35 !important;
+        color:#39bec1 !important;
+        opacity: 1 !important;
+        i {
+            color:#39bec1 !important;
+        }
+    }
+    .nav-link.active {
+        background-color: #1C2A35 !important;
+        color:#39bec1 !important;
+        i {
+            color:#39bec1 !important;
+        }
+    }
 }
 
 @media all and (max-width:900px) {

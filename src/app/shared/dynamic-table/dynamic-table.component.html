@@ -56,7 +56,17 @@
     </div>
     <div class="row table-responsive">
         <div class="col">
-            <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Viewing {{ data.length }} Issues in Realtime</h4>
+            <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Displaying {{ data.length }} results</h4>
+                <div class="row">
+                    <div class="col">
+                        <div *ngIf="data && pagination" class="mb-2 row justify-content-center">
+                            <div class="input-group-addon">
+                                <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage"
+                                    [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <table class="table table-sm table-striped table-dark text-nowrap">
                 <thead>
                     <th *ngFor="let tableHeader of tableHeaders; let i = index;">
@@ -76,7 +86,7 @@
                             <!-- This may not be the best way of catching dates but it works -->
                             <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
                                 <span *ngIf="property.value != '-'; else noFormat">
-                                    {{property.value.toDate() |  date:'yyyy/MM/dd'}}
+                                    {{property.value.toDate() |  date:'MM/dd/yyyy'}}
                                 </span>
                             </span>
                             <ng-template  #noFormat>
@@ -96,7 +106,6 @@
                         <td *ngIf="actionsType === 'users'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/admin/users/details/{{item.id}}">View</button>
-
                             </div>
                         </td>
                     </tr>

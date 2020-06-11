@@ -14,7 +14,6 @@ export class RoleGuardService {
     this.user = this.fireAuthService.getUser();
    
     if(this.user.role == 'admin') {
-      console.log("is admin");
       return true;
     } else {
       this.router.navigate(['/dashboard/home']);

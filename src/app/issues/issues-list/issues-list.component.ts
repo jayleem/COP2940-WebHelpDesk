@@ -55,11 +55,12 @@ export class IssuesListComponent implements OnInit {
         this.issues$ = data.map(e => {
           return { id: e.id, ...e.data as {} } as Issue;
         });
-      } else {
-        this.errors = 'ERROR: No documents were found';
-        this.issues$ = undefined;
-      }
+      } 
+      this.errors = '';
       this.filterData();
+    })
+    .catch(err => {
+      this.errors = 'ERROR: No results found';
     });
   }
 
@@ -70,10 +71,12 @@ export class IssuesListComponent implements OnInit {
         this.issues$ = issues.map(e => {
           return { id: e.id, ...e.data as {} } as Issue;
         });
-      } else {
-        this.errors = 'ERROR: No documents were found';
-      }
+      };
+      this.errors = '';
       this.filterData();
+    })
+    .catch(err => {
+      this.errors = 'ERROR: No results found';
     });
   }
 

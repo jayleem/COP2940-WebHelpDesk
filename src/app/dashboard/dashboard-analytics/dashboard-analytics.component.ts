@@ -90,6 +90,7 @@ export class DashboardAnalyticsComponent implements OnInit {
   //
   pieChartOptions = {
     responsive: true,
+    maintainAspectRatio: true,
     legend: {
       labels: {
         fontColor: "#39BEC1"
@@ -110,6 +111,7 @@ export class DashboardAnalyticsComponent implements OnInit {
   //
   pieChartOptions2 = {
     responsive: true,
+    maintainAspectRatio: true,
     legend: {
       labels: {
         fontColor: "#39BEC1"
@@ -133,6 +135,7 @@ export class DashboardAnalyticsComponent implements OnInit {
   //
   lineChartOptions = {
     responsive: true,
+    maintainAspectRatio: true,
     elements: {
       line: {
         tension: 0 //disables bezier curve
@@ -148,7 +151,18 @@ export class DashboardAnalyticsComponent implements OnInit {
         }
       }],
       yAxes: [{
-        stacked:true
+        stacked: true,
+        scaleLabel: {
+          display: true,
+          responsive: true,
+          maintainAspectRatio: true,
+          labelString: 'Issues'
+        },
+        ticks: {
+          beginAtZero: true,
+          min: 0,
+          stepSize: 1
+        }
       }]
     },
     data: {
@@ -188,6 +202,20 @@ export class DashboardAnalyticsComponent implements OnInit {
     }
   ];
 
+  //progress chart (doughnut)
+  //
+  doughnutChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true
+  };
+  doughnutChartLabels: Label[] = ['Closed Issues', 'Total Issues'];
+  doughnutChartData: SingleDataSet = [];
+  doughnutChartType: ChartType = 'doughnut';
+  doughnutChartColors: any[] = [
+    { backgroundColor: ["#86c7f3", "#ffe199"] },
+    { borderColor: ["#AEEBF2", "#FEFFC9"] }
+  ];
+
   //vars for generating dates for the line chart
   //
   lastWeek = [];
@@ -204,8 +232,8 @@ export class DashboardAnalyticsComponent implements OnInit {
     //generate days between the first and last day of the given week
     //
     for (let i = 1; i <= 7; i++) {
-      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toISOString().substring(0, 10));
-      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toISOString().substring(0, 10));
+      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toLocaleDateString('en-us'));
+      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toLocaleDateString('en-us'));
     }
   }
 
@@ -229,29 +257,32 @@ export class DashboardAnalyticsComponent implements OnInit {
 
       //add only unique dates
       //
+      let date;
       if (e.dateEnd != "-") {
-        let date = new Date(e.dateEnd.seconds * 1000).toISOString().substring(0, 10);
-        if (!this.dates.some(el => el.date === date)) {
-          this.dates.push(
-            {
-              date: date,
-              open: 0,
-              pending: 0,
-              closed: 0,
-              progress: 0
-            });
-        }
-        //get index of current date on issue
-        //
-        const dateIndex = this.dates.findIndex(el => el.date === date)
-        let dateObj = this.dates[dateIndex];
-        if (date === dateObj.date && e.status === 'Open') {
-          this.dates[dateIndex].open++;
-        } else if (date === dateObj.date && e.status === 'Pending') {
-          this.dates[dateIndex].pending++;
-        } else {
-          this.dates[dateIndex].closed++;
-        }
+        date = new Date(e.dateEnd.seconds * 1000).toLocaleDateString('en-us');
+      } else {
+        date = new Date(e.dateStart.seconds * 1000).toLocaleDateString('en-us');
+      };
+      if (!this.dates.some(el => el.date === date)) {
+        this.dates.push(
+          {
+            date: date,
+            open: 0,
+            pending: 0,
+            closed: 0,
+            progress: 0
+          });
+      }
+      //get index of current date on issue
+      //
+      const dateIndex = this.dates.findIndex(el => el.date === date)
+      let dateObj = this.dates[dateIndex];
+      if (date === dateObj.date && e.status === 'Open') {
+        this.dates[dateIndex].open++;
+      } else if (date === dateObj.date && e.status === 'Pending') {
+        this.dates[dateIndex].pending++;
+      } else {
+        this.dates[dateIndex].closed++;
       }
 
       //add only unique technicans
@@ -340,11 +371,12 @@ export class DashboardAnalyticsComponent implements OnInit {
     //
     this.pieChartData = [this.ticketStats.status.open, this.ticketStats.status.closed, this.ticketStats.status.pending];
     this.pieChartData2 = [this.ticketStats.priority.low, this.ticketStats.priority.normal, this.ticketStats.priority.high, this.ticketStats.priority.urgent];
-    this.progress = (this.ticketStats.status.open + this.ticketStats.status.pending) / this.ticketStats.status.closed;
+    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
+    this.doughnutChartData = [this.ticketStats.status.closed, (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed)];
     //set progress for techs
     //
     for (const tech in this.techs) {
-      this.techs[tech].progress = (this.techs[tech].open + this.techs[tech].pending) / this.techs[tech].closed;
+      this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending + this.techs[tech].closed);
       isFinite(this.techs[tech].progress) ? null : this.techs[tech].progress = 0;
     }
   }

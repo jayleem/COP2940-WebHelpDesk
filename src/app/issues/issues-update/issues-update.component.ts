@@ -51,7 +51,7 @@ export class IssuesUpdateComponent implements OnInit {
           return { ...e.payload.doc.data() as {} } as User;
         });
       } else {
-        console.log('ERROR: No documents were found');
+        console.log('ERROR: No results were found');
         this.techs$ = undefined;
       }
     }));

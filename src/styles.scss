@@ -22,10 +22,16 @@ body, html {
 
 .main-content {
     min-height: 100vh;
-    width: 85%;
+    width: 100%;
     padding: 0;
     margin: 0;
     padding-bottom: 60px; //same height as footer
+}
+
+@media ALL and (min-width:900px) {
+    .main-content {
+        width: 85%;
+    }
 }
 
 th,td {
@@ -67,25 +73,46 @@ i {
         opacity: .5 !important;
     }
 }
-//ng-pagination
-.page-item {
+//ng-pagination striped
+.pagination>.page-item:nth-child(even) {
     .page-link {
-        color: #39BEC1 !important; 
         background-color: #203848 !important;
-        border: 0 !important;
     }
 }
-.page-item.active {
-    .page-link { 
-        color: #32dadd  !important; 
+.pagination>.page-item:nth-child(odd) {
+    .page-link {
+        background-color: #1C2A35 !important;
+    }
+}
+//ng-pagination styling
+.pagination>.page-item {
+    .page-link {
+        border: 1px solid #1C2A3580 !important;
+        color: #4d4d4d !important;
+    }
+}
+.pagination>.page-item.active {
+    .page-link {
+        color: #32dadd !important;
         border: 1px solid #32dadd !important;
     }
 }
-.page-item.disabled {
-    .page-link { 
-        opacity: .5;
+.pagination>.page-item.disabled {
+    .page-link {
+        color: #4d4d4d !important;
     }
 }
+.pagination>.page-item:first-child {
+    .page-link {
+        background-color: #151f24  !important;
+    }
+}
+.pagination>.page-item:last-child {
+    .page-link {
+        background-color: #151f24  !important;
+    }
+}
+
 .text-light {
     color: #32dadd !important;
 }

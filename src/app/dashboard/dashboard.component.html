@@ -1,14 +1,30 @@
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-sm col-md-2 d-md-block navbar-light sidebar shadow">
+        <nav class="col-sm-12 col-md-2 d-md-block navbar-light sidebar p-0 m-0">
             <div class="bootstrap">
-                <ul class="nav flex-column">
-                    <li *ngIf="role === 'admin'" class="nav-item">
+                <ul *ngIf="role === 'admin'" class="nav flex-column">
+                    <p class="m-0">Admin</p>
+                    <li class="nav-item">
                         <a class="nav-link" routerLink="/dashboard/admin/home" routerLinkActive="active"
-                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-cog"></i>Admin</a>
-
+                            [routerLinkActiveOptions]="{exact: true}"><i
+                                class="mr-1 fas fa-tachometer-alt"></i>Analytics</a>
                     </li>
-                    <hr *ngIf="role === 'admin'" class="w-100 m-0 p-0">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/admin/issues" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            <i class="mr-1 fas fa-file-alt">
+                            </i>Manage Issues
+                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/admin/users" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            <i class="mr-1 fas fa-user">
+                            </i>Manage Users
+                        </a>
+                    </li>
+                    <hr class="w-100 m-0 p-0">
+                </ul>
+                <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/dashboard/home" routerLinkActive="active"
                             [routerLinkActiveOptions]="{exact: true}"><i

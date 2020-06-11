@@ -83,13 +83,12 @@ export class IssuesService {
   //
   getIssuesFiltered(priority: string, status: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      try {
-        const ref = await this.db.collection('issues', ref => ref.where('priority', '==', priority).where('status', '==', status))
+      const ref = await this.db.collection('issues', ref => ref.where('priority', '==', priority).where('status', '==', status))
         .get()
         .toPromise()
         .then((doc) => {
           if (doc.empty) {
-            reject('No results found');
+            reject();
           } else {
             let promises = [];
             doc.forEach(issue => {
@@ -101,10 +100,9 @@ export class IssuesService {
             resolve(promises);
           }
         })
-      }
-      catch (error) {
-        reject(error);
-      }
+        .catch(err => {
+          reject(err);
+        })
     });
   }
 
@@ -180,21 +178,35 @@ export class IssuesService {
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues').doc(id)
-          .update(
-            {
-              tech: formData.get('issueData.tech').value,
-              priority: formData.get('issueData.priority').value,
-              status: formData.get('issueData.status').value,
-              lastModified: new Date(),
-              dateEnd: dateEnd,
-              notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
-            });
-        resolve("Success: Updated Issue");
+          .get()
+          .toPromise()
+          .then((doc) => {
+            if (!doc.exists) {
+              reject('ERROR: No existing document was found.');
+            } else {
+              const docModifiedDate = doc.data().lastModified.seconds;
+              if (modifiedDateTimestamp > docModifiedDate) {
+                doc.ref
+                  .update(
+                    {
+                      tech: formData.get('issueData.tech').value,
+                      priority: formData.get('issueData.priority').value,
+                      status: formData.get('issueData.status').value,
+                      lastModified: new Date(),
+                      dateEnd: dateEnd,
+                      notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
+                    });
+              } else {
+                reject('ERROR: Document was updated by another technician.');
+              }
+            }
+          });
+        resolve("Success: Updated Issue.");
       }
       catch (error) {
         reject(error);
       }
-    })
+    });
   }
 
   //Delete issue using id param

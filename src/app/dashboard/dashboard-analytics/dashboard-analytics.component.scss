@@ -1,5 +1,5 @@
 .dashboard-widget {
-    margin-top: 1.5em;
+    margin: 1.5em 0;
 }
 th:hover {
     opacity: .75;
@@ -17,4 +17,21 @@ a:hover {
 
 #lineChart {
     max-width: 600px;
+}
+#doughnutChart {
+    position: relative;
+    max-height: 200px;
+    max-width: 200px;
+}
+#doughnutText {
+    position: absolute;
+    top: 0px;
+    left: 25%;
+    height: 200px;
+    width: 200px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    border: 2px solid red;
 }

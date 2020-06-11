@@ -68,9 +68,9 @@
                 <div class="card-body">
                     <div class="col-sm-12">
                         <div *ngIf="lineChartData" id="lineChart" class="chart-wrapper mb-4">
-                            <canvas baseChart width="1" height="1" [chartType]="'line'"
-                                [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-                                [legend]="true" [colors]="lineChartColors">
+                            <canvas baseChart width="1" height="1" [chartType]="'line'" [datasets]="lineChartData"
+                                [labels]="lineChartLabels" [options]="lineChartOptions" [legend]="true"
+                                [colors]="lineChartColors">
                             </canvas>
                         </div>
                     </div>
@@ -96,8 +96,8 @@
                                     <th>ID</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let item of recentHistory | slice:0:10">
-                                        <td>{{item.date.toDate() | date:'yyyy/MM/dd'}}</td>
+                                    <tr *ngFor="let item of recentHistory.reverse() | slice:0:10">
+                                        <td>{{item.date.toDate() | date:'MM/dd/yyyy'}}</td>
                                         <td>{{item.action}}</td>
                                         <td>{{item.issueId}}</td>
                                     </tr>

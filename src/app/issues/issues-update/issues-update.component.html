@@ -1,4 +1,5 @@
-<div *ngIf="issues$ && !errors" class="row justify-content-center">
+<div *ngIf="issues$" class="row justify-content-center">
+    <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
         <h4>Bug Tracker</h4>
         <h4>Updating Issue: ID#{{id}}</h4>
@@ -50,26 +51,5 @@
             <button class="btn w-25 mr-2" type="submit">Save</button>
             <button class="btn w-25" routerLink="/dashboard/issues">Cancel</button>
         </form>
-    </div>
-</div>
-<div *ngIf="errors" class="errors container-fluid">
-    <div class="row">
-        <div class="col">
-            <span class="text-center">
-                <p><i class="fas fa-exclamation-triangle"></i></p>
-            </span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col text-center">
-            <h4>{{ errors.title }}</h4>
-            <h6>{{ errors.subTitle }}</h6>
-            <p>{{ errors.message }}</p>
-        </div>
-    </div>
-    <div class="row btn-group-custom justify-content-center w-100" role="group" aria-label="...">
-        <a class="btn w-25 m-1" routerLink="/issues/list">View Open Tickets</a>
-        <a class="btn w-25 m-1" routerLink="/issues/update/{{id}}">Load Updated Issue</a>
-        <a class="btn w-25 m-1" routerLink="/issues/details/{{id}}">View Updated Issue</a>
     </div>
 </div>

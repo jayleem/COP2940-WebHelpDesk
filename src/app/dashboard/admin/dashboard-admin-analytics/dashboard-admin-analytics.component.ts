@@ -86,21 +86,21 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   //
   userHistory = [];
   updateRecentHistory() {
-    
-    for(const user in this.users$) {
+
+    for (const user in this.users$) {
       for (const item in this.users$[user].recentHistory)
-      this.userHistory.push(
-        {
-          username: this.users$[user].username,
-          history:this.users$[user].recentHistory[item]
-        });
+        this.userHistory.push(
+          {
+            username: this.users$[user].username,
+            history: this.users$[user].recentHistory[item]
+          });
     }
-    
+
     //sorts the array by date values
     //
-    this.userHistory.sort((a,b) => {
-      let c = new Date(a);
-      let d = new Date(b);
+    this.userHistory.sort((a, b) => {
+      let c = new Date(a.history.date.seconds);
+      let d = new Date(b.history.date.seconds);
       return (c < d) ? -1 : ((c > d) ? 1 : 0);
     });
   }
@@ -166,6 +166,20 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
           maxRotation: 45,
           minRotation: 45
         }
+      }],
+      yAxes: [{
+        stacked: true,
+        scaleLabel: {
+          display: true,
+          responsive: true,
+          maintainAspectRatio: true,
+          labelString: 'Issues'
+        },
+        ticks: {
+          beginAtZero: true,
+          min: 0,
+          stepSize: 1
+        }
       }]
     }
   };
@@ -217,8 +231,8 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     //generate days between the first and last day of the given week
     //
     for (let i = 1; i <= 7; i++) {
-      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toISOString().substring(0, 10));
-      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toISOString().substring(0, 10));
+      this.thisWeek.push(new Date(curr.setDate(firstDayThisWeek.getDate() - firstDayThisWeek.getDay() + i)).toLocaleDateString('en-us'));
+      this.lastWeek.push(new Date(curr.setDate(firstDayLastWeek.getDate() - firstDayLastWeek.getDay() + i)).toLocaleDateString('en-us'));
     }
   }
 
@@ -243,9 +257,9 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       //
       let date;
       if (e.dateEnd != "-") {
-        date = new Date(e.dateEnd.seconds * 1000).toISOString().substring(0, 10);
+        date = new Date(e.dateEnd.seconds * 1000).toLocaleDateString('en-us');
       } else {
-        date = new Date(e.dateStart.seconds * 1000).toISOString().substring(0, 10);
+        date = new Date(e.dateStart.seconds * 1000).toLocaleDateString('en-us');
       };
       if (!this.dates.some(el => el.date === date)) {
         this.dates.push(
@@ -328,7 +342,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       combinedLabels.push(e);
       combinedLabels.push(this.lastWeek[i]);
     });
-    combinedLabels.sort((a,b) => {
+    combinedLabels.sort((a, b) => {
       let c = new Date(a);
       let d = new Date(b);
       return (c < d) ? -1 : ((c > d) ? 1 : 0);
@@ -340,7 +354,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       combinedDates.push(e);
       combinedDates.push(this.lastWeek[i]);
     });
-    combinedDates.sort((a,b) => {
+    combinedDates.sort((a, b) => {
       let c = new Date(a);
       let d = new Date(b);
       return (c < d) ? -1 : ((c > d) ? 1 : 0);
@@ -355,9 +369,9 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
         twoWeeksDataPending.push(item.pending);
         twoWeeksDataClosed.push(item.closed);
       } else {
-        twoWeeksDataOpen.push(null);
-        twoWeeksDataPending.push(null);
-        twoWeeksDataClosed.push(null);
+        twoWeeksDataOpen.push(0);
+        twoWeeksDataPending.push(0);
+        twoWeeksDataClosed.push(0);
       }
     }
 
@@ -371,11 +385,11 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     //
     this.pieChartData = [this.ticketStats.status.open, this.ticketStats.status.closed, this.ticketStats.status.pending];
     this.pieChartData2 = [this.ticketStats.priority.low, this.ticketStats.priority.normal, this.ticketStats.priority.high, this.ticketStats.priority.urgent];
-    this.progress = (this.ticketStats.status.open + this.ticketStats.status.pending) / this.ticketStats.status.closed;
+    this.progress = this.ticketStats.status.closed / (this.ticketStats.status.open + this.ticketStats.status.pending + this.ticketStats.status.closed);
     //set progress for techs
     //
     for (const tech in this.techs) {
-      this.techs[tech].progress = (this.techs[tech].open + this.techs[tech].pending) / this.techs[tech].closed;
+      this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending + this.techs[tech].closed);
       isFinite(this.techs[tech].progress) ? null : this.techs[tech].progress = 0;
     }
   }
