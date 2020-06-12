@@ -14,7 +14,7 @@ export interface Issue {
   priority: string;
   status: string;
   notes: string[];
-  createdBy: string;
+  submittedBy: string;
   assignedTech: string;
   escalatedBy: string;
 }

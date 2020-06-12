@@ -1,6 +1,7 @@
+<h6 *ngFor="let error of errors" class="text-center alert alert-danger bg-danger text-white border-0 rounded-0 w-100" role="alert">{{error}}</h6>
 <div class="container-fluid mt-2">
     <div class="row dashboard-widgets justify-content-between">
-        <div class="col-md-6 text-left">
+        <div class="col-md-8 text-left">
             <a routerLink="/dashboard/admin/issues">
                 <i class="mr-1 fas fa-file-alt"></i>
                 Manage Issues
@@ -10,7 +11,7 @@
                 Manage Users
             </a>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-md-4 text-right">
             <a routerLink="/dashboard/admin/reports">
                 <i class="mr-1 fas fa-chart-line"></i>
                 Generate Report

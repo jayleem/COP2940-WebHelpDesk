@@ -1,5 +1,6 @@
 <div *ngIf="issues$" class="row justify-content-center">
-    <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
+    <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
+        role="alert">{{errors}}</h6>
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">
         <h4>Bug Tracker</h4>
         <h4>Updating Issue: ID#{{id}}</h4>
@@ -39,6 +40,19 @@
                         *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
                         class="help-block">
                         <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="escalate">Escalate<span class="ml-1 text-danger">*</span></label>
+                    <select name="escalate" id="escalate" formControlName="escalate" class="form-control">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.escalate').valid && updateIssueForm.get('issueData.priority').touched"
+                        class="help-block">
+                        <span *ngIf="updateIssueForm.get('issueData.escalate').errors['required']">This field is
                             required!</span>
                     </span>
                 </div>

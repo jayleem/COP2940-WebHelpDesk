@@ -4,7 +4,7 @@ import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-issues-list',
@@ -22,6 +22,9 @@ export class IssuesListComponent implements OnInit {
   //
   public errors;
 
+  //params
+  //
+  tech;
   //data
   //
   public issues = [];
@@ -31,7 +34,7 @@ export class IssuesListComponent implements OnInit {
   user: any;
   role: any;
   name: any;
-  constructor(private issuesService: IssuesService, private authService: AuthService, private userService: UserService, private router: Router) {
+  constructor(private issuesService: IssuesService, private authService: AuthService, private userService: UserService, private route: ActivatedRoute, private router: Router) {
     this.user = this.authService.getUser();
     this.userService.getUserById(this.user.uid)
       .then(res => {
@@ -44,12 +47,14 @@ export class IssuesListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getIssuesByTech();
+    this.route.params.subscribe(params => {
+      this.tech = params.user;
+      this.getIssuesByTech();
+    })
   }  
 
   getIssuesByTech() {
-    const tech = this.user.email;
-    this.issuesService.getIssuesByTech(tech)
+    this.issuesService.getIssuesByTech(this.tech)
     .then(data => {
       if (data.length > 0) {
         this.issues$ = data.map(e => {
@@ -60,6 +65,7 @@ export class IssuesListComponent implements OnInit {
       this.filterData();
     })
     .catch(err => {
+      this.issues = [];
       this.errors = 'ERROR: No results found';
     });
   }
@@ -93,7 +99,7 @@ export class IssuesListComponent implements OnInit {
           {
             id: e.id,
             title: e.title,
-            tech: e.tech,
+            tech: e.assignedTech,
             priority: e.priority,
             status: e.status,
             dateStart: e.dateStart,

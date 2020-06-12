@@ -32,6 +32,7 @@ export class IssuesUpdateComponent implements OnInit {
       'issueData': new FormGroup({
         'tech': new FormControl(null, [Validators.required]),
         'priority': new FormControl(null, [Validators.required]),
+        'escalate': new FormControl(0, [Validators.required]),
         'status': new FormControl(null, [Validators.required]),
         'notes': new FormControl(null, [Validators.maxLength(255)])
       }),
@@ -61,7 +62,7 @@ export class IssuesUpdateComponent implements OnInit {
     this.issueService.getIssuesById(id)
       .then(res => {
         this.issues$ = res;
-        this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.tech}`);
+        this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.assignedTech}`);
         this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].data.priority}`);
         this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].data.status}`);
       })
@@ -72,7 +73,7 @@ export class IssuesUpdateComponent implements OnInit {
   }
 
   onSubmit() {
-    this.issueService.updateIssue(this.id, this.updateIssueForm, this.modifiedDate)
+    this.issueService.updateIssue(this.id, this.user.email, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         console.log(res);
         //Update user history
@@ -80,7 +81,7 @@ export class IssuesUpdateComponent implements OnInit {
         this.userService.updateUserHistory(this.user.uid, "Updated", this.id);
         //Navigate back to issues
         //
-        this.router.navigate(['dashboard/issues']);
+        this.router.navigate(['dashboard/home']);
       })
       .catch(err => {
         this.errors = err;

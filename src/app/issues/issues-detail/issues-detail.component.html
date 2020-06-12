@@ -11,7 +11,9 @@
                     </div>
                     <div class="col-md-6 text-left text-muted">
                         <p class="card-text">Status: {{ issues$[0].data.status }}</p>
-                        <p class="card-text">Technician: {{ issues$[0].data.tech }}</p>
+                        <p class="card-text">Assigned Technician: {{ issues$[0].data.assignedTech }}</p>
+                        <p class="card-text">Submitted By: {{ issues$[0].data.submittedBy }}</p>
+                        <p class="card-text">Escalated By: {{ issues$[0].data.escalatedBy }}</p>
                         <p class="card-text">Creation Date: {{ issues$[0].data.dateStart.toDate() | date:'yyyy/MM/dd' }}
                         </p>
                         <p class="card-text" *ngIf="issues$[0].data.dateEnd === '-'; else notShown"></p>

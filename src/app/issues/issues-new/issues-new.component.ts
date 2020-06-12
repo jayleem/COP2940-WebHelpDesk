@@ -53,15 +53,22 @@ export class IssuesNewComponent implements OnInit {
   }
 
   onSubmit() {
-    this.issueService.addIssue(this.newIssueForm)
+    //add issue
+    //
+    console.log(this.user)
+    this.issueService.addIssue(this.user.email, this.newIssueForm)
+    //update user history
+    //
     .then(res => {
       const id = res;
       this.userService.updateUserHistory(this.user.uid, "Created", id);
+      //navigate back to issue list
+      //
+      this.router.navigate(['/dashboard/issues']);
     })
     .catch(err => {
       console.log(err);
     });
-    this.router.navigate(['/dashboard/issues']);
   }
 
   ngOnDestroy() {

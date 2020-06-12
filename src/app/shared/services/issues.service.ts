@@ -15,14 +15,14 @@ export class IssuesService {
 
   //Create new issue
   //
-  addIssue(data): Promise<any> {
+  addIssue(username, data): Promise<any> {
+    console.log(username, data);
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues')
           .add(
             {
               title: data.get('issueData.title').value,
-              tech: data.get('issueData.tech').value,
               dateStart: new Date(),
               dateEnd: '-',
               lastModified: new Date(),
@@ -34,7 +34,10 @@ export class IssuesService {
               },
               priority: data.get('issueData.priority').value,
               status: 'Open',
-              notes: null
+              notes: null,
+              submittedBy: username,
+              assignedTech: data.get('issueData.tech').value,
+              escalatedBy: null
             })
         resolve(ref.id);
       }
@@ -49,6 +52,7 @@ export class IssuesService {
   getIssues() {
     return this.db.collection('issues').snapshotChanges();
   }
+
 
   //Get issue by id
   //
@@ -111,7 +115,7 @@ export class IssuesService {
   getReportOnTech(tech): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const ref = await this.db.collection('issues', ref => ref.where('tech', '==', tech).where('status', '==', 'Open'))
+        const ref = await this.db.collection('issues', ref => ref.where('assignedTech', '==', tech).where('status', '==', 'Open'))
           .get()
           .toPromise()
           .then((doc) => {
@@ -138,7 +142,7 @@ export class IssuesService {
   getIssuesByTech(tech): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const ref = await this.db.collection('issues', ref => ref.where('tech', '==', tech))
+        const ref = await this.db.collection('issues', ref => ref.where('assignedTech', '==', tech))
           .get()
           .toPromise()
           .then((doc) => {
@@ -165,15 +169,21 @@ export class IssuesService {
 
   //Update issue using id and data params
   //
-  updateIssue(id: string, formData, modifiedDate: Date): Promise<any> {
+  updateIssue(id: string, username: string, formData: any, modifiedDate: Date): Promise<any> {
+    //assign a close date if the status is closed
+    //
     const status = formData.get('issueData.status').value;
     let dateEnd;
+    formData.get('issueData.status') != 'Closed' ? dateEnd = new Date() : dateEnd = '-';
+    //this is the time that the tech/user accessed the issues update page
+    //
     let modifiedDateTimestamp = Math.round(modifiedDate.getTime() / 1000);
-    if (status != 'Closed') {
-      dateEnd = '-';
-    } else {
-      dateEnd = new Date();
-    }
+    //check if issue was escalted if true assign the user who escalated the issue
+    //    
+    let escalatedBy = formData.get('issueData.escalate').value != 0 ? null : username;
+    //if ticket was escalated unassign the tickets previous assigned tech
+    //
+    let assignedTech = formData.get('issueData.escalate').value != 0 ? "Unassigned" : formData.get('issueData.tech').value;
 
     return new Promise(async (resolve, reject) => {
       try {
@@ -189,7 +199,8 @@ export class IssuesService {
                 doc.ref
                   .update(
                     {
-                      tech: formData.get('issueData.tech').value,
+                      assignedTech: assignedTech,
+                      escalatedBy: escalatedBy,
                       priority: formData.get('issueData.priority').value,
                       status: formData.get('issueData.status').value,
                       lastModified: new Date(),

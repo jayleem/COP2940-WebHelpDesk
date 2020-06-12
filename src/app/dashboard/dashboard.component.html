@@ -31,8 +31,12 @@
                                 class="mr-1 fas fa-tachometer-alt"></i>Analytics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/dashboard/issues" routerLinkActive="active"
-                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>View Issues</a>
+                        <a class="nav-link" routerLink="/dashboard/issues/list/{{user.email}}" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>Assigned Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/dashboard/issues/list/Unassigned" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>Unassigned Issues</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"

@@ -1,6 +1,6 @@
+<h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
 <div class="container-fluid">
     <div class="row">
-        <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
         <div class="col-sm-8 col-md-12">
             <app-dynamic-table 
                 [tableHeaders]="['Id','Title','Technician','Priority','Status','Date Start','Date End']"

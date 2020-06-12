@@ -34,17 +34,16 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   //
   getIssues() {
     this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
-      if (data.length > 0) {
-        this.issues$ = data.map(e => {
-          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
-        });
-        this.errors = '';
+     if (data.length > 0) {
+       this.issues$ = data.map(e => {
+         return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+       });
+       this.errors = '';
+       this.filterData();
       } else {
         this.errors = 'ERROR: No results found';
-        this.issues$ = undefined;
       }
-      this.filterData();
-    }));
+    }));         
   }
 
   getIssuesFiltered(priority, status) {
@@ -54,12 +53,11 @@ export class DashboardAdminIssuesListComponent implements OnInit {
         this.issues$ = issues.map(e => {
           return { id: e.id, ...e.data as {} } as Issue;
         });
+        this.errors = '';
+        this.filterData();
+      } else {
+        this.errors = 'ERROR: No results found';
       }
-      this.errors = '';
-      this.filterData();
-    })
-    .catch(err => {
-      this.errors = 'ERROR: No results found';
     });
   }
 
@@ -75,7 +73,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
           {
             id: e.id,
             title: e.title,
-            tech: e.tech,
+            tech: e.assignedTech,
             priority: e.priority,
             status: e.status,
             dateStart: e.dateStart,

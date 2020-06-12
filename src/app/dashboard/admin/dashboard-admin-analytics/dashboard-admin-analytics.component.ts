@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { Label, SingleDataSet } from 'ng2-charts';
@@ -7,6 +7,8 @@ import { ChartType } from 'chart.js';
 import { ThrowStmt } from '@angular/compiler';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
+import { finalize } from 'rxjs/operators';
+import { title } from 'process';
 
 @Component({
   selector: 'app-dashboard-admin-analytics',
@@ -14,13 +16,12 @@ import { User } from 'src/app/models/user.model';
   styleUrls: ['./dashboard-admin-analytics.component.scss']
 })
 export class DashboardAdminAnalyticsComponent implements OnInit {
-
-  //firestore subscription
+    //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
   issues$;
   users$;
-  errors;
+  errors = [];
   //data vars
   //
   progress = 0.0;
@@ -48,22 +49,25 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     this.setDates();
     this.getIssues();
     this.getUsers();
+    this.errors = [];
   }
-
 
   getIssues() {
-    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
-      if (data.length > 0) {
-        this.issues$ = data.map(e => {
-          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
-        });
-      } else {
-        this.errors = 'ERROR: No documents were found';
-        this.issues$ = undefined;
-      }
-      this.updateChartData();
-    }));
+    this.firestoreSubscriptions.push(this.issuesService.getIssues()
+      .subscribe(
+        data => {
+          if (data.length > 0) {
+            this.issues$ = data.map(e => {
+              return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+            })
+            this.updateChartData();
+          } else {
+            this.errors.push('ERROR: No documents were found');
+            this.issues$ = '';
+          }
+        }));
   }
+
 
   getUsers() {
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
@@ -71,11 +75,11 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
         this.users$ = data.map(e => {
           return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
         });
+        this.updateRecentHistory();
       } else {
-        this.errors = 'ERROR: No documents were found';
-        this.users$ = undefined;
+        this.errors.push('ERROR: No documents were found');
+        this.users$ = '';
       }
-      this.updateRecentHistory();
     }));
   }
 
@@ -286,10 +290,10 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
       //add only unique technicans
       //
-      if (!this.techs.some(el => el.tech === e.tech)) {
+      if (!this.techs.some(el => el.tech === e.assignedTech)) {
         this.techs.push(
           {
-            tech: e.tech,
+            tech: e.assignedTech,
             open: 0,
             pending: 0,
             closed: 0,
@@ -299,12 +303,12 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
       //get index of current tech on issue
       //
-      const index = this.techs.findIndex(el => el.tech === e.tech)
+      const index = this.techs.findIndex(el => el.tech === e.assignedTech)
       let techObj = this.techs[index];
-      if (e.tech === techObj.tech && e.status === 'Open') {
+      if (e.assignedTech === techObj.tech && e.status === 'Open') {
         this.techs[index].open++;
         this.ticketStats.status.open++;
-      } else if (e.tech === techObj.tech && e.status === 'Pending') {
+      } else if (e.assignedTech === techObj.tech && e.status === 'Pending') {
         this.techs[index].pending++;
         this.ticketStats.status.pending++;
       } else {

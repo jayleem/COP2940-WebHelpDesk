@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ChartType, ChartDataSets } from 'chart.js';
-import { Label, SingleDataSet, MultiDataSet } from 'ng2-charts';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { ChartType } from 'chart.js';
+import { Label, SingleDataSet } from 'ng2-charts';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Subscription } from 'rxjs';
 import { Issue } from 'src/app/models/issue.model';
@@ -38,6 +38,8 @@ export class DashboardAnalyticsComponent implements OnInit {
   };
   techs = [];
   dates = [];
+  //loading
+  isLoading;
 
 
   //Get user and role
@@ -62,7 +64,7 @@ export class DashboardAnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.setDates();
-    this.getIssuesByTech();
+    this.getIssuesByTech(); 
   }
 
 
@@ -75,13 +77,13 @@ export class DashboardAnalyticsComponent implements OnInit {
             return { id: e.id, ...e.data as {} } as Issue;
           });
         } else {
-          this.errors = 'ERROR: No documents were found';
           this.issues$ = undefined;
         }
+        this.errors = ''
         this.updateChartData();
       })
       .catch(err => {
-        console.log(err)
+        this.errors = 'ERROR: No documents were found';
       });
   }
 
@@ -287,10 +289,10 @@ export class DashboardAnalyticsComponent implements OnInit {
 
       //add only unique technicans
       //
-      if (!this.techs.some(el => el.tech === e.tech)) {
+      if (!this.techs.some(el => el.tech === e.assignedTech)) {
         this.techs.push(
           {
-            tech: e.tech,
+            tech: e.assignedTech,
             open: 0,
             pending: 0,
             closed: 0,
@@ -300,12 +302,12 @@ export class DashboardAnalyticsComponent implements OnInit {
 
       //get index of current tech on issue
       //
-      const index = this.techs.findIndex(el => el.tech === e.tech)
+      const index = this.techs.findIndex(el => el.tech === e.assignedTech)
       let techObj = this.techs[index];
-      if (e.tech === techObj.tech && e.status === 'Open') {
+      if (e.assignedTech === techObj.tech && e.status === 'Open') {
         this.techs[index].open++;
         this.ticketStats.status.open++;
-      } else if (e.tech === techObj.tech && e.status === 'Pending') {
+      } else if (e.assignedTech === techObj.tech && e.status === 'Pending') {
         this.techs[index].pending++;
         this.ticketStats.status.pending++;
       } else {
