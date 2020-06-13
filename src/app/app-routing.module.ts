@@ -39,7 +39,7 @@ const routes: Routes = [
       { path: 'admin/users', component: DashboardAdminUsersListComponent, canActivate: [RoleGuardService] },
       { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent, canActivate: [RoleGuardService] },
       {
-        path: 'admin/reports', component: ReportsComponent, children: [
+        path: 'admin/reports', component: ReportsComponent, canActivate: [RoleGuardService], children: [
           { path: 'user/:id', component: ReportsListComponent }
         ]
       },

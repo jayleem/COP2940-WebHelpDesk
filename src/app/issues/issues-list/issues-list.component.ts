@@ -50,43 +50,43 @@ export class IssuesListComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.tech = params.user;
       this.getIssuesByTech();
-    })
-  }  
+    });
+  }
 
   getIssuesByTech() {
     this.issuesService.getIssuesByTech(this.tech)
-    .then(data => {
-      if (data.length > 0) {
-        this.issues$ = data.map(e => {
-          return { id: e.id, ...e.data as {} } as Issue;
-        });
-      } 
-      this.errors = '';
-      this.filterData();
-    })
-    .catch(err => {
-      this.issues = [];
-      this.errors = 'ERROR: No results found';
-    });
+      .then(data => {
+        if (data.length > 0) {
+          this.issues$ = data.map(e => {
+            return { id: e.id, ...e.data as {} } as Issue;
+          });
+        }
+        this.errors = '';
+        this.filterData();
+      })
+      .catch(err => {
+        this.issues = [];
+        this.errors = 'ERROR: No results found';
+      });
   }
 
   getIssuesFiltered(priority, status) {
     this.issuesService.getIssuesFiltered(priority, status)
-    .then(issues => {
-      if (issues.length > 0) {
-        this.issues$ = issues.map(e => {
-          return { id: e.id, ...e.data as {} } as Issue;
-        });
-      };
-      this.errors = '';
-      this.filterData();
-    })
-    .catch(err => {
-      this.errors = 'ERROR: No results found';
-    });
+      .then(issues => {
+        if (issues.length > 0) {
+          this.issues$ = issues.map(e => {
+            return { id: e.id, ...e.data as {} } as Issue;
+          });
+        };
+        this.errors = '';
+        this.filterData();
+      })
+      .catch(err => {
+        this.errors = 'ERROR: No results found';
+      });
   }
 
-    //Note the data here is filtered specifically for the table in issues-list component
+  //Note the data here is filtered specifically for the table in issues-list component
   //
   filterData() {
     this.issues = [];
@@ -105,41 +105,41 @@ export class IssuesListComponent implements OnInit {
             dateStart: e.dateStart,
             dateEnd: e.dateEnd,
             //summary: e.desc.summary
-          });        
-        }
-      });
-    }
+          });
+      }
+    });
+  }
 
   //Note the data here is filtered specifically for the table in issues-list component
   //
-    filtersChanged(event) {
-      if (event.filters) {
-        this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
-      } else {
-        this.getIssuesByTech()
-      }
-    }
-
-    //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
-    //
-    deleteIssue(event) {      
-      const id = event.id;
-      this.issuesService.deleteIssue(id)
-        .then(res => {
-          console.log(res);
-          this.userService.updateUserHistory(this.user.uid, "Deleted", id);
-          this.getIssuesByTech();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-
-    // Unsubscribe from firestore real time listener
-    //
-    ngOnDestroy() {
-      for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
-        this.firestoreSubscriptions[i].unsubscribe();
-      }
+  filtersChanged(event) {
+    if (event.filters) {
+      this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
+    } else {
+      this.getIssuesByTech()
     }
   }
+
+  //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
+  //
+  deleteIssue(event) {
+    const id = event.id;
+    this.issuesService.deleteIssue(id)
+      .then(res => {
+        console.log(res);
+        this.userService.updateUserHistory(this.user.uid, "Deleted", id);
+        this.getIssuesByTech();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  // Unsubscribe from firestore real time listener
+  //
+  ngOnDestroy() {
+    for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
+      this.firestoreSubscriptions[i].unsubscribe();
+    }
+  }
+}
