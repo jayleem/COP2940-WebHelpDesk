@@ -7,10 +7,6 @@
                     <div class="col-md-6 text-left text-muted mb-sm-3">
                         <p class="card-text">ID: {{ issues$[0].id }}</p>
                         <p class="card-text">Title: {{ issues$[0].data.title }}</p>
-                        <p class="card-text">Priority: {{ issues$[0].data.priority }}</p>
-                    </div>
-                    <div class="col-md-6 text-left text-muted">
-                        <p class="card-text">Status: {{ issues$[0].data.status }}</p>
                         <p class="card-text">Assigned Technician: {{ issues$[0].data.assignedTech }}</p>
                         <p class="card-text">Submitted By: {{ issues$[0].data.submittedBy }}</p>
                         <p class="card-text">Escalated By: {{ issues$[0].data.escalatedBy }}</p>
@@ -22,6 +18,12 @@
                                 {{ issues$[0].data.dateEnd.toDate() | date:'yyyy/MM/dd' }}
                             </p>
                         </ng-template>
+                    </div>
+                    <div class="col-md-6 text-left text-muted">
+                        <p class="card-text">Status: {{ issues$[0].data.status }}</p>
+                        <p class="card-text">Priority: {{ issues$[0].data.priority }}</p>
+                        <p class="card-text">Severity: {{ issues$[0].data.severity }}</p>
+                        <p class="card-text">Difficulty: {{ issues$[0].data.difficulty }}</p>
                     </div>
                 </div>
             </div>

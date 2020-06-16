@@ -86,7 +86,7 @@ export class UserService {
             .update(
               {
                 role: formData.get('userData.role').value,
-                status: formData.get('userData.status').value,
+                accountStatus: formData.get('userData.status').value,
               });
           })
         });

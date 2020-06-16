@@ -8,6 +8,14 @@ p,a {
     padding: .5em;
 }
 
+.navbar-brand {
+    a {
+        span {
+            text-decoration: none !important;
+            color: #fff !important;
+        }
+    }
+}
 li {
     .nav-link:hover {
         border-left: 4px #39bec1 solid !important;

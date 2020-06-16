@@ -1,9 +1,37 @@
-<div class="main-content">
-    <div class="row justify-content-center">
-        <div class="mt-5 mb-5 col-xs-12 col-sm-10 col-md-8">
+<h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
+<div class="container-fluid vh-100">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <app-dynamic-table 
+                *ngIf="reportType == 'ordered' && issues"
+                [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
+                [tableDataFields]="['id','title','tech','priority','severity','status','difficulty','dateStart','dateEnd']" 
+                [tableLabel]=true
+                [actions]=false
+                [actionsType]="'issues'"
+                [actionHeader]="'Actions'"
+                [data]="issues"
+                [orderBy]="orderBy"
+                [filterControl]=false 
+                [pagination]=true >
+            </app-dynamic-table>
+            <app-dynamic-table 
+                *ngIf="reportType == 'overview' && issues"
+                [tableHeaders]="['Technician', 'Open', 'Low', 'Medium', 'High', 'Urgent']"
+                [tableDataFields]="['tech', 'open', 'low', 'medium', 'high', 'urgent']"
+                [tableLabel]=true
+                [actions]=false
+                [actionsType]="'issues'"
+                [actionHeader]="'Actions'"
+                [data]="techs"
+                [filterControl]=false 
+                [pagination]=true>
+            </app-dynamic-table>
+        </div>
+        <div *ngIf="reportType == 'search'" class="col-sm-8 col-md-12">
             <form [formGroup]="newIssueForm" (ngSubmit)="onSubmit()">
                 <div formGroupName="reportData">
-                    <div class="form-group">
+                    <div class="form-group mt-2 col-sm-8 col-md-6">
                         <label for="tech">Search Open Issues by Technician:</label>
                         <input type="text" id="tech" formControlName="tech" class="form-control">
                         <span
@@ -18,11 +46,22 @@
                 <div class="row justify-content-center">
                     <div class="col btn-group-custom" role="group" aria-label="failed update options">
                         <button class="btn" type="submit">Generate Report</button>
-                        <a class="btn" routerLink="/dashboard/home">Cancel</a>
                     </div>
                 </div>
             </form>
+            <app-dynamic-table 
+                *ngIf="issues"
+                [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
+                [tableDataFields]="['id','title','tech','priority','severity','status','difficulty','dateStart','dateEnd']" 
+                [tableLabel]=true
+                [actions]=false
+                [actionsType]="'issues'"
+                [actionHeader]="'Actions'"
+                [data]="issues"
+                [orderBy]="orderBy"
+                [filterControl]=false 
+                [pagination]=true >
+            </app-dynamic-table>
         </div>
     </div>
-    <router-outlet></router-outlet>
 </div>

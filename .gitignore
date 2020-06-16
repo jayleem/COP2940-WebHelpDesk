@@ -12,7 +12,7 @@
 
 #env files
 /src/environments
-/environments
+/src/app/scripts
 
 #assets
 /src/assets

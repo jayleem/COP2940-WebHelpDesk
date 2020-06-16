@@ -12,6 +12,8 @@ export interface Issue {
     actlRes: string
   },
   priority: string;
+  severity: string;
+  difficulty: string;
   status: string;
   notes: string[];
   submittedBy: string;

@@ -28,6 +28,8 @@ export class IssuesNewComponent implements OnInit {
         'title': new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(50)]),
         'tech': new FormControl(null, [Validators.required]),
         'priority': new FormControl('Low', [Validators.required]),
+        'severity': new FormControl('Minor', [Validators.required]),
+        'difficulty': new FormControl('Easy', [Validators.required]),
         'summary': new FormControl(null, [Validators.required, Validators.minLength(15), Validators.maxLength(255)]),
         'reproduce': new FormControl(null, [Validators.required, Validators.minLength(15), Validators.maxLength(255)]),
         'expctRes': new FormControl(null, [Validators.required, Validators.minLength(15), Validators.maxLength(255)]),
@@ -64,7 +66,7 @@ export class IssuesNewComponent implements OnInit {
       this.userService.updateUserHistory(this.user.uid, "Created", id);
       //navigate back to issue list
       //
-      this.router.navigate(['/dashboard/issues']);
+      this.router.navigate(['/dashboard/home']);
     })
     .catch(err => {
       console.log(err);

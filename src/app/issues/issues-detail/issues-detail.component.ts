@@ -28,7 +28,6 @@ export class IssuesDetailComponent implements OnInit {
   async getIssueById(id) {
     await this.issuesService.getIssuesById(id)
     .then(res => {
-      console.log(res);
       this.issues$ = res;
     })
     .catch(err => {

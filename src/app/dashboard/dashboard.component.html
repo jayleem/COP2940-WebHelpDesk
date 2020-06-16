@@ -3,10 +3,10 @@
         <nav class="col-sm-12 col-md-2 d-md-block navbar-light sidebar p-0 m-0">
             <div class="bootstrap">
                 <!--Admin Menu-->
-                <div *ngIf="role == 'admin'">
-                    <button class="btn w-100 border-0 navbar-toggler" type="button" (click)="subMenu0 = !subMenu0"
-                        aria-controls="navbarSupportedContent" [attr.aria-expanded]="!subMenu0"
-                        aria-label="Toggle navigation">Admin
+                <div *ngIf="role == 'admin'; else notShown">
+                    <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                        (click)="subMenu0 = !subMenu0" aria-controls="navbarSupportedContent"
+                        [attr.aria-expanded]="!subMenu0" aria-label="Toggle navigation">Admin
                         <span>
                             <i [ngClass]="subMenu0 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
                         </span>
@@ -16,20 +16,18 @@
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/admin/home" routerLinkActive="active"
                                     [routerLinkActiveOptions]="{exact: true}"><i
-                                        class="mr-1 fas fa-tachometer-alt"></i>Analytics</a>
+                                        class="mr-1 fas fa-chart-bar"></i>Analytics</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/admin/issues" routerLinkActive="active"
                                     [routerLinkActiveOptions]="{exact: true}">
                                     <i class="mr-1 fas fa-file-alt">
-                                    </i>Manage Issues
-                                </a>
+                                    </i>Manage Issues</a>
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/admin/users" routerLinkActive="active"
                                     [routerLinkActiveOptions]="{exact: true}">
                                     <i class="mr-1 fas fa-user">
-                                    </i>Manage Users
-                                </a>
+                                    </i>Manage Users</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
@@ -38,43 +36,94 @@
                             </li>
                         </div>
                     </ul>
-                </div>
-
-                <!--My Issues Menu-->
-                <button class="btn w-100 border-0 navbar-toggler" type="button" (click)="subMenu1 = !subMenu1"
-                    aria-controls="navbarSupportedContent" [attr.aria-expanded]="!subMenu1"
-                    aria-label="Toggle navigation">Issues
-                    <span>
-                        <i [ngClass]="subMenu1 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
-                    </span>
-                </button>
-                <ul class="nav flex-column">
-                    <div [ngbCollapse]="subMenu1" class="collapse navbar-collapse" id="collapsible">
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/dashboard/home" routerLinkActive="active"
+                    <!--Admin Reports Menu-->
+                    <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                        (click)="subMenu2 = !subMenu2" aria-controls="navbarSupportedContent"
+                        [attr.aria-expanded]="!subMenu2" aria-label="Toggle navigation">Reports
+                        <span>
+                            <i [ngClass]="subMenu2 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+                        </span>
+                    </button>
+                    <ul class="nav flex-column">
+                        <div [ngbCollapse]="subMenu2" class="collapse navbar-collapse" id="collapsible">
+                            <li class="nav-item">
+                                <a class="nav-link" 
+                                routerLink="/dashboard/admin/reports/" 
+                                [queryParams]=" { status:'Open', orderBy:'priority', reportType:'ordered' }" 
+                                routerLinkActive="active"                                    
+                                [routerLinkActiveOptions]="{exact: true}">
+                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Priority</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" 
+                                routerLink="/dashboard/admin/reports/" 
+                                [queryParams]="{ status:'Open', orderBy:'severity', reportType:'ordered' }"                                    
+                                routerLinkActive="active" 
+                                [routerLinkActiveOptions]="{exact: true}">
+                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Severity</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" 
+                                routerLink="/dashboard/admin/reports/" 
+                                [queryParams]="{ status:'Open', reportType:'overview' }"
+                                routerLinkActive="active" 
+                                [routerLinkActiveOptions]="{exact: true}">
+                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Technician</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" 
+                                routerLink="/dashboard/admin/reports"
+                                [queryParams]="{ reportType:'search' }"                    
+                                routerLinkActive="active" 
                                 [routerLinkActiveOptions]="{exact: true}"><i
-                                    class="mr-1 fas fa-tachometer-alt"></i>Analytics</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/dashboard/issues/list/{{user.email}}"
-                                routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
-                                    class="mr-1 fas fa-bug"></i>My Issues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/dashboard/issues/list/Unassigned" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-bug"></i>Unassigned
-                                Issues</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
-                                Issue</a>
-                        </li>
+                                class="mr-1 fas fa-file-alt"></i>Search Technician</a>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+                <!--My Issues Menu-->
+                <ng-template #notShown>
+                    <div *ngIf="role != 'unassigned'; else unassigned">
+                        <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                            (click)="subMenu1 = !subMenu1" aria-controls="navbarSupportedContent"
+                            [attr.aria-expanded]="!subMenu1" aria-label="Toggle navigation">Issues
+                            <span>
+                                <i [ngClass]="subMenu1 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+                            </span>
+                        </button>
+                        <ul class="nav flex-column">
+                            <div [ngbCollapse]="subMenu1" class="collapse navbar-collapse" id="collapsible">
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/home" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{exact: true}"><i
+                                            class="mr-1 fas fa-chart-bar"></i>Analytics</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/issues/list/{{user.email}}"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+                                            class="mr-1 fas fa-bug"></i>My Issues</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/issues/list/Unassigned"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+                                            class="mr-1 fas fa-bug"></i>Unassigned
+                                        Issues</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
+                                        Issue</a>
+                                </li>
+                            </div>
+                        </ul>
                     </div>
-                </ul>
+                    <ng-template #unassigned>
+                    </ng-template>
+                </ng-template>
             </div>
         </nav>
         <div class="col-md-10 main-content">
             <router-outlet></router-outlet>
         </div>
     </div>
+</div>

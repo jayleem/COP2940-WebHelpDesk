@@ -34,17 +34,20 @@ export class LoginComponent implements OnInit {
     const password = this.credentialDataForm.get('credentialData.password').value;
     //login user with provided credentials
     //
-    const login = this.authService.signIn(email, password)
-      .then(res => {
-        let accountStatus = this.authService.getAccountStatus();
-        if (accountStatus) {
-          this.router.navigate(['/dashboard/home']);
-        } else {
-          this.errorMessage = "Your account has been disabled. Contact an administrator for assistance."
-        }
+    let disabled;
+    this.authService.signIn(email, password)
+      .then((res) => {
+        disabled = this.authService.getLoggedIn();
+        this.router.navigate(['/dashboard/home']);
       })
       .catch(err => {
         this.errorMessage = "Invalid username or password."
-      })
+      });
+    //if account is disabled show error message
+    //
+    if(disabled && !this.errorMessage) {
+      console.log(this.authService.getLoggedIn());
+      this.errorMessage = "Your account has been disabled. Please contact an adminstrator if you need assistance.";
+    }
   }
 }

@@ -20,26 +20,33 @@ import { ReportsComponent } from './reports/reports.component';
 import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
 import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
 import { RoleGuardService } from './shared/services/role-guard.service';
+import { AdminRoleGuardService } from './shared/services/admin-role-guard.service';
+import { RoleAssignmentComponent } from './role-assignment/role-assignment.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuardService] },
   { path: 'register', component: RegisterComponent, canActivate: [LoginGuardService] },
+  { path: 'role-assignment', component: RoleAssignmentComponent },
   {
-    path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService], children: [
-      { path: 'home', component: DashboardAnalyticsComponent },
+    path: 'dashboard', 
+      component: DashboardComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always', children: [
+      { path: 'home', component: DashboardAnalyticsComponent }, 
       { path: 'issues/list/:user', component: IssuesListComponent },
       { path: 'issues/new', component: IssuesNewComponent },
       { path: 'issues/details/:id', component: IssuesDetailComponent },
       { path: 'issues/update/:id', component: IssuesUpdateComponent },
-      //ADMIN ROUTES
-      { path: 'admin/home', component: DashboardAdminAnalyticsComponent, canActivate: [RoleGuardService] },
-      { path: 'admin/issues', component: DashboardAdminIssuesListComponent, canActivate: [RoleGuardService] },
-      { path: 'admin/users', component: DashboardAdminUsersListComponent, canActivate: [RoleGuardService] },
-      { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent, canActivate: [RoleGuardService] },
+      //ADMIN ROUTES might move this to its own parent component + routes
+      { path: 'admin/home', component: DashboardAdminAnalyticsComponent, canActivate: [AdminRoleGuardService] },
+      //REPORT QUERY
+      //
+      { path: 'admin/issues/:query', component: DashboardAdminIssuesListComponent, canActivate: [AdminRoleGuardService] },
+      { path: 'admin/issues', component: DashboardAdminIssuesListComponent, canActivate: [AdminRoleGuardService] },
+      { path: 'admin/users', component: DashboardAdminUsersListComponent, canActivate: [AdminRoleGuardService] },
+      { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent, canActivate: [AdminRoleGuardService] },
       {
-        path: 'admin/reports', component: ReportsComponent, canActivate: [RoleGuardService], children: [
+        path: 'admin/reports', component: ReportsComponent, canActivate: [AuthGuardService, AdminRoleGuardService], runGuardsAndResolvers: 'always', children: [
           { path: 'user/:id', component: ReportsListComponent }
         ]
       },

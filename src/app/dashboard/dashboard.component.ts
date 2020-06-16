@@ -9,10 +9,13 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  //user data
+  //
   user: any;
   role: any;
   subMenu0 = false;
   subMenu1 = false;
+  subMenu2 = false;
 
   constructor(private authService: AuthService, private userService: UserService, private router: Router, private route: ActivatedRoute) {
     this.user = this.authService.getUser();
@@ -23,6 +26,11 @@ export class DashboardComponent implements OnInit {
       .catch(err => {
         console.log(err);
       });
+  }
+
+  setIssueCount(event: any) {
+    console.log("testing");
+    console.log(event);
   }
 
   ngOnInit() { }

@@ -37,8 +37,8 @@
                                     <div class="form-group">
                                         <label for="status">Account Status:<span class="ml-1 text-danger">*</span></label>
                                         <select name="status" id="status" formControlName="status" class="form-control">
-                                            <option value="enabled">Enabled</option>
-                                            <option value="disabled">Disabled</option>
+                                            <option [ngValue]="true">Enabled</option>
+                                            <option [ngValue]="false">Disabled</option>
                                         </select>
                                         <span
                                             *ngIf="!updateUserForm.get('userData.status').valid && updateUserForm.get('userData.status').touched"

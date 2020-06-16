@@ -70,8 +70,8 @@ export class IssuesListComponent implements OnInit {
       });
   }
 
-  getIssuesFiltered(priority, status) {
-    this.issuesService.getIssuesFiltered(priority, status)
+  getIssuesFiltered(status, priority, severity, difficulty) {
+    this.issuesService.getIssuesFiltered(status, priority, severity, difficulty)
       .then(issues => {
         if (issues.length > 0) {
           this.issues$ = issues.map(e => {
@@ -94,27 +94,27 @@ export class IssuesListComponent implements OnInit {
       //add only unique issues
       //
       if (!this.issues.some(el => el.id === e.id)) {
-
         this.issues.push(
           {
             id: e.id,
             title: e.title,
             tech: e.assignedTech,
             priority: e.priority,
+            severity: e.severity,
+            difficulty: e.difficulty,
             status: e.status,
             dateStart: e.dateStart,
-            dateEnd: e.dateEnd,
-            //summary: e.desc.summary
+            dateEnd: e.dateEnd
           });
       }
     });
-  }
+  };
 
   //Note the data here is filtered specifically for the table in issues-list component
   //
   filtersChanged(event) {
     if (event.filters) {
-      this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
+      this.getIssuesFiltered(event.filters.currentStatus, event.filters.currentPriority, event.filters.currentSeverity, event.filters.currentDifficulty)
     } else {
       this.getIssuesByTech()
     }

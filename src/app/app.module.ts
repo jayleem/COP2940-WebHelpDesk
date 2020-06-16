@@ -23,6 +23,10 @@ import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DashboardAnalyticsComponent } from './dashboard/dashboard-analytics/dashboard-analytics.component';
 import { DashboardAdminAnalyticsComponent } from './dashboard/admin/dashboard-admin-analytics/dashboard-admin-analytics.component';
+import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
+import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
+import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
+import { RoleAssignmentComponent } from './role-assignment/role-assignment.component';
 
 //Services
 import { IssuesService } from './shared/services/issues.service';
@@ -31,6 +35,8 @@ import { AuthGuardService } from './shared/services/auth-guard.service';
 import { LoginGuardService } from './shared/services/login-guard.service';
 import { UserService } from './shared/services/user.service';
 import { ProfileGuardService } from './shared/services/profile-guard.service';
+import { RoleGuardService } from './shared/services/role-guard.service';
+import { AdminRoleGuardService } from './shared/services/admin-role-guard.service';
 
 //Angular Bootstrap
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -46,10 +52,9 @@ import { environment } from 'src/environments/environment';
 
 //ng-2 charts
 import { ChartsModule } from 'ng2-charts';
-import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-admin-issues-list/dashboard-admin-issues-list.component';
-import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
-import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
-import { RoleGuardService } from './shared/services/role-guard.service';
+
+
+
 
 @NgModule({
   declarations: [
@@ -74,6 +79,7 @@ import { RoleGuardService } from './shared/services/role-guard.service';
     DashboardAdminIssuesListComponent,
     DashboardAdminUsersListComponent,
     DashboardAdminUsersDetailsComponent,
+    RoleAssignmentComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +92,7 @@ import { RoleGuardService } from './shared/services/role-guard.service';
     ReactiveFormsModule,
     ChartsModule
   ],
-  providers: [IssuesService, AuthService, AuthGuardService, LoginGuardService, UserService, ProfileGuardService, RoleGuardService],
+  providers: [IssuesService, AuthService, AuthGuardService, LoginGuardService, UserService, ProfileGuardService, RoleGuardService, AdminRoleGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

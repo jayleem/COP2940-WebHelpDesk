@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Subscription, throwError } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
@@ -16,7 +16,8 @@ import { title } from 'process';
   styleUrls: ['./dashboard-admin-analytics.component.scss']
 })
 export class DashboardAdminAnalyticsComponent implements OnInit {
-    //firestore subscription
+
+  //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
   issues$;
@@ -182,6 +183,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
         ticks: {
           beginAtZero: true,
           min: 0,
+          max: 100,
           stepSize: 1
         }
       }]
@@ -384,6 +386,10 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       { label: "Pending", data: twoWeeksDataPending, spanGaps: true },
       { label: "Closed", data: twoWeeksDataClosed, spanGaps: true }
     ]
+
+    //set yAxes max tick value to the number of issues created during the dates
+    //
+    this.lineChartOptions.scales.yAxes[0].ticks.max = this.issues$.length;
 
     //setting pie chart data
     //

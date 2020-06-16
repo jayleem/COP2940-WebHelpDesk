@@ -47,6 +47,7 @@ export class DynamicTableComponent implements OnInit {
   @Input() actionsType: string;
   @Input() extraDataFields: string[] = []
   @Input() data: any[] = []
+  @Input() orderBy: string;
   @Input() filterControl: boolean;
   @Input() pagination: boolean;
   //vars sent to parent component
@@ -66,6 +67,8 @@ export class DynamicTableComponent implements OnInit {
 
   //table filter vars
   public currentPriority; //default priority
+  public currentSeverity; //default severity
+  public currentDifficulty; //default difficulty
   public currentStatus; //default status
   //pagination vars
   //
@@ -78,12 +81,18 @@ export class DynamicTableComponent implements OnInit {
 
   constructor(private issuesService: IssuesService) { }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   changePriority(change: string) {
     this.currentPriority = change;
+  }
+
+  changeSeverity(change: string) {
+    this.currentSeverity = change;
+  }
+
+  changeDifficulty(change: string) {
+    this.currentDifficulty = change;
   }
 
   changeStatus(change: string) {
@@ -91,12 +100,14 @@ export class DynamicTableComponent implements OnInit {
   }
 
   applyFilters() {
-    this.onFiltersApplied.emit({ filters: { currentPriority: this.currentPriority, currentStatus: this.currentStatus } })
+    this.onFiltersApplied.emit({ filters: { currentStatus: this.currentStatus, currentPriority: this.currentPriority, currentSeverity: this.currentSeverity, currentDifficulty: this.currentDifficulty } })
   }
 
   clearFilters() {
     this.currentPriority = null;
     this.currentStatus = null;
+    this.currentSeverity = null;
+    this.currentDifficulty = null;
     this.errors = null;
     this.onFiltersCleared.emit({ filters: null })
   }

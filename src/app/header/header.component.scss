@@ -5,21 +5,26 @@ i {
 
 i.fas.fa-bars {
     margin:0;
-    font-size: 1.5em;
+    font-size: 1.5rem;
 }
 
 i.fas.fa-bars:hover {
     color: #fff;
 }
 
-/* Media Rules 
-
-   Might use this media query later
-
-*/
-@media ALL and (max-width: 1000px) {
+@media ALL and (min-width: 800px) {
     .navbar-nav {
-        border: 0;
+        a {
+            font-size: .9rem;
+        }
     }
 }
+@media ALL and (min-width: 1200px) {
+    .navbar-nav {
+        a {
+            font-size: 1rem;
+        }
+    }
+}
+
 

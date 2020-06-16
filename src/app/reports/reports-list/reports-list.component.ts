@@ -42,7 +42,7 @@ export class ReportsListComponent implements OnInit {
           {
             id: e.id,
             title: e.data.title,
-            tech: e.data.tech,
+            tech: e.data.assignedTech,
             priority: e.data.priority,
             status: e.data.status,
             dateStart: e.data.dateStart,

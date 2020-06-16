@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-dashboard-admin-issues-list',
@@ -22,10 +26,28 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   //data
   //
   public issues = [];
-  constructor(private issuesService: IssuesService) { }
+  //Get user and role
+  //I don't think this is a very good way of doing things. I should just bind the user and role to data from the parent component.
+  //
+  user: any;
+  role: any;
+  name: any;
+  recentHistory: any;
+  constructor(private issuesService: IssuesService, private authService: AuthService, private userService: UserService, private router: Router, private route: ActivatedRoute) {
+    this.user = this.authService.getUser();
+    this.userService.getUserById(this.user.uid)
+      .then(res => {
+        this.role = res[0].data.role;
+        this.name = res[0].data.fName + " " + res[0].data.lName;
+        this.recentHistory = res[0].data.recentHistory;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   ngOnInit() {
-    this.issues$ = this.getIssues();
+    this.getIssues();
   }
 
   // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
@@ -41,13 +63,14 @@ export class DashboardAdminIssuesListComponent implements OnInit {
        this.errors = '';
        this.filterData();
       } else {
+        this.issues = [];
         this.errors = 'ERROR: No results found';
       }
     }));         
   }
 
-  getIssuesFiltered(priority, status) {
-    this.issuesService.getIssuesFiltered(priority, status)
+  getIssuesFiltered(status, priority, severity, difficulty) {
+    this.issuesService.getIssuesFiltered(status, priority, severity, difficulty)
     .then(issues => {
       if (issues.length > 0) {
         this.issues$ = issues.map(e => {
@@ -56,8 +79,13 @@ export class DashboardAdminIssuesListComponent implements OnInit {
         this.errors = '';
         this.filterData();
       } else {
+        this.issues = [];
         this.errors = 'ERROR: No results found';
       }
+    })
+    .catch(err => {
+      this.issues = [];
+      this.errors = 'ERROR: No results found';
     });
   }
 
@@ -75,6 +103,8 @@ export class DashboardAdminIssuesListComponent implements OnInit {
             title: e.title,
             tech: e.assignedTech,
             priority: e.priority,
+            severity: e.severity,
+            difficulty: e.difficulty,
             status: e.status,
             dateStart: e.dateStart,
             dateEnd: e.dateEnd
@@ -85,24 +115,27 @@ export class DashboardAdminIssuesListComponent implements OnInit {
 
     filtersChanged(event) {
       if (event.filters) {
-        this.getIssuesFiltered(event.filters.currentPriority, event.filters.currentStatus);
+        this.getIssuesFiltered(event.filters.currentStatus, event.filters.currentPriority, event.filters.currentSeverity, event.filters.currentDifficulty)
       } else {
-        this.getIssues()
+        this.getIssues();
       }
     }
 
     //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
     //
-    deleteIssue(event) {      
+    deleteIssue(event) {
       const id = event.id;
       this.issuesService.deleteIssue(id)
         .then(res => {
           console.log(res);
+          this.userService.updateUserHistory(this.user.uid, "Deleted", id);
+          this.getIssues();
         })
         .catch(err => {
           console.log(err);
         });
     }
+  
 
     // Unsubscribe from firestore real time listener
     //

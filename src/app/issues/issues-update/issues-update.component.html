@@ -32,7 +32,7 @@
                     <label for="priority">Priority<span class="ml-1 text-danger">*</span></label>
                     <select name="priority" id="priority" formControlName="priority" class="form-control">
                         <option value="Low">Low</option>
-                        <option value="Normal">Normal</option>
+                        <option value="Medium">Medium</option>
                         <option value="High">High</option>
                         <option value="Urgent">Urgent</option>
                     </select>
@@ -40,6 +40,36 @@
                         *ngIf="!updateIssueForm.get('issueData.priority').valid && updateIssueForm.get('issueData.priority').touched"
                         class="help-block">
                         <span *ngIf="updateIssueForm.get('issueData.priority').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="severity">Severity<span class="ml-1 text-danger">*</span></label>
+                    <select name="severity" id="severity" formControlName="severity" class="form-control">
+                        <option value="Cosmetic">Cosmetic</option>
+                        <option value="Minor">Minor</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Major">Major</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.severity').valid && updateIssueForm.get('issueData.severity').touched"
+                        class="help-block">
+                        <span *ngIf="updateIssueForm.get('issueData.severity').errors['required']">This field is
+                            required!</span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">Difficulty</label>
+                    <select name="difficulty" id="difficulty" formControlName="difficulty" class="form-control">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                    <span
+                        *ngIf="!updateIssueForm.get('issueData.difficulty').valid && updateIssueForm.get('issueData.difficulty').touched"
+                        class="help-block">
+                        <span *ngIf="updateIssueForm.get('issueData.difficulty').errors['required']">This field is
                             required!</span>
                     </span>
                 </div>

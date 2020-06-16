@@ -5,16 +5,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user = new Subject<any>();
+  private user: any;
   private loggedIn = new BehaviorSubject<boolean>(false);
-  private accountStatus;
 
   constructor(private firebaseAuth: AngularFireAuth, private userService: UserService, private router: Router) {
     this.firebaseAuth.authState.subscribe(user => {
@@ -22,30 +21,27 @@ export class AuthService {
         const data = {
           uid: user.uid,
           email: user.email,
-          role: ''
+          role: '',
+          accountStatus: ''
         }
+        this.setUser(data);//initial data values
+
         this.userService.getUserById(data.uid)
           .then(user => {
-            if (user[0].data.accountStatus === 'enabled') {
+            if (user[0].data.accountStatus) {
               this.setAccountStatus(user[0].data.accountStatus);
-              data.role = user[0].data.role;
+              this.setAccountRole(user[0].data.role);
               this.setUser(data);
               this.setLoggedIn(true);
             } else {
-              this.setAccountStatus('disabled');
-              this.setLoggedIn(false);
-              this.setUser(null);
               this.signOut();
             }
           });
-      } else {
-        this.setAccountStatus('disabled');
-        this.setLoggedIn(false);
-        this.setUser(null);
-        this.signOut(); 
       }
-    })
+    });
   }
+
+
 
   //Signup method
   //
@@ -61,7 +57,15 @@ export class AuthService {
 
   //signOut method
   //
-  signOut() {
+  signOut(): any {
+    this.setAccountStatus(false);
+    this.setUser(null);
+    this.setLoggedIn(false);
+    //I'm using this to avoid the FirebaseError: [code=permission-denied] when the account is disabled while in use
+    //This method is much easier than using a global subscription scope as my components alredy unsubscribe w/ ngOnDestroy
+    //
+    window.location.reload();
+    this.router.navigate(['/login']);
     return this.firebaseAuth.signOut();
   }
 
@@ -81,12 +85,20 @@ export class AuthService {
     this.user = value;
   }
 
-  getAccountStatus() {
-    return this.accountStatus;
+  getAccountRole(): boolean {
+    return this.user.role;
+  }
+
+  setAccountRole(value) {
+    this.user.role = value;
+  }
+
+  getAccountStatus(): boolean {
+    return this.user.accountStatus;
   }
 
   setAccountStatus(value) {
-    this.accountStatus = value;
+    this.user.accountStatus = value;
   }
 
   //getUser method
@@ -137,4 +149,14 @@ export class AuthService {
       })
   }
 
+  //method to check that the user credentials are still valid AFTER signing in and navigating around the app
+  //important to set runGuardsandResolves:'always' on the appropiate routes.
+  //
+  async updateCreds(): Promise<any> {
+    return await this.userService.getUserById(this.user.uid)
+      .then(user => {
+        this.setAccountStatus(user[0].data.accountStatus);
+        this.setAccountRole(user[0].data.role);
+      });
+  }
 }

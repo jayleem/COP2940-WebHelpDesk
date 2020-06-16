@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { ChartType } from 'chart.js';
 import { Label, SingleDataSet } from 'ng2-charts';
 import { IssuesService } from 'src/app/shared/services/issues.service';
@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard-analytics.component.scss']
 })
 export class DashboardAnalyticsComponent implements OnInit {
-
   //firestore subscription
   //
   firestoreSubscriptions: Subscription[] = [];
@@ -163,6 +162,7 @@ export class DashboardAnalyticsComponent implements OnInit {
         ticks: {
           beginAtZero: true,
           min: 0,
+          max: 100,
           stepSize: 1
         }
       }]
@@ -364,6 +364,10 @@ export class DashboardAnalyticsComponent implements OnInit {
         thisWeeksData.push(0);
       }
     }
+
+    //set yAxes max tick value to the number of issues created during the dates
+    //
+    this.lineChartOptions.scales.yAxes[0].ticks.max = this.issues$.length;
 
     this.lineChartData = [
       { label: "Last Week", data: lastWeeksData, borderDash: [10, 6] },

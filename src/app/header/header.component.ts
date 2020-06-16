@@ -25,14 +25,9 @@ export class HeaderComponent {
 
   ngOnInit(): void { }
 
-  async signOut() {
-    await this.authService.signOut()
-      .then(() => {
-        this.router.navigate(['/login']);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  signOut() {
+    this.authService.signOut();
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy() {

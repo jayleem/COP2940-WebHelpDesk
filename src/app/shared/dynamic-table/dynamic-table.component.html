@@ -8,18 +8,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-4 input-group">
-                                <label for="currentPriority">Priority:</label>
-                                <select name="currentPriority" id="currentPriority" class="mr-2 form-control"
-                                    [(ngModel)]="currentPriority" (change)="changePriority($event.target.value)">
-                                    <option value="Low">Low</option>
-                                    <option value="Normal">Normal</option>
-                                    <option value="High">High</option>
-                                    <option value="Urgent">Urgent</option>
-                                </select>
-                            </div>
-
-                            <div class="col-4 input-group">
+                            <div class="col-sm-3 input-group">
                                 <label for="currentStatus">Status:</label>
                                 <select name="currentStatus" id="currentStatus" class="mr-2 form-control"
                                     [(ngModel)]="currentStatus" (change)="changeStatus($event.target.value)">
@@ -29,7 +18,41 @@
                                 </select>
                             </div>
 
-                            <div class="col-4 input-group">
+                            <div class="col-sm-3 input-group">
+                                <label for="currentPriority">Priority:</label>
+                                <select name="currentPriority" id="currentPriority" class="mr-2 form-control"
+                                    [(ngModel)]="currentPriority" (change)="changePriority($event.target.value)">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3 input-group">
+                                <label for="currentSeverity">Severity:</label>
+                                <select name="currentSeverity" id="currentSeverity" class="mr-2 form-control"
+                                    [(ngModel)]="currentSeverity" (change)="changeSeverity($event.target.value)">
+                                    <option value="Cosmetic">Cosmetic</option>
+                                    <option value="Minor">Minor</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Major">Major</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3 input-group">
+                                <label for="currentDifficulty">Difficulty:</label>
+                                <select name="currentDifficulty" id="currentDifficulty" class="mr-2 form-control"
+                                    [(ngModel)]="currentDifficulty" (change)="changeDifficulty($event.target.value)">
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-sm-3 input-group">
                                 <label for="itemsPerPage">Items Per Page:</label>
                                 <select name="itemsPerPage" id="itemsPerPage" class="mr-2 form-control"
                                     [(ngModel)]="itemsPerPage" (change)="changePagesize($event.target.value)">
@@ -42,7 +65,7 @@
                             </div>
                         </div>
                         <div class="row mt-4">
-                            <div class="col">
+                            <div class="col-sm-12">
                                 <a class="btn m-1" (click)="applyFilters()">Apply
                                     Filters</a>
                                 <a class="btn m-1" (click)="clearFilters()">Clear
@@ -57,22 +80,23 @@
     <div class="row table-responsive">
         <div class="col">
             <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Displaying {{ data.length }} results</h4>
-                <div class="row">
-                    <div class="col">
-                        <div *ngIf="data && pagination" class="mb-2 row justify-content-center">
-                            <div class="input-group-addon">
-                                <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage"
-                                    [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
-                            </div>
+            <div class="row">
+                <div class="col">
+                    <div *ngIf="data && pagination" class="mb-2 row justify-content-center">
+                        <div class="input-group-addon">
+                            <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage"
+                                [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
                         </div>
                     </div>
                 </div>
+            </div>
             <table class="table table-sm table-striped table-dark text-nowrap">
                 <thead>
                     <th *ngFor="let tableHeader of tableHeaders; let i = index;">
-                        <i [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false;
-                                !colSorted[i] ? switchSort(i, true) : switchSort(i, false);
-                                ">
+                        <i 
+                        [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " 
+                        (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false; 
+                        !colSorted[i] ? switchSort(i, true) : switchSort(i, false);">                        
                         </i>
                         {{tableHeader}}
                     </th>
@@ -89,7 +113,7 @@
                                     {{property.value.toDate() |  date:'MM/dd/yyyy'}}
                                 </span>
                             </span>
-                            <ng-template  #noFormat>
+                            <ng-template #noFormat>
                                 <span>
                                     {{property.value}}
                                 </span>
@@ -97,15 +121,16 @@
                         </td>
                         <!-- Actions custom implementation. I'm not really how to make routerlinks/click functions dynamic as
                             escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
-                        <td *ngIf="actionsType === 'issues'">
+                        <td *ngIf="actions && actionsType === 'issues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
                                 <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
                             </div>
                         </td>
-                        <td *ngIf="actionsType === 'users'">
+                        <td *ngIf="actions && actionsType === 'users'">
                             <div class="btn-group-vertical-custom">
-                                <button class="btn m-1" routerLink="/dashboard/admin/users/details/{{item.id}}">View</button>
+                                <button class="btn m-1"
+                                    routerLink="/dashboard/admin/users/details/{{item.id}}">View</button>
                             </div>
                         </td>
                     </tr>
