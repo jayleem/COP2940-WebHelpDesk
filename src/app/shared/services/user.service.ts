@@ -37,7 +37,7 @@ export class UserService {
 
   //Get all users in realtime
   //
-  getUsers() {
+  getUsers(): any {
     return this.db.collection('users').snapshotChanges();
   }
 

@@ -30,8 +30,9 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a *ngIf="user" class="nav-link" routerLink="/profile/{{user.uid}}"><i class="fas fa-user"></i>Logged in as
-            ({{user.email}})</a>
+          <a *ngIf="user" class="nav-link" routerLink="/profile/{{user.uid}}"><i class="fas fa-user">            
+          </i>Logged in ({{ user.fName}} {{user.lName | slice:0:1}}.)
+        </a>
         </li>
         <li class="nav-item">
           <button class="btn-custom nav-link" (click)="signOut()"><i class="fas fa-sign-out-alt"></i>Sign out</button>

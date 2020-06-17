@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuardService] },
   { path: 'register', component: RegisterComponent, canActivate: [LoginGuardService] },
-  { path: 'role-assignment', component: RoleAssignmentComponent },
+  { path: 'role-assignment', component: RoleAssignmentComponent, canActivate: [AuthGuardService] },
   {
     path: 'dashboard', 
       component: DashboardComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always', children: [

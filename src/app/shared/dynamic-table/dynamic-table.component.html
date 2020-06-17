@@ -52,6 +52,13 @@
                             </div>
                         </div>
                         <div class="row mt-4">
+                            <div class="col-sm-6 input-group">
+                                <label for="currentTech">Assigned Technician</label>
+                                <input type="text" name="currentTech" id="currentTech" class="mr-2 form-control" placeholder="test123@example.com"
+                                [(ngModel)]="currentTech" (input)="changeTech($event.target.value)">
+                            </div>
+                        </div>
+                        <div class="row mt-4">
                             <div class="col-sm-3 input-group">
                                 <label for="itemsPerPage">Items Per Page:</label>
                                 <select name="itemsPerPage" id="itemsPerPage" class="mr-2 form-control"
@@ -93,10 +100,8 @@
             <table class="table table-sm table-striped table-dark text-nowrap">
                 <thead>
                     <th *ngFor="let tableHeader of tableHeaders; let i = index;">
-                        <i 
-                        [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " 
-                        (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false; 
-                        !colSorted[i] ? switchSort(i, true) : switchSort(i, false);">                        
+                        <i [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false; 
+                        !colSorted[i] ? switchSort(i, true) : switchSort(i, false);">
                         </i>
                         {{tableHeader}}
                     </th>
@@ -106,21 +111,33 @@
                 </thead>
                 <tbody *ngIf="pagination; else notShown">
                     <tr *ngFor="let item of data | slice: pageSize |  slice: 0:itemsPerPage; let i = index;">
-                        <td *ngFor="let property of item | keyvalue: kvpNoSort">
-                            <!-- This may not be the best way of catching dates but it works -->
-                            <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
-                                <span *ngIf="property.value != '-'; else noFormat">
-                                    {{property.value.toDate() |  date:'MM/dd/yyyy'}}
-                                </span>
-                            </span>
-                            <ng-template #noFormat>
-                                <span>
-                                    {{property.value}}
-                                </span>
-                            </ng-template>
-                        </td>
-                        <!-- Actions custom implementation. I'm not really how to make routerlinks/click functions dynamic as
-                            escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
+                        <ng-container *ngFor="let property of item | keyvalue: kvpNoSort">
+                            <ng-container *ngIf="tableDataFields.includes(property.key)">
+                                <td>
+                                    <!-- This may not be the best way of catching dates but it works -->
+                                    <span *ngIf="property.key === 'progress'; else checkDate">
+                                        {{property.value | percent}}
+                                    </span>
+                                    <ng-template #checkDate>
+                                        <span
+                                            *ngIf="tableDataFields.includes(property.key) && property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
+                                            <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd';">
+                                                <span *ngIf="property.value != '-';">
+                                                    {{property.value.toDate() |  date:'yyyy/MM/dd'}}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </ng-template>
+                                    <ng-template #noFormat>
+                                        <span *ngIf="tableDataFields.includes(property.key)">
+                                            {{property.value}}
+                                        </span>
+                                    </ng-template>
+                                </td>
+                                <!-- Actions custom implementation. I'm not really how to make routerlinks/click functions dynamic as
+                                     escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
+                            </ng-container>
+                        </ng-container>
                         <td *ngIf="actions && actionsType === 'issues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
@@ -138,24 +155,46 @@
                 <ng-template #notShown>
                     <tbody>
                         <tr *ngFor="let item of data">
-                            <td *ngFor="let property of item | keyvalue: kvpNoSort">
-                                <!-- This may not be the best way of catching dates but it works -->
-                                <span *ngIf="property.key === 'progress'; else checkDate">
-                                    {{property.value | percent}}
-                                </span>
-                                <ng-template #checkDate>
-                                    <span
-                                        *ngIf="property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
-                                        <span *ngIf="property.key === 'dateStart' || property.key === 'dateEnd';">
-                                            <span *ngIf="property.value != '-';">
-                                                {{property.value.toDate() |  date:'yyyy/MM/dd'}}
-                                            </span>
+                            <ng-container *ngFor="let property of item | keyvalue: kvpNoSort">
+                                <ng-container *ngIf="tableDataFields.includes(property.key)">
+                                    <td>
+                                        <!-- This may not be the best way of catching dates but it works -->
+                                        <span *ngIf="property.key === 'progress'; else checkDate">
+                                            {{property.value | percent}}
                                         </span>
-                                    </span>
-                                </ng-template>
-                                <ng-template #noFormat>
-                                    {{property.value}}
-                                </ng-template>
+                                        <ng-template #checkDate>
+                                            <span
+                                                *ngIf="tableDataFields.includes(property.key) && property.key === 'dateStart' || property.key === 'dateEnd'; else noFormat">
+                                                <span
+                                                    *ngIf="property.key === 'dateStart' || property.key === 'dateEnd';">
+                                                    <span *ngIf="property.value != '-';">
+                                                        {{property.value.toDate() |  date:'yyyy/MM/dd'}}
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </ng-template>
+                                        <ng-template #noFormat>
+                                            <span *ngIf="tableDataFields.includes(property.key)">
+                                                {{property.value}}
+                                            </span>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                            <!-- Actions custom implementation. I'm not really how to make routerlinks/click functions dynamic as
+                             escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
+                            <td *ngIf="actions && actionsType === 'issues'">
+                                <div class="btn-group-vertical-custom">
+                                    <button class="btn m-1"
+                                        routerLink="/dashboard/issues/details/{{item.id}}">View</button>
+                                    <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
+                                </div>
+                            </td>
+                            <td *ngIf="actions && actionsType === 'users'">
+                                <div class="btn-group-vertical-custom">
+                                    <button class="btn m-1"
+                                        routerLink="/dashboard/admin/users/details/{{item.id}}">View</button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

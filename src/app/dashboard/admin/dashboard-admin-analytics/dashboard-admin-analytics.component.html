@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <app-dynamic-table [tableHeaders]="['Technician', 'Open', 'Pending', 'Closed', 'Progress']"
-                        [tableDataFields]="['tech','open','pending','closed', 'progress']" [data]="techs"
+                        [tableDataFields]="['name','open','pending','closed', 'progress']" [data]="techs"
                         [filterControl]=false [pagination]=false>
                     </app-dynamic-table>
                 </div>
@@ -102,8 +102,8 @@
                 <div class="card-header bg-dark text-light">Recent Technican Activity</div>
                 <div class="card-body">
                     <div class="container-fluid">
-                        <div class="row table-responsive">
-                            <div class="col">
+                        <div *ngIf="userHistory.length > 0; else notShown" class="row table-responsive">
+                            <div class="col-sm-12">
                                 <table class="table table-sm table-striped table-dark text-nowrap">
                                     <thead>
                                         <th>Date</th>
@@ -114,7 +114,7 @@
                                     <tbody>
                                         <tr *ngFor="let item of userHistory.reverse() | slice:0:10">
                                             <td>{{item.history.date.toDate() | date:'MM/dd/yyyy'}}</td>
-                                            <td>{{item.username}}</td>
+                                            <td>{{item.name}}</td>
                                             <td>{{item.history.action}}</td>
                                             <td>{{item.history.issueId}}</td>
                                         </tr>
@@ -122,6 +122,11 @@
                                 </table>
                             </div>
                         </div>
+                        <ng-template #notShown>
+                            <div class="col-sm-12 text-center">
+                                <p>No Recent Activity...</p>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
             </div>

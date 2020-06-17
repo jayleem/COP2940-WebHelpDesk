@@ -33,18 +33,22 @@ export class DashboardAdminUsersListComponent implements OnInit {
   // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
   //
   //
-  getUsers() {
+ getUsers() {
+    let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
-        this.users$ = data.map(e => {
-          return { userId: e.payload.doc.id, ...e.payload.doc.data() as {} } as User;
+        data.map(user => {
+			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+			 }
         });
       } else {
-        this.errors = 'ERROR: No documents were found';
-        this.users$ = undefined;
+        this.errors.push('ERROR: No documents were found');
+        users = [];
       }
-      this.filterData();
+	  this.filterData();
     }));
+    return this.users$ = users;
   }
 
   //Note the data here is filtered specifically for the table in users-list component
@@ -58,9 +62,10 @@ export class DashboardAdminUsersListComponent implements OnInit {
         this.users.push(
           {
             id: e.userId,
-            name: e.fName + " " + e.lName,
-            role: e.role,
+            name: e.fName + " " + e.lName.slice(0,1) + '.',
             username: e.username,
+            role: e.role,
+            status: e.accountStatus ? "Enabled" : "Disabled",
           });        
         }
       });

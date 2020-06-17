@@ -15,7 +15,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 
 export class IssuesNewComponent implements OnInit {
   public firestoreSubscriptions: Subscription[] = [];
-  public techs$: any;
+  public users$: any;
   newIssueForm: FormGroup;
 
   private user;
@@ -36,22 +36,26 @@ export class IssuesNewComponent implements OnInit {
         'actlRes': new FormControl(null, [Validators.required, Validators.minLength(15), Validators.maxLength(255)]),
       })
     });
-    this.techs$ = this.getUsers()
+    this.users$ = this.getUsers()
   }
 
-  //get users
+  //get users only enabled accounts and non admin roles
+  //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //
-  getUsers() {
+ getUsers() {
+    let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
-        this.techs$ = data.map(e => {
-          return { ...e.payload.doc.data() as {} } as User;
+        data.map(user => {
+			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+			 }
         });
       } else {
-        console.log('ERROR: No documents were found');
-        this.techs$ = undefined;
+        users = [];
       }
     }));
+    return this.users$ = users;
   }
 
   onSubmit() {
@@ -59,18 +63,18 @@ export class IssuesNewComponent implements OnInit {
     //
     console.log(this.user)
     this.issueService.addIssue(this.user.email, this.newIssueForm)
-    //update user history
-    //
-    .then(res => {
-      const id = res;
-      this.userService.updateUserHistory(this.user.uid, "Created", id);
-      //navigate back to issue list
+      //update user history
       //
-      this.router.navigate(['/dashboard/home']);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      .then(res => {
+        const id = res;
+        this.userService.updateUserHistory(this.user.uid, "Created", id);
+        //navigate back to issue list
+        //
+        this.router.navigate(['/dashboard/home']);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   ngOnDestroy() {

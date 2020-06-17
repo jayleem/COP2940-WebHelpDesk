@@ -70,6 +70,7 @@ export class DynamicTableComponent implements OnInit {
   public currentSeverity; //default severity
   public currentDifficulty; //default difficulty
   public currentStatus; //default status
+  public currentTech; //default tech
   //pagination vars
   //
   public currentPage = 1;
@@ -99,8 +100,12 @@ export class DynamicTableComponent implements OnInit {
     this.currentStatus = change;
   }
 
+  changeTech(change: string) {
+    this.currentTech = change;
+  }
+
   applyFilters() {
-    this.onFiltersApplied.emit({ filters: { currentStatus: this.currentStatus, currentPriority: this.currentPriority, currentSeverity: this.currentSeverity, currentDifficulty: this.currentDifficulty } })
+    this.onFiltersApplied.emit({ filters: { currentStatus: this.currentStatus, currentPriority: this.currentPriority, currentSeverity: this.currentSeverity, currentDifficulty: this.currentDifficulty, currentTech: this.currentTech } })
   }
 
   clearFilters() {
@@ -108,6 +113,7 @@ export class DynamicTableComponent implements OnInit {
     this.currentStatus = null;
     this.currentSeverity = null;
     this.currentDifficulty = null;
+    this.currentTech = null;
     this.errors = null;
     this.onFiltersCleared.emit({ filters: null })
   }

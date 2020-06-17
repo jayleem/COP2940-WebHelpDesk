@@ -21,22 +21,21 @@ export class AuthService {
         const data = {
           uid: user.uid,
           email: user.email,
-          role: '',
+          fName: '',
+          lName: '',
           accountStatus: ''
         }
         this.setUser(data);//initial data values
 
         this.userService.getUserById(data.uid)
           .then(user => {
-            if (user[0].data.accountStatus) {
-              this.setAccountStatus(user[0].data.accountStatus);
-              this.setAccountRole(user[0].data.role);
-              this.setUser(data);
-              this.setLoggedIn(true);
-            } else {
-              this.signOut();
-            }
-          });
+            this.user.fName = user[0].data.fName;
+            this.user.lName = user[0].data.lName;
+            this.setAccountStatus(user[0].data.accountStatus);
+            this.setAccountRole(user[0].data.role);
+            this.setUser(data);
+            this.setLoggedIn(true);
+          })
       }
     });
   }

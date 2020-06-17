@@ -23,9 +23,11 @@ export class AuthGuardService implements CanActivate {
         return false;
       } else {
         //user logged in
-        //
-        this.fireAuthService.updateCreds(); //update credentials from the users database
-        //check if user account is still enabled
+        //update credentials from the users database
+        this.fireAuthService.updateCreds();
+        //logic user account hasn't been disabled
+        //A user account cannot be disabled/enabled programmaticaly therefore we must disable the user in the users database
+        //If a user account is disabled from the authorization console in Firebase then the account cannot login period
         //
         if (this.fireAuthService.getAccountStatus()) {
           return true;

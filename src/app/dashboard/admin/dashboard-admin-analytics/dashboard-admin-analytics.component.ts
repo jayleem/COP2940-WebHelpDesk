@@ -48,8 +48,8 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.setDates();
-    this.getIssues();
     this.getUsers();
+    this.getIssues();
     this.errors = [];
   }
 
@@ -71,23 +71,27 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
 
   getUsers() {
+    let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
-        this.users$ = data.map(e => {
-          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+        data.map(user => {
+			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+			 }
         });
         this.updateRecentHistory();
       } else {
         this.errors.push('ERROR: No documents were found');
-        this.users$ = '';
+        users = [];
       }
     }));
+    return this.users$ = users;
   }
 
   //generate user history for admin user activity
   //this could be extremely performance intensive depending on the amount of technicans/users
   //there more likely is a better way of doing this.
-  //note: the array is spliced to only display 10 of the most recent changes in the HTML template
+  //note: the array is spliced to only display 10 of the most recent changes in the template
   //
   userHistory = [];
   updateRecentHistory() {
@@ -96,7 +100,10 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       for (const item in this.users$[user].recentHistory)
         this.userHistory.push(
           {
+            //not sure if username or name is better leaving both as an option
+            //
             username: this.users$[user].username,
+            name: this.users$[user].fName + ' ' + this.users$[user].lName.slice(0, 1) + '.',
             history: this.users$[user].recentHistory[item]
           });
     }
@@ -293,9 +300,12 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       //add only unique technicans
       //
       if (!this.techs.some(el => el.tech === e.assignedTech)) {
+        const index = this.users$.findIndex(el => el.username === e.assignedTech)
+        let userObj = this.users$[index];
         this.techs.push(
           {
             tech: e.assignedTech,
+            name: userObj.fName + ' ' + userObj.lName.slice(0,1) + '.',
             open: 0,
             pending: 0,
             closed: 0,

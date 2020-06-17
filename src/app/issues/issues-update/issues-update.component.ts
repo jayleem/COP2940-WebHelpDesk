@@ -15,7 +15,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 
 export class IssuesUpdateComponent implements OnInit {
   firestoreSubscriptions: Subscription[] = [];
-  techs$: any;
+  users$: any;
   updateIssueForm: FormGroup;
   id: string;
   user: any;
@@ -42,22 +42,27 @@ export class IssuesUpdateComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.modifiedDate = new Date();
     this.getIssueById(this.id);
-    this.techs$ = this.getUsers()
+    this.users$ = this.getUsers()
   }
 
-  //get users
+  //get users only enabled accounts and non admin roles
+  //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //
-  getUsers() {
+   getUsers() {
+    let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
-        this.techs$ = data.map(e => {
-          return { ...e.payload.doc.data() as {} } as User;
+        data.map(user => {
+			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+			 }
         });
       } else {
-        console.log('ERROR: No results were found');
-        this.techs$ = undefined;
+        this.errors.push('ERROR: No documents were found');
+        users = [];
       }
     }));
+    return this.users$ = users;
   }
 
   getIssueById(id) {

@@ -1,30 +1,18 @@
-<h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100" role="alert">{{errors}}</h6>
+<h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
+    role="alert">{{errors}}</h6>
 <div class="container-fluid vh-100">
     <div class="row">
         <div class="col-sm-8 col-md-12">
-            <app-dynamic-table 
-                *ngIf="reportType == 'ordered' && issues"
+            <app-dynamic-table *ngIf="reportType == 'ordered' && issues"
                 [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
-                [tableDataFields]="['id','title','tech','priority','severity','status','difficulty','dateStart','dateEnd']" 
-                [tableLabel]=true
-                [actions]=false
-                [actionsType]="'issues'"
-                [actionHeader]="'Actions'"
-                [data]="issues"
-                [orderBy]="orderBy"
-                [filterControl]=false 
-                [pagination]=true >
+                [tableDataFields]="['id','title','name','priority','severity','status','difficulty','dateStart','dateEnd']"
+                [tableLabel]=true [actions]=false [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="issues"
+                [orderBy]="orderBy" [filterControl]=false [pagination]=true>
             </app-dynamic-table>
-            <app-dynamic-table 
-                *ngIf="reportType == 'overview' && issues"
+            <app-dynamic-table *ngIf="reportType == 'overview' && issues"
                 [tableHeaders]="['Technician', 'Open', 'Low', 'Medium', 'High', 'Urgent']"
-                [tableDataFields]="['tech', 'open', 'low', 'medium', 'high', 'urgent']"
-                [tableLabel]=true
-                [actions]=false
-                [actionsType]="'issues'"
-                [actionHeader]="'Actions'"
-                [data]="techs"
-                [filterControl]=false 
+                [tableDataFields]="['name', 'open', 'low', 'medium', 'high', 'urgent']" [tableLabel]=true
+                [actions]=false [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="techs" [filterControl]=false
                 [pagination]=true>
             </app-dynamic-table>
         </div>
@@ -33,14 +21,11 @@
                 <div formGroupName="reportData">
                     <div class="form-group mt-2 col-sm-8 col-md-6">
                         <label for="tech">Search Open Issues by Technician:</label>
-                        <input type="text" id="tech" formControlName="tech" class="form-control">
-                        <span
-                            *ngIf="!newIssueForm.get('reportData.tech').valid && newIssueForm.get('reportData.tech').touched"
-                            class="help-block">
-                            <!-- This is the best practice that I know of for accessing error codes -->
-                            <span *ngIf="newIssueForm.get('reportData.tech').errors['required']">This field is
-                                required!</span>
-                        </span>
+                        <select class="form-control" name="tech" id="tech" formControlName="tech">
+                            <option *ngFor="let user of users$" [ngValue]="user.username">
+                                {{ user.role | uppercase }} - {{ user.fName }} {{user.lName | slice:0:1}}.
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -49,18 +34,11 @@
                     </div>
                 </div>
             </form>
-            <app-dynamic-table 
-                *ngIf="issues"
+            <app-dynamic-table *ngIf="issues"
                 [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
-                [tableDataFields]="['id','title','tech','priority','severity','status','difficulty','dateStart','dateEnd']" 
-                [tableLabel]=true
-                [actions]=false
-                [actionsType]="'issues'"
-                [actionHeader]="'Actions'"
-                [data]="issues"
-                [orderBy]="orderBy"
-                [filterControl]=false 
-                [pagination]=true >
+                [tableDataFields]="['id','title','name','priority','severity','status','difficulty','dateStart','dateEnd']"
+                [tableLabel]=true [actions]=false [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="issues"
+                [orderBy]="orderBy" [filterControl]=false [pagination]=true>
             </app-dynamic-table>
         </div>
     </div>

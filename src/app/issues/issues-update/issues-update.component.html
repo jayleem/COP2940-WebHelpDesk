@@ -9,8 +9,8 @@
                 <div class="form-group">
                     <label for="tech">Assigned Technician<span class="ml-1 text-danger">*</span></label>
                     <select class="form-control" name="tech" id="tech" formControlName="tech">
-                        <option *ngFor="let tech of techs$" [ngValue]="tech.username">
-                            {{tech.username}}
+                        <option *ngFor="let user of users$" [ngValue]="user.username">
+                            {{user.role | uppercase}} - {{user.fName}} {{user.lName | slice:0:1}}.
                         </option>
                     </select>
                 </div>

@@ -4,6 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReportsListComponent } from './reports-list/reports-list.component';
 import { Issue } from '../models/issue.model';
+import { UserService } from '../shared/services/user.service';
+import { Subscription } from 'rxjs';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-reports',
@@ -11,35 +14,49 @@ import { Issue } from '../models/issue.model';
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
+  //firestore subscription
+  //
+  firestoreSubscriptions: Subscription[] = [];
+
   //issues
   //
   issues$;
+  users$;
   issues;
   errors;
-  //order data
-  //
-  orderBy;
-  //report type
-  //
-  reportType;
 
   newIssueForm: FormGroup;
 
-  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService) { }
+  //query vars
+  //
+  public reportType;
+  public tech;
+  public status;
+  public priority;
+  public severity;
+  public difficulty;
+  public orderBy;
+  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService, private userService: UserService) { }
 
   ngOnInit() {
+    //get users
+    //
+    this.getUsers();
+    //get query parameters
+    //
     this.route.queryParams.subscribe(queryParams => {
-      if (queryParams.reportType === "ordered") {
-        this.reportType = queryParams.reportType;
+      this.reportType = queryParams.reportType;
+      this.tech = queryParams.tech;
+      this.status = queryParams.status;
+      this.priority = queryParams.priority;
+      this.severity = queryParams.severity;
+      this.difficulty = queryParams.difficulty;
+      this.orderBy = queryParams.orderBy;
+      if (this.reportType != "search") {
+        this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy)
+      } else {
         this.issues = null;
-        this.getIssuesOrdered(queryParams.tech, queryParams.status, queryParams.priority, queryParams.severity, queryParams.difficulty, queryParams.orderBy)
-      } else if (queryParams.reportType === "search") {
-        this.issues = null;
         this.reportType = queryParams.reportType;
-      } else if (queryParams.reportType === "overview") {
-        this.issues = null;
-        this.reportType = queryParams.reportType;
-        this.getIssuesOrdered(queryParams.tech, queryParams.status, queryParams.priority, queryParams.severity, queryParams.difficulty, queryParams.orderBy)
       }
     });
     this.newIssueForm = new FormGroup({
@@ -52,10 +69,6 @@ export class ReportsComponent implements OnInit {
   ticketStats = {
     status: {
       open: 0,
-      pending: 0,
-      closed: 0
-    },
-    priority: {
       low: 0,
       medium: 0,
       high: 0,
@@ -64,14 +77,13 @@ export class ReportsComponent implements OnInit {
   };
   techs = [];
   generateOverviewReport() {
-
     //reset the vars
     //
     this.ticketStats.status.open = 0;
-    this.ticketStats.priority.low = 0;
-    this.ticketStats.priority.medium = 0;
-    this.ticketStats.priority.high = 0;
-    this.ticketStats.priority.urgent = 0;
+    this.ticketStats.status.low = 0;
+    this.ticketStats.status.medium = 0;
+    this.ticketStats.status.high = 0;
+    this.ticketStats.status.urgent = 0;
     this.techs = []
 
     //map issue data
@@ -82,14 +94,17 @@ export class ReportsComponent implements OnInit {
       //add only unique technicans
       //
       if (!this.techs.some(el => el.tech === e.assignedTech)) {
+        const index = this.users$.findIndex(el => el.username === e.assignedTech)
+        let userObj = this.users$[index];
         this.techs.push(
           {
             tech: e.assignedTech,
-            open: 0,        
+            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
+            open: 0,
             low: 0,
             medium: 0,
             high: 0,
-            urgent: 0,
+            urgent: 0
           });
       }
 
@@ -100,28 +115,38 @@ export class ReportsComponent implements OnInit {
       if (e.assignedTech === techObj.tech && e.status === 'Open') {
         this.techs[index].open++;
         this.ticketStats.status.open++;
-      } if (e.assignedTech === techObj.tech && e.status === 'Pending') {
-        this.techs[index].pending++;
-        this.ticketStats.status.pending++;
-      }
-      if (e.assignedTech === techObj.tech && e.status === 'Closed') {
-        this.techs[index].closed++;
-        this.ticketStats.status.closed++;
       }
       if (e.priority === 'Low') {
         this.techs[index].low++;
-        this.ticketStats.priority.low++;
+        this.ticketStats.status.low++;
       } else if (e.priority === 'Medium') {
         this.techs[index].medium++;
-        this.ticketStats.priority.medium++;
+        this.ticketStats.status.medium++;
       } else if (e.priority === 'High') {
         this.techs[index].high++;
-        this.ticketStats.priority.high++;
+        this.ticketStats.status.high++;
       } else {
         this.techs[index].urgent++;
-        this.ticketStats.priority.urgent++;
+        this.ticketStats.status.urgent++;
       }
     });
+  }
+
+   getUsers() {
+    let users = [];
+    this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
+      if (data.length > 0) {
+        data.map(user => {
+			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+			 }
+        });
+      } else {
+        this.errors.push('ERROR: No documents were found');
+        users = [];
+      }
+    }));
+    return this.users$ = users;
   }
 
   getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
@@ -146,12 +171,14 @@ export class ReportsComponent implements OnInit {
       //add only unique issues
       //
       if (!this.issues.some(el => el.id === e.id)) {
-
+        const index = this.users$.findIndex(el => el.username === e.assignedTech)
+        let userObj = this.users$[index];
         this.issues.push(
           {
             id: e.id,
             title: e.title,
             tech: e.assignedTech,
+            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
             priority: e.priority,
             severity: e.severity,
             status: e.status,
@@ -165,8 +192,10 @@ export class ReportsComponent implements OnInit {
     this.generateOverviewReport();
   }
 
+  //used for search report
+  //
   onSubmit() {
     const tech = this.newIssueForm.value.reportData.tech;
-    this.getIssuesOrdered(tech, "Open", null, null, null, null);
+    this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
   }
 }

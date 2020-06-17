@@ -4,8 +4,8 @@ import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
-import { Route } from '@angular/compiler/src/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-dashboard-admin-issues-list',
@@ -19,6 +19,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   //firestore observable data
   //
   public issues$;
+  public users$;
   //errors
   //
   public errors;
@@ -47,7 +48,8 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getIssues();
+    this.getUsers();
+    this.getIssues();//default view get all issues
   }
 
   // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
@@ -56,37 +58,52 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   //
   getIssues() {
     this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
-     if (data.length > 0) {
-       this.issues$ = data.map(e => {
-         return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
-       });
-       this.errors = '';
-       this.filterData();
+      if (data.length > 0) {
+        this.issues$ = data.map(e => {
+          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+        });
       } else {
-        this.issues = [];
-        this.errors = 'ERROR: No results found';
+        this.errors = 'ERROR: No documents were found';
+        this.issues$ = undefined;
       }
-    }));         
+      this.filterData();
+    }));
   }
 
-  getIssuesFiltered(status, priority, severity, difficulty) {
-    this.issuesService.getIssuesFiltered(status, priority, severity, difficulty)
-    .then(issues => {
-      if (issues.length > 0) {
-        this.issues$ = issues.map(e => {
-          return { id: e.id, ...e.data as {} } as Issue;
-        });
-        this.errors = '';
+  getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
+    this.issuesService.getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy)
+      .then(issues => {
+        if (issues.length > 0) {
+          this.issues$ = issues.map(e => {
+            return { id: e.id, ...e.data as {} } as Issue;
+          });
+        } else {
+          this.errors = 'ERROR: No documents were found';
+          this.issues = [];
+        }
         this.filterData();
-      } else {
+      })
+      .catch(err => {
+        this.errors = 'ERROR: No documents were found';
         this.issues = [];
-        this.errors = 'ERROR: No results found';
+      });
+  }
+
+  getUsers() {
+    let users = [];
+    this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
+      if (data.length > 0) {
+        data.map(user => {
+          if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+            users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+          }
+        });
+      } else {
+        this.errors.push('ERROR: No documents were found');
+        users = [];
       }
-    })
-    .catch(err => {
-      this.issues = [];
-      this.errors = 'ERROR: No results found';
-    });
+    }));
+    return this.users$ = users;
   }
 
   //Note the data here is filtered specifically for the table in issues-list component
@@ -97,51 +114,60 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       //add only unique issues
       //
       if (!this.issues.some(el => el.id === e.id)) {
+        const index = this.users$.findIndex(el => el.username === e.assignedTech)
+        let userObj = this.users$[index];
         this.issues.push(
           {
             id: e.id,
             title: e.title,
             tech: e.assignedTech,
+            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
             priority: e.priority,
             severity: e.severity,
             difficulty: e.difficulty,
             status: e.status,
             dateStart: e.dateStart,
             dateEnd: e.dateEnd
-          });        
-        }
-      });
-    };
-
-    filtersChanged(event) {
-      if (event.filters) {
-        this.getIssuesFiltered(event.filters.currentStatus, event.filters.currentPriority, event.filters.currentSeverity, event.filters.currentDifficulty)
-      } else {
-        this.getIssues();
+          });
       }
-    }
+    });
+  };
 
-    //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
-    //
-    deleteIssue(event) {
-      const id = event.id;
-      this.issuesService.deleteIssue(id)
-        .then(res => {
-          console.log(res);
-          this.userService.updateUserHistory(this.user.uid, "Deleted", id);
-          this.getIssues();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  
-
-    // Unsubscribe from firestore real time listener
-    //
-    ngOnDestroy() {
-      for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
-        this.firestoreSubscriptions[i].unsubscribe();
-      }
+  filtersChanged(event) {
+    if (event.filters) {
+      this.getIssuesOrdered(
+        event.filters.currentTech,
+        event.filters.currentStatus,
+        event.filters.currentPriority,
+        event.filters.currentSeverity,
+        event.filters.currentDifficulty,
+        event.filters.orderBy);
+    } else {
+      this.getIssues();
     }
   }
+
+  //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
+  //
+  deleteIssue(event) {
+    const id = event.id;
+    this.issuesService.deleteIssue(id)
+      .then(res => {
+        console.log(res);
+        this.userService.updateUserHistory(this.user.uid, "Deleted", id);
+        this.getIssues();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+
+  // Unsubscribe from firestore real time listener
+  //
+  ngOnDestroy() {
+    for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
+      this.firestoreSubscriptions[i].unsubscribe();
+    }
+  }
+}

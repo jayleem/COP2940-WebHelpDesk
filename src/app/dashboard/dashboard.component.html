@@ -68,12 +68,12 @@
                                 [queryParams]="{ status:'Open', reportType:'overview' }"
                                 routerLinkActive="active" 
                                 [routerLinkActiveOptions]="{exact: true}">
-                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Technician</a>
+                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Technician Overview</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" 
                                 routerLink="/dashboard/admin/reports"
-                                [queryParams]="{ reportType:'search' }"                    
+                                [queryParams]="{ status:'Open', orderBy:'severity', reportType:'search' }"                    
                                 routerLinkActive="active" 
                                 [routerLinkActiveOptions]="{exact: true}"><i
                                 class="mr-1 fas fa-file-alt"></i>Search Technician</a>
