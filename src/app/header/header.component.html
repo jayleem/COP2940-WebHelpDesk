@@ -12,19 +12,19 @@
     <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="collapsible">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="" routerLinkActive="active"
+          <a class="nav-link" routerLink="{{url}}" routerLinkActive="active"
             [routerLinkActiveOptions]="{exact: true}"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+          <a class="nav-link" routerLink="/projects" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
               class="far fa-list-alt"></i>Projects</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+          <a class="nav-link" routerLink="/knowledgebase" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
               class="fas fa-book"></i>Knowledge Base</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+          <a class="nav-link" routerLink="/help" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
               class="far fa-question-circle"></i>Help</a>
         </li>
       </ul>

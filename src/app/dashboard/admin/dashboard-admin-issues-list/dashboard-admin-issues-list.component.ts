@@ -121,7 +121,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
             id: e.id,
             title: e.title,
             tech: e.assignedTech,
-            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
+            name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
             priority: e.priority,
             severity: e.severity,
             difficulty: e.difficulty,

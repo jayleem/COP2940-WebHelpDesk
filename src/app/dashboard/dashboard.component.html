@@ -47,36 +47,28 @@
                     <ul class="nav flex-column">
                         <div [ngbCollapse]="subMenu2" class="collapse navbar-collapse" id="collapsible">
                             <li class="nav-item">
-                                <a class="nav-link" 
-                                routerLink="/dashboard/admin/reports/" 
-                                [queryParams]=" { status:'Open', orderBy:'priority', reportType:'ordered' }" 
-                                routerLinkActive="active"                                    
-                                [routerLinkActiveOptions]="{exact: true}">
-                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Priority</a>
+                                <a class="nav-link" routerLink="/dashboard/admin/reports/"
+                                    [queryParams]=" { status:'Open', orderBy:'priority', reportType:'ordered' }"
+                                    routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                    <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Priority</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" 
-                                routerLink="/dashboard/admin/reports/" 
-                                [queryParams]="{ status:'Open', orderBy:'severity', reportType:'ordered' }"                                    
-                                routerLinkActive="active" 
-                                [routerLinkActiveOptions]="{exact: true}">
-                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Severity</a>
+                                <a class="nav-link" routerLink="/dashboard/admin/reports/"
+                                    [queryParams]="{ status:'Open', orderBy:'severity', reportType:'ordered' }"
+                                    routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                    <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Severity</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" 
-                                routerLink="/dashboard/admin/reports/" 
-                                [queryParams]="{ status:'Open', reportType:'overview' }"
-                                routerLinkActive="active" 
-                                [routerLinkActiveOptions]="{exact: true}">
-                                <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Technician Overview</a>
+                                <a class="nav-link" routerLink="/dashboard/admin/reports/"
+                                    [queryParams]="{ status:'Open', reportType:'overview' }" routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{exact: true}">
+                                    <i class="mr-1 fas fa-file-alt"></i>Open Bugs by Technician Overview</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" 
-                                routerLink="/dashboard/admin/reports"
-                                [queryParams]="{ status:'Open', orderBy:'severity', reportType:'search' }"                    
-                                routerLinkActive="active" 
-                                [routerLinkActiveOptions]="{exact: true}"><i
-                                class="mr-1 fas fa-file-alt"></i>Search Technician</a>
+                                <a class="nav-link" routerLink="/dashboard/admin/reports"
+                                    [queryParams]="{ status:'Open', orderBy:'priority', reportType:'search' }"
+                                    routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
+                                        class="mr-1 fas fa-file-alt"></i>Search Technician</a>
                             </li>
                         </div>
                     </ul>
@@ -99,20 +91,46 @@
                                             class="mr-1 fas fa-chart-bar"></i>Analytics</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" routerLink="/dashboard/issues/list/{{user.email}}"
-                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
-                                            class="mr-1 fas fa-bug"></i>My Issues</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" routerLink="/dashboard/issues/list/Unassigned"
-                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i
-                                            class="mr-1 fas fa-bug"></i>Unassigned
-                                        Issues</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
-                                        [routerLinkActiveOptions]="{exact: true}"><i class="mr-1 fas fa-file-alt"></i>Submit
+                                        [routerLinkActiveOptions]="{exact: true}"><i
+                                            class="mr-1 fas fa-file-alt"></i>Submit
                                         Issue</a>
+                                </li>
+                            </div>
+                        </ul>
+                        <!--Reports Menu-->
+                        <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                            (click)="subMenu2 = !subMenu2" aria-controls="navbarSupportedContent"
+                            [attr.aria-expanded]="!subMenu2" aria-label="Toggle navigation">Reports
+                            <span>
+                                <i [ngClass]="subMenu2 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+                            </span>
+                        </button>
+                        <ul class="nav flex-column">
+                            <div [ngbCollapse]="subMenu2" class="collapse navbar-collapse" id="collapsible">
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/reports/"
+                                        [queryParams]=" { tech:user.email, status:'Open', orderBy:'priority', reportType:'ordered' }"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                        <i class="mr-1 fas fa-file-alt"></i>My Open Issues</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/reports/"
+                                        [queryParams]=" { tech:user.email, status:'Pending', orderBy:'priority', reportType:'ordered' }"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                        <i class="mr-1 fas fa-file-alt"></i>My Pending Issues</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/reports/"
+                                        [queryParams]=" { tech:user.email, status:'Closed', orderBy:'priority', reportType:'ordered' }"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                        <i class="mr-1 fas fa-file-alt"></i>My Closed Issues</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/reports/"
+                                        [queryParams]=" { tech:'Unassigned', status:'Open', orderBy:'priority', reportType:'ordered' }"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                        <i class="mr-1 fas fa-file-alt"></i>Unassigned Issues</a>
                                 </li>
                             </div>
                         </ul>

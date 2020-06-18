@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     this.authService.signIn(email, password)
       .then((res) => {
         disabled = this.authService.getLoggedIn();
-        this.router.navigate(['/dashboard/home']);
+        this.router.navigate(['/dashboard']);
       })
       .catch(err => {
         this.errorMessage = "Invalid username or password."

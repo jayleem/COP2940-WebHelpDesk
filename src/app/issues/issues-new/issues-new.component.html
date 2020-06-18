@@ -139,8 +139,8 @@
                 </div>
             </div>
             <div class="col btn-group-custom" role="group" aria-label="failed update options">
-                <button class="btn w-25 mr-2" type="submit">Submit</button>
-                <a class="btn w-25" routerLink="/dashboard/home">Cancel</a>
+                <a class="btn w-25 mr-2" (click)="goBack()">Cancel</a>
+                <button class="btn w-25" type="submit">Submit</button>
             </div>
         </form>
     </div>

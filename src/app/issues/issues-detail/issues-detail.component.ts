@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IssuesService } from 'src/app/shared/services/issues.service';
-import { Issue } from 'src/app/models/issue.model';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-issues-detail',
@@ -14,13 +13,17 @@ export class IssuesDetailComponent implements OnInit {
   errors;
   id;
 
-  constructor(private issuesService: IssuesService, private route: ActivatedRoute) { }
+  constructor(private issuesService: IssuesService, private route: ActivatedRoute, private location: Location) { }
 
   //Get the current route snapshot id paramater
   //
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.getIssueById(this.id);
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   //Calls the getIssueById method in issuesService for a matching document by id from the firebase database collection

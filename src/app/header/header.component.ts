@@ -12,14 +12,26 @@ export class HeaderComponent {
   isCollapsed = false;
   loggedIn: any;
   user: any;
+  role: any;
+  url: string;
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.getLoggedIn().subscribe(res => {
       this.loggedIn = res;
       if (this.loggedIn) {
         this.user = this.authService.getUser();
+        this.role = this.authService.getAccountRole();
+        this.url = this.setUrl();
       }
     });
+  }
+
+  setUrl() {
+    if (this.role === 'admin') {
+      return 'dashboard/admin/home';
+    } else {
+      return 'dashboard/home';
+    }
   }
 
 

@@ -6,6 +6,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-issues-new',
@@ -19,7 +20,17 @@ export class IssuesNewComponent implements OnInit {
   newIssueForm: FormGroup;
 
   private user;
-  constructor(private issueService: IssuesService, private userService: UserService, private fireAuthService: AuthService, private router: Router) { }
+  constructor(
+    private issueService: IssuesService, 
+    private userService: UserService, 
+    private fireAuthService: AuthService, 
+    private router: Router,
+    private location: Location
+    ) {}
+
+  goBack() {
+    this.location.back();
+  }
 
   ngOnInit() {
     this.user = this.fireAuthService.getUser();

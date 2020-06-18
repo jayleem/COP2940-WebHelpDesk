@@ -1,0 +1,22 @@
+.articles-container {
+    max-width: 300px !important;
+}
+.articles {
+    min-height: 200px !important;
+    max-height: auto !important;
+}
+
+a {
+    color: #39bec1 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    opacity: .7 !important;
+}
+
+.card-body {
+    ul>li {
+        word-wrap: break-word;
+    }
+}

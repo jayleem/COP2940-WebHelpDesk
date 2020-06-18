@@ -224,15 +224,16 @@ export class IssuesService {
   updateIssue(id: string, username: string, formData: any, modifiedDate: Date): Promise<any> {
     //assign a close date if the status is closed
     //
-    const status = formData.get('issueData.status').value;
+    let status = formData.get('issueData.status').value;
     let dateEnd;
     status != 'Closed' ? dateEnd = '-' : dateEnd = new Date();
     //this is the time that the tech/user accessed the issues update page
     //
     let modifiedDateTimestamp = Math.round(modifiedDate.getTime() / 1000);
-    //check if issue was escalted if true assign the user who escalated the issue
+    //check if issue was escalted if true assign the user who escalated the issue also set the ticket to open
     //    
     let escalatedBy = formData.get('issueData.escalate').value != 0 ? username : null;
+    status = formData.get('issueData.escalate').value != 0 ? 'Open' : status;
     //if ticket was escalated unassign the tickets previous assigned tech
     //
     let assignedTech = formData.get('issueData.escalate').value !=0 ? "Unassigned" : formData.get('issueData.tech').value;
@@ -255,7 +256,7 @@ export class IssuesService {
                       escalatedBy: escalatedBy,
                       priority: formData.get('issueData.priority').value,
                       severity: formData.get('issueData.severity').value,
-                      status: formData.get('issueData.status').value,
+                      status: status,
                       difficulty: formData.get('issueData.difficulty').value,
                       lastModified: new Date(),
                       dateEnd: dateEnd,

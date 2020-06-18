@@ -305,7 +305,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
         this.techs.push(
           {
             tech: e.assignedTech,
-            name: userObj.fName + ' ' + userObj.lName.slice(0,1) + '.',
+            name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
             open: 0,
             pending: 0,
             closed: 0,

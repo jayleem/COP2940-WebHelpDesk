@@ -27,6 +27,9 @@ import { DashboardAdminIssuesListComponent } from './dashboard/admin/dashboard-a
 import { DashboardAdminUsersListComponent } from './dashboard/admin/dashboard-admin-users-list/dashboard-admin-users-list.component';
 import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard-admin-users-details/dashboard-admin-users-details.component';
 import { RoleAssignmentComponent } from './role-assignment/role-assignment.component';
+import { KnowledgeBaseComponent } from './knowledge-base/knowledge-base.component';
+import { HelpComponent } from './help/help.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 //Services
 import { IssuesService } from './shared/services/issues.service';
@@ -80,6 +83,9 @@ import { ChartsModule } from 'ng2-charts';
     DashboardAdminUsersListComponent,
     DashboardAdminUsersDetailsComponent,
     RoleAssignmentComponent,
+    KnowledgeBaseComponent,
+    HelpComponent,
+    ProjectsComponent,
   ],
   imports: [
     BrowserModule,

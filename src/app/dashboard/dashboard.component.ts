@@ -13,6 +13,8 @@ export class DashboardComponent implements OnInit {
   //
   user: any;
   role: any;
+  //vars for expanding/collapsing dropdown menus
+  //
   subMenu0 = false;
   subMenu1 = false;
   subMenu2 = false;
@@ -22,6 +24,7 @@ export class DashboardComponent implements OnInit {
     this.userService.getUserById(this.user.uid)
       .then(res => {
         this.role = res[0].data.role;
+        this.redirect();
       })
       .catch(err => {
         console.log(err);
@@ -33,5 +36,14 @@ export class DashboardComponent implements OnInit {
     console.log(event);
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
+
+  redirect() {
+    if (this.role === 'admin') {
+      this.router.navigate(['dashboard/admin/home']);
+    } else {
+      this.router.navigate(['dashboard/home']);
+    }
+  }
 }

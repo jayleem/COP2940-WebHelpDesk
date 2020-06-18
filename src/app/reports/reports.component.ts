@@ -7,6 +7,7 @@ import { Issue } from '../models/issue.model';
 import { UserService } from '../shared/services/user.service';
 import { Subscription } from 'rxjs';
 import { User } from '../models/user.model';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-reports',
@@ -36,9 +37,14 @@ export class ReportsComponent implements OnInit {
   public severity;
   public difficulty;
   public orderBy;
-  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService, private userService: UserService) { }
+  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService, private userService: UserService, private fireAuthService: AuthService) { }
+
+  //current user;
+  //
+  currentUser: any;
 
   ngOnInit() {
+    this.currentUser = this.fireAuthService.getUser();
     //get users
     //
     this.getUsers();
@@ -69,6 +75,8 @@ export class ReportsComponent implements OnInit {
   ticketStats = {
     status: {
       open: 0,
+      pending: 0,
+      closed: 0,
       low: 0,
       medium: 0,
       high: 0,
@@ -80,6 +88,8 @@ export class ReportsComponent implements OnInit {
     //reset the vars
     //
     this.ticketStats.status.open = 0;
+    this.ticketStats.status.pending = 0;
+    this.ticketStats.status.closed = 0;
     this.ticketStats.status.low = 0;
     this.ticketStats.status.medium = 0;
     this.ticketStats.status.high = 0;
@@ -99,8 +109,10 @@ export class ReportsComponent implements OnInit {
         this.techs.push(
           {
             tech: e.assignedTech,
-            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
+            name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
             open: 0,
+            pending: 0,
+            closed: 0,
             low: 0,
             medium: 0,
             high: 0,
@@ -115,6 +127,14 @@ export class ReportsComponent implements OnInit {
       if (e.assignedTech === techObj.tech && e.status === 'Open') {
         this.techs[index].open++;
         this.ticketStats.status.open++;
+      }
+      if (e.assignedTech === techObj.tech && e.status === 'Pending') {
+        this.techs[index].pending++;
+        this.ticketStats.status.pending++;
+      }
+      if (e.assignedTech === techObj.tech && e.status === 'Closed') {
+        this.techs[index].closed++;
+        this.ticketStats.status.closed++;
       }
       if (e.priority === 'Low') {
         this.techs[index].low++;
@@ -161,6 +181,8 @@ export class ReportsComponent implements OnInit {
         this.filterData();
       })
       .catch(err => {
+        console.log(err);
+        this.issues = [];
         this.errors = 'ERROR: No documents were found';
       });
   }
@@ -178,7 +200,7 @@ export class ReportsComponent implements OnInit {
             id: e.id,
             title: e.title,
             tech: e.assignedTech,
-            name: userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.',
+            name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
             priority: e.priority,
             severity: e.severity,
             status: e.status,
@@ -196,6 +218,6 @@ export class ReportsComponent implements OnInit {
   //
   onSubmit() {
     const tech = this.newIssueForm.value.reportData.tech;
-    this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
+    this.getIssuesOrdered(tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
   }
 }

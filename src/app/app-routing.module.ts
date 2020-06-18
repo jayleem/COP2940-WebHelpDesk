@@ -22,6 +22,9 @@ import { DashboardAdminUsersDetailsComponent } from './dashboard/admin/dashboard
 import { RoleGuardService } from './shared/services/role-guard.service';
 import { AdminRoleGuardService } from './shared/services/admin-role-guard.service';
 import { RoleAssignmentComponent } from './role-assignment/role-assignment.component';
+import { HelpComponent } from './help/help.component';
+import { KnowledgeBaseComponent } from './knowledge-base/knowledge-base.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 
 const routes: Routes = [
@@ -37,21 +40,21 @@ const routes: Routes = [
       { path: 'issues/new', component: IssuesNewComponent },
       { path: 'issues/details/:id', component: IssuesDetailComponent },
       { path: 'issues/update/:id', component: IssuesUpdateComponent },
+      { path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always' },
       //ADMIN ROUTES might move this to its own parent component + routes
       { path: 'admin/home', component: DashboardAdminAnalyticsComponent, canActivate: [AdminRoleGuardService] },
-      //REPORT QUERY
+      //REPORTS QUERY
       //
       { path: 'admin/issues/:query', component: DashboardAdminIssuesListComponent, canActivate: [AdminRoleGuardService] },
       { path: 'admin/issues', component: DashboardAdminIssuesListComponent, canActivate: [AdminRoleGuardService] },
       { path: 'admin/users', component: DashboardAdminUsersListComponent, canActivate: [AdminRoleGuardService] },
       { path: 'admin/users/details/:id', component: DashboardAdminUsersDetailsComponent, canActivate: [AdminRoleGuardService] },
-      {
-        path: 'admin/reports', component: ReportsComponent, canActivate: [AuthGuardService, AdminRoleGuardService], runGuardsAndResolvers: 'always', children: [
-          { path: 'user/:id', component: ReportsListComponent }
-        ]
-      },
+      { path: 'admin/reports', component: ReportsComponent, canActivate: [AuthGuardService, AdminRoleGuardService], runGuardsAndResolvers: 'always' },
     ]
   },
+  { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always'},
+  { path: 'knowledgebase', component: KnowledgeBaseComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always'},
+  { path: 'help', component: HelpComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always'},
   { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuardService, ProfileGuardService] },
   { path: '404', component: RouteNotFoundComponent },
   { path: '**', redirectTo: '404' }

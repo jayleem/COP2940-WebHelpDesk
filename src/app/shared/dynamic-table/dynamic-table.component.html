@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="row mt-4">
-                            <div class="col-sm-6 input-group">
+                            <div class="col-sm-10 input-group">
                                 <label for="currentTech">Assigned Technician</label>
                                 <input type="text" name="currentTech" id="currentTech" class="mr-2 form-control" placeholder="test123@example.com"
                                 [(ngModel)]="currentTech" (input)="changeTech($event.target.value)">
@@ -138,10 +138,17 @@
                                      escaping curly brackets with {{property}\} and passing it to the component doesn't work -->
                             </ng-container>
                         </ng-container>
+                        <td *ngIf="actions && actionsType === 'manageIssues'">
+                            <div class="btn-group-vertical-custom">
+                                <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
+                                <button class="btn m-1" routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
+                                <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
+                            </div>
+                        </td>
                         <td *ngIf="actions && actionsType === 'issues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
-                                <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
+                                <button class="btn m-1" routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
                             </div>
                         </td>
                         <td *ngIf="actions && actionsType === 'users'">

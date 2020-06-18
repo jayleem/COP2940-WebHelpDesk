@@ -1,11 +1,12 @@
-import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-issues-update',
@@ -23,8 +24,15 @@ export class IssuesUpdateComponent implements OnInit {
   errors;
   modifiedDate: Date;
 
-  constructor(private issueService: IssuesService, private userService: UserService, private fireAuthService: AuthService, private route: ActivatedRoute, private router: Router) { }
-
+  constructor(
+    private issueService: IssuesService, 
+    private userService: UserService, 
+    private fireAuthService: AuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private location: Location) { }
+  //Get the current route snapshot id paramater
+  //
   ngOnInit() {
     this.user = this.fireAuthService.getUser();
     this.updateIssueForm = new FormGroup({
@@ -45,6 +53,9 @@ export class IssuesUpdateComponent implements OnInit {
     this.users$ = this.getUsers()
   }
 
+  goBack() {
+    this.location.back();
+  }
   //get users only enabled accounts and non admin roles
   //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //
