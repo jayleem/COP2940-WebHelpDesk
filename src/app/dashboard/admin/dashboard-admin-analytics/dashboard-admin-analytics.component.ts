@@ -1,14 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Subscription, throwError } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { Label, SingleDataSet } from 'ng2-charts';
 import { ChartType } from 'chart.js';
-import { ThrowStmt } from '@angular/compiler';
 import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
-import { finalize } from 'rxjs/operators';
-import { title } from 'process';
 
 @Component({
   selector: 'app-dashboard-admin-analytics',
@@ -68,7 +65,6 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
           }
         }));
   }
-
 
   getUsers() {
     let users = [];
@@ -419,6 +415,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   ngOnDestroy() {
     for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
       this.firestoreSubscriptions[i].unsubscribe();
+      console.log('destroyed: ', i);
     }
   }
 

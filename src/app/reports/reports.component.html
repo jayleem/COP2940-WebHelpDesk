@@ -1,6 +1,11 @@
 <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
     role="alert">{{errors}}</h6>
-<div class="container-fluid vh-100">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
+            <button class="btn w-auto my-2" backButton>Go Back</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-8 col-md-12">
             <app-dynamic-table *ngIf="reportType == 'ordered' && issues"

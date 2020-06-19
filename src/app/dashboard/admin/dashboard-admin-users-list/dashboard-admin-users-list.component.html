@@ -1,6 +1,11 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8 col-md-12">
+            <button class="btn w-auto my-2" backButton>Go Back</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 col-md-12">
             <app-dynamic-table 
                 [tableHeaders]="['Id','Name', 'Username', 'Role', 'Status']"
                 [tableDataFields]="['id','name', 'username', 'role', 'status']" 

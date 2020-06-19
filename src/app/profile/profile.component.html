@@ -1,4 +1,4 @@
-<div class="container-fluid vh-100">
+<div class="main-content">
     <div *ngIf="user$" class="row justify-content-center">
         <div class="mt-5 col col-xs-12 col-sm-10">
             <div class="card shadow">
@@ -76,8 +76,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-10 text-left p-0 m-0 mt-2">
-                                    <button [attr.disabled]="!updateCredentialsForm.valid ? true : null" class="btn mr-2" type="submit">Change Password</button>
-                                    <a class="btn" routerLink="/dashboard/home">Back to Dashboard</a>
+                                    <button [attr.disabled]="!updateCredentialsForm.valid ? true : null" class="btn mr-2 mb-2" type="submit">Change Password</button>
+                                    <a class="btn" backButton>Go Back</a>
                                 </div>
                             </form>
                         </div>

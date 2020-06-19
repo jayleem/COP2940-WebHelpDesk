@@ -54,8 +54,9 @@
                         <div class="row mt-4">
                             <div class="col-sm-10 input-group">
                                 <label for="currentTech">Assigned Technician</label>
-                                <input type="text" name="currentTech" id="currentTech" class="mr-2 form-control" placeholder="test123@example.com"
-                                [(ngModel)]="currentTech" (input)="changeTech($event.target.value)">
+                                <input type="text" name="currentTech" id="currentTech" class="mr-2 form-control"
+                                    placeholder="test123@example.com" [(ngModel)]="currentTech"
+                                    (input)="changeTech($event.target.value)">
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -84,20 +85,24 @@
             </div>
         </div>
     </div>
-    <div class="row table-responsive">
-        <div class="col">
-            <h4 *ngIf="tableLabel" class="mt-4 mb-4 text-center">Displaying {{ data.length }} results</h4>
-            <div class="row">
-                <div class="col">
-                    <div *ngIf="data && pagination" class="mb-2 row justify-content-center">
-                        <div class="input-group-addon">
-                            <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage"
-                                [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
-                        </div>
-                    </div>
+    <div class="row ">
+        <div class="col-sm-12 col-md-10 ml-auto mr-auto">
+            <h4 *ngIf="tableLabel" class="my-4 text-center">Displaying {{ data.length }} results</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div *ngIf="data && pagination" class="mb-2 row justify-content-center">
+                <div class="input-group-addon">
+                    <ngb-pagination [collectionSize]="data.length" #numPages [pageSize]="itemsPerPage"
+                        [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
                 </div>
             </div>
-            <table class="table table-sm table-striped table-dark text-nowrap">
+        </div>
+    </div>
+    <div class="row table-responsive justify-content-center">
+        <div class="col-sm-12">
+            <table class="table table-striped table-dark text-nowrap">
                 <thead>
                     <th *ngFor="let tableHeader of tableHeaders; let i = index;">
                         <i [ngClass]="(colSorted[i]) ? 'fas fa-arrow-down' : 'fas fa-arrow-up' " (click)="tableDynamicSort(tableDataFields[i]); !sorted ? sorted = true : sorted = false; 
@@ -141,14 +146,16 @@
                         <td *ngIf="actions && actionsType === 'manageIssues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
-                                <button class="btn m-1" routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
+                                <button class="btn m-1"
+                                    routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
                                 <button class="btn m-1" (click)="onDelete(item.id)">Delete</button>
                             </div>
                         </td>
                         <td *ngIf="actions && actionsType === 'issues'">
                             <div class="btn-group-vertical-custom">
                                 <button class="btn m-1" routerLink="/dashboard/issues/details/{{item.id}}">View</button>
-                                <button class="btn m-1" routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
+                                <button class="btn m-1"
+                                    routerLink="/dashboard/issues/update/{{item.id}}">Update</button>
                             </div>
                         </td>
                         <td *ngIf="actions && actionsType === 'users'">

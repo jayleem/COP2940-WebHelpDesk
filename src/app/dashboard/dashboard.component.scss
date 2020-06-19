@@ -3,6 +3,10 @@
     box-shadow: 6px 0px 2px 0px rgba(0,0,0,.15);
 }
 
+.sidebarToggle {
+    max-width:15px;
+}
+
 p,a {
     margin:0;
     padding: .5em;
@@ -37,6 +41,285 @@ li {
 
 @media all and (max-width:900px) {
     .sidebar {
-        max-width: 100%;
+        max-width: 100% !important;
     }
+    .sidebarToggle
+    {
+        max-width: 100% !important;
+        i {
+            transform: rotate(-90deg); /* vendorless fallback */
+            -o-transform: rotate(-90deg); /* opera */
+            -ms-transform: rotate(-90deg); /* IE 10 */
+            -moz-transform: rotate(-90deg); /* Firefox */
+            -webkit-transform: rotate(-90deg);  /*safari and chrome */
+        }
+    }
+}
+//menu animator
+//
+.animate {
+    animation-duration: .3s; /* vendorless fallback */
+    -o-animation-duration: .3s;   /* opera */
+    -ms-animation-duration: .3s; /* IE 10 */
+    -moz-animation-duration: .3s; /* Firefox */
+    -webkit-animation-duration: .3s; /*safari and chrome */
+
+    animation-fill-mode: both; /* vendorless fallback */
+    -o-animation-fill-mode: both; /* opera */
+    -ms-animation-fill-mode: both; /* IE 10 */
+    -moz-animation-fill-mode: both; /* Firefox */
+    -webkit-animation-fill-mode: both; /*safari and chrome */
+}
+//menu slider keyframes
+//
+@keyframes slideIn {
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform:translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes slideIn {
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform:translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes slideIn {
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform:translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-o-keyframes slideIn {
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform:translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes slideIn {
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform:translateY(0rem);
+        opacity: 1;
+    }
+    0% {
+        transform:translateY(-1rem);
+        opacity: 0;
+    }
+}
+
+.slideIn {
+    -webkit-animation-name: slideIn;
+    animation-name: slideIn;
+}
+
+
+//menu fader keyframes
+//
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+    0% {
+        opacity: 0;
+    }
+}
+
+.fadeInOut {
+    -webkit-animation-name: fadeInOut;
+    animation-name: fadeInOut;
+}
+
+//menu fly in keyframes
+//
+@keyframes in {
+    from {
+        max-width: 0px;
+    }
+    to {
+        max-width: 250px;
+    }
+}
+
+@-moz-keyframes in {
+    from {
+        max-width: 0px;
+    }
+    to {
+        max-width: 250px;
+    }
+}
+
+@-webkit-keyframes in {
+    from {
+        max-width: 0px;
+    }
+    to {
+        max-width: 250px;
+    }
+}
+
+@-o-keyframes in {
+    from {
+        max-width: 0px;
+    }
+    to {
+        max-width: 250px;
+    }
+}
+
+@-ms-keyframes in {
+    from {
+        max-width: 0px;
+    }
+    to {
+        max-width: 250px;
+    }
+}
+
+.in {
+    -webkit-animation-name: in;
+    animation-name: in;
+}
+
+//menu fly out keyframes
+//
+@keyframes out {
+    from {
+        max-width: 250px;
+    }
+    to {
+        max-width: 0px;
+    }
+}
+
+@-moz-keyframes out {
+    from {
+        max-width: 250px;
+    }
+    to {
+        max-width: 0px;
+    }
+}
+
+@-webkit-keyframes out {
+    from {
+        max-width: 250px;
+    }
+    to {
+        max-width: 0px;
+    }
+}
+
+@-o-keyframes out {
+    from {
+        max-width: 250px;
+    }
+    to {
+        max-width: 0px;
+    }
+}
+
+@-ms-keyframes out {
+    from {
+        max-width: 250px;
+    }
+    to {
+        max-width: 0px;
+    }
+}
+
+.out {
+    -webkit-animation-name: out;
+    animation-name: out;
 }

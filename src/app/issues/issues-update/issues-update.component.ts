@@ -27,14 +27,14 @@ export class IssuesUpdateComponent implements OnInit {
   constructor(
     private issueService: IssuesService, 
     private userService: UserService, 
-    private fireAuthService: AuthService, 
+    private authService: AuthService, 
     private route: ActivatedRoute, 
     private router: Router, 
     private location: Location) { }
   //Get the current route snapshot id paramater
   //
   ngOnInit() {
-    this.user = this.fireAuthService.getUser();
+    this.user = this.authService.getUser();
     this.updateIssueForm = new FormGroup({
 
       'issueData': new FormGroup({
@@ -53,9 +53,6 @@ export class IssuesUpdateComponent implements OnInit {
     this.users$ = this.getUsers()
   }
 
-  goBack() {
-    this.location.back();
-  }
   //get users only enabled accounts and non admin roles
   //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //

@@ -11,11 +11,11 @@ import { AuthService } from './auth.service';
 })
 export class AuthGuardService implements CanActivate {
 
-  constructor(private router: Router, private fireAuthService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   async canActivate(): Promise<any> {
     //check if loggedIn
-    return await this.fireAuthService.getLoggedIn().subscribe(res => {
+    return await this.authService.getLoggedIn().subscribe(res => {
       if (!res) {
         //user not logged in
         //
@@ -24,15 +24,15 @@ export class AuthGuardService implements CanActivate {
       } else {
         //user logged in
         //update credentials from the users database
-        this.fireAuthService.updateCreds();
+        this.authService.updateCreds();
         //logic user account hasn't been disabled
         //A user account cannot be disabled/enabled programmaticaly therefore we must disable the user in the users database
         //If a user account is disabled from the authorization console in Firebase then the account cannot login period
         //
-        if (this.fireAuthService.getAccountStatus()) {
+        if (this.authService.getAccountStatus()) {
           return true;
         } else {
-          this.fireAuthService.signOut();
+          this.authService.signOut();
           return false;
         }
       }

@@ -155,6 +155,12 @@ i {
     font-size: 1em;
     font-weight: 400;
 }
+//remove blue border around buttons when activated/focused
+//
+.btn:focus,.btn:active {
+    outline: none !important;
+    box-shadow: none;
+ }
 //Bootstrap theme w/o editing bootstrap SASS vars
 body, html {
     font-family: 'Raleway', sans-serif;

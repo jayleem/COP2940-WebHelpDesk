@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 
 //Components
+//
 import { HeaderComponent} from './header/header.component';
 import { FooterComponent} from './footer/footer.component';
 import { IssuesDetailComponent } from './issues/issues-detail/issues-detail.component';
@@ -31,7 +32,12 @@ import { KnowledgeBaseComponent } from './knowledge-base/knowledge-base.componen
 import { HelpComponent } from './help/help.component';
 import { ProjectsComponent } from './projects/projects.component';
 
+//Directives
+//
+import { BackButtonDirective } from './shared/back-button.directive';
+
 //Services
+//
 import { IssuesService } from './shared/services/issues.service';
 import { AuthService } from './shared/services/auth.service';
 import { AuthGuardService } from './shared/services/auth-guard.service';
@@ -42,18 +48,22 @@ import { RoleGuardService } from './shared/services/role-guard.service';
 import { AdminRoleGuardService } from './shared/services/admin-role-guard.service';
 
 //Angular Bootstrap
+//
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 //Firebase
+//
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth'
 
 //Env config
+//
 import { environment } from 'src/environments/environment';
 
 
 //ng-2 charts
+//
 import { ChartsModule } from 'ng2-charts';
 
 
@@ -86,6 +96,7 @@ import { ChartsModule } from 'ng2-charts';
     KnowledgeBaseComponent,
     HelpComponent,
     ProjectsComponent,
+    BackButtonDirective
   ],
   imports: [
     BrowserModule,

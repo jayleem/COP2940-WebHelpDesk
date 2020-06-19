@@ -22,10 +22,6 @@ export class IssuesDetailComponent implements OnInit {
     this.getIssueById(this.id);
   }
 
-  goBack() {
-    this.location.back();
-  }
-
   //Calls the getIssueById method in issuesService for a matching document by id from the firebase database collection
   //
   async getIssueById(id) {

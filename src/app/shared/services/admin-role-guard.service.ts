@@ -8,10 +8,10 @@ import { AuthService } from './auth.service';
 export class AdminRoleGuardService {
   private user: any;
   
-  constructor(private router: Router, private fireAuthService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {}
   
   canActivate():boolean {
-    this.user = this.fireAuthService.getUser();
+    this.user = this.authService.getUser();
    
     //non admin users get redirected to the 404 page
     //I decided to redirect non authorized users to the 404 page instead of displaying errors

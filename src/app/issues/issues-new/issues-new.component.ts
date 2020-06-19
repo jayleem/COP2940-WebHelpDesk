@@ -23,17 +23,13 @@ export class IssuesNewComponent implements OnInit {
   constructor(
     private issueService: IssuesService, 
     private userService: UserService, 
-    private fireAuthService: AuthService, 
+    private authService: AuthService, 
     private router: Router,
     private location: Location
     ) {}
 
-  goBack() {
-    this.location.back();
-  }
-
   ngOnInit() {
-    this.user = this.fireAuthService.getUser();
+    this.user = this.authService.getUser();
     this.newIssueForm = new FormGroup({
       'issueData': new FormGroup({
         'title': new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(50)]),

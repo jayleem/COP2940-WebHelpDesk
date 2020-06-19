@@ -12,11 +12,11 @@ import { AuthService } from './auth.service';
 export class ProfileGuardService {
   private auth: boolean;
 
-  constructor(private router: Router, private fireAuthService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   canActivate(route: ActivatedRoute, state: RouterStateSnapshot): boolean {
     let id = route.url[1].path;
-    this.fireAuthService.getMetadata()
+    this.authService.getMetadata()
       .then(res => {
         if (res.uid === id) {
           this.auth = true;

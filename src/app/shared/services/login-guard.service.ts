@@ -11,10 +11,10 @@ import { AuthService } from './auth.service';
 export class LoginGuardService {
     private auth: boolean;
 
-    constructor(private router: Router, private fireAuthService: AuthService) { }
+    constructor(private router: Router, private authService: AuthService) { }
 
     canActivate(): boolean {
-        this.fireAuthService.getLoggedIn().subscribe(res => {
+        this.authService.getLoggedIn().subscribe(res => {
             if (!res) {
                 this.auth = true;
             } else {
