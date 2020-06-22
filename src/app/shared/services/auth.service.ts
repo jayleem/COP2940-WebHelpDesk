@@ -84,7 +84,7 @@ export class AuthService {
     this.user = value;
   }
 
-  getAccountRole(): boolean {
+  getAccountRole(): string {
     return this.user.role;
   }
 

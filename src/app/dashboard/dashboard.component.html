@@ -1,11 +1,12 @@
+<!-- Dashboard Sidebar -->
 <div class="container-fluid">
     <div class="row">
         <nav [ngClass]="sidebarToggle ? 'animate in' : 'animate out'"
-            class="col-sm-12 col-md-2 d-md-block navbar-light sidebar p-0 m-0">
+            class="col-sm-12 col-md-2 d-md-block navbar-dark sidebar p-0 m-0">
             <div *ngIf="sidebarToggle" class="menu p-0 m-0 pt-3">
                 <!--Admin Menu-->
                 <div *ngIf="role == 'admin'; else notShown">
-                    <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                    <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                         (click)="subMenu0 = !subMenu0" aria-controls="navbarSupportedContent"
                         [attr.aria-expanded]="!subMenu0" aria-label="Toggle navigation">Admin
                         <span>
@@ -16,8 +17,9 @@
                         <div [ngbCollapse]="subMenu0" class="collapse navbar-collapse" id="collapsible">
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/admin/home" routerLinkActive="active"
-                                    [routerLinkActiveOptions]="{exact: true}"><i
-                                        class="mr-1 fas fa-chart-bar"></i>Analytics</a>
+                                    [routerLinkActiveOptions]="{exact: true}">
+                                    <i class="mr-1 fas fa-chart-bar">
+                                    </i>Analytics</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" routerLink="/dashboard/admin/issues" routerLinkActive="active"
@@ -37,9 +39,9 @@
                             </li>
                         </div>
                     </ul>
-                    <hr>
+                    <hr class="border-0">
                     <!--Admin Reports Menu-->
-                    <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                    <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                         (click)="subMenu1 = !subMenu1" aria-controls="navbarSupportedContent"
                         [attr.aria-expanded]="!subMenu1" aria-label="Toggle navigation">Reports
                         <span>
@@ -79,7 +81,7 @@
                 <!--My Issues Menu-->
                 <ng-template #notShown>
                     <div *ngIf="role != 'unassigned'; else unassigned">
-                        <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                        <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                             (click)="subMenu0 = !subMenu0" aria-controls="navbarSupportedContent"
                             [attr.aria-expanded]="!subMenu0" aria-label="Toggle navigation">Issues
                             <span>
@@ -102,9 +104,9 @@
                                 </li>
                             </div>
                         </ul>
-                        <hr>
+                        <hr class="border-0">
                         <!--Reports Menu-->
-                        <button class="btn w-100 border-0 navbar-toggler text-left" type="button"
+                        <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                             (click)="subMenu1 = !subMenu1" aria-controls="navbarSupportedContent"
                             [attr.aria-expanded]="!subMenu1" aria-label="Toggle navigation">Reports
                             <span>
@@ -145,17 +147,17 @@
                     </ng-template>
                 </ng-template>
             </div>
+            <div class="flex-row d-flex position-absolute-bottom w-100 py-2">
+                <div class="col-sm-12 sidebarToggle p-0 pr-2 m-0 text-center">
+                    <button class="btn navbar-toggler p-0 m-0 border-0 bg-dark" type="button"
+                        (click)="sidebarToggle = !sidebarToggle" aria-controls="navbarSupportedContent"
+                        [attr.aria-expanded]="!sidebarToggle" aria-label="Toggle sidebar navigation">
+                        <i [ngClass]="sidebarToggle ? 'fas fa-angle-right' : 'fas fa-angle-left'"></i>
+                    </button>
+                </div>
+            </div>
         </nav>
-        <div class="col-sm-12 col-md-1 navbar-light sidebarToggle p-0 m-0 d-flex justify-content-center">
-            <button class="btn w-100 navbar-toggler p-0 m-0" type="button" (click)="sidebarToggle = !sidebarToggle"
-                aria-controls="navbarSupportedContent" [attr.aria-expanded]="!sidebarToggle"
-                aria-label="Toggle sidebar navigation">
-                <span>
-                    <i [ngClass]="sidebarToggle ? 'fas fa-angle-right' : 'fas fa-angle-left'"></i>
-                </span>
-            </button>
-        </div>
-        <div class="col-sm-12 col-md-9 main-content">
+        <div class="col-sm-12 col-md-10 main-content">
             <router-outlet></router-outlet>
         </div>
     </div>

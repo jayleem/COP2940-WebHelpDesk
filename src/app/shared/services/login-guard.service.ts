@@ -18,7 +18,14 @@ export class LoginGuardService {
             if (!res) {
                 this.auth = true;
             } else {
-                this.router.navigate(['/dashboard/home']);
+                //redirect user based on role to correct dashboard component
+                //
+                let role = this.authService.getAccountRole(); 
+                if (role != 'admin') {
+                    this.router.navigate(['/dashboard/home']);                                        
+                } else {
+                    this.router.navigate(['/dashboard/admin/home']);            
+                }
                 this.auth = false;
             }
         });

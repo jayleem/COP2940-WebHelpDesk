@@ -36,7 +36,7 @@ const routes: Routes = [
     path: 'dashboard', 
       component: DashboardComponent, canActivate: [AuthGuardService, RoleGuardService], runGuardsAndResolvers: 'always', children: [
       { path: 'home', component: DashboardAnalyticsComponent }, 
-      { path: 'issues/list/:user', component: IssuesListComponent },
+      //{ path: 'issues/list/:user', component: IssuesListComponent },
       { path: 'issues/new', component: IssuesNewComponent },
       { path: 'issues/details/:id', component: IssuesDetailComponent },
       { path: 'issues/update/:id', component: IssuesUpdateComponent },

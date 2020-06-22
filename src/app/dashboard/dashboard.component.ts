@@ -31,18 +31,9 @@ export class DashboardComponent implements OnInit {
     this.userService.getUserById(this.user.uid)
       .then(res => {
         this.role = res[0].data.role;
-        this.redirect();
       })
       .catch(err => {
         console.log(err);
       });
-  }
-
-  redirect() {
-    if (this.role === 'admin') {
-      this.router.navigate(['dashboard/admin/home']);
-    } else {
-      this.router.navigate(['dashboard/home']);
-    }
   }
 }

@@ -11,7 +11,15 @@ i.fas.fa-bars {
 i.fas.fa-bars:hover {
     color: #fff;
 }
-
+.navbar {
+    border-bottom: 2px solid #7c7c7c;
+}
+.navbar-brand {
+    span {
+        height:100%;
+        vertical-align: middle;
+    }
+}
 @media ALL and (min-width: 800px) {
     .navbar-nav {
         a {

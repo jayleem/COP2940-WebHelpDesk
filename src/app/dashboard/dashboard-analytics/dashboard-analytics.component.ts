@@ -71,6 +71,7 @@ export class DashboardAnalyticsComponent implements OnInit {
     const tech = this.user.email;
     this.issuesService.getIssuesByTech(tech)
       .then(data => {
+        console.log(data.length);
         if (data.length > 0) {
           this.issues$ = data.map(e => {
             return { id: e.id, ...e.data as {} } as Issue;

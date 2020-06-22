@@ -9,7 +9,8 @@ import { firestore } from 'firebase/app';
   providedIn: 'root'
 })
 export class IssuesService {
-  constructor(private db: AngularFirestore) { }
+  constructor(private db: AngularFirestore) {
+  }
 
   //Create new issue
   //
@@ -83,43 +84,6 @@ export class IssuesService {
     });
   }
 
-  //Get filtered issues in realtime
-  //
-  getIssuesFiltered(status: string, priority: string, severity: string, difficulty: string): Promise<any> {
-    console.log(status, priority, severity, difficulty)
-    return new Promise(async (resolve, reject) => {
-      const ref = await this.db.collection('issues', ref => {
-        //build dynamic query
-        //
-        let query: Query = ref;
-        if (status) { query = query.where('status', '==', status) };
-        if (priority) { query = query.where('priority', '==', priority) };
-        if (severity) { query = query.where('severity', '==', severity) };
-        if (difficulty) { query = query.where('difficulty', '==', difficulty) };
-        return query;
-      })
-        .get()
-        .toPromise()
-        .then((doc) => {
-          if (doc.empty) {
-            reject();
-          } else {
-            let promises = [];
-            doc.forEach(issue => {
-              promises.push({
-                id: issue.id,
-                data: issue.data()
-              })
-            })
-            resolve(promises);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        })
-    });
-  }
-
   //Get filtered issues in realtime ordered by data field
   //Note this is just to complete the requirements set forth by the internship
   //
@@ -157,35 +121,6 @@ export class IssuesService {
         .catch(err => {
           reject(err);
         })
-    });
-  }
-
-  //Get issues by the tech parameter
-  //
-  getReportOnTech(tech): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const ref = await this.db.collection('issues', ref => ref.where('assignedTech', '==', tech).where('status', '==', 'Open'))
-          .get()
-          .toPromise()
-          .then((doc) => {
-            if (doc.empty) {
-              reject('No results found');
-            } else {
-              let promises = [];
-              doc.forEach(issue => {
-                promises.push({
-                  id: issue.id,
-                  data: issue.data()
-                })
-              })
-              resolve(promises)
-            }
-          })
-      }
-      catch (error) {
-        reject('No results found');
-      }
     });
   }
 
@@ -234,7 +169,7 @@ export class IssuesService {
     status = formData.get('issueData.escalate').value != 0 ? 'Open' : status;
     //if ticket was escalated unassign the tickets previous assigned tech
     //
-    let assignedTech = formData.get('issueData.escalate').value !=0 ? "Unassigned" : formData.get('issueData.tech').value;
+    let assignedTech = formData.get('issueData.escalate').value != 0 ? "Unassigned" : formData.get('issueData.tech').value;
 
     return new Promise(async (resolve, reject) => {
       try {
@@ -259,7 +194,7 @@ export class IssuesService {
                       lastModified: new Date(),
                       dateEnd: dateEnd,
                       notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
-                    });
+                    });                
               } else {
                 reject('ERROR: Document was updated by another technician.');
               }
@@ -286,6 +221,12 @@ export class IssuesService {
         reject(error)
       }
     });
+  }
+
+  //get aggregated document to reduce cost of reads
+  //
+  getAggregation() {
+    return this.db.collection('aggregation').get();
   }
 
 }

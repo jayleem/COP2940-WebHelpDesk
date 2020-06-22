@@ -35,12 +35,13 @@ export class LoginComponent implements OnInit {
     //login user with provided credentials
     //
     let disabled;
+    let role;
     this.authService.signIn(email, password)
       .then((res) => {
-        disabled = this.authService.getLoggedIn();
-        this.router.navigate(['/dashboard']);
+        //user signed in
       })
       .catch(err => {
+        //user sign in failed
         this.errorMessage = "Invalid username or password."
       });
     //if account is disabled show error message

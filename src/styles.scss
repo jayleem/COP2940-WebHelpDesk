@@ -124,10 +124,15 @@ i {
     color: #32dadd !important;
     background-color: transparent !important;
     border: 0;
+    font-weight: 300;
 }
 .btn-custom:hover {
     opacity: .5;
 }
+.btn-custom:focus,.btn-custom:active {
+    outline: none !important;
+    box-shadow: none;
+ }
 .btn:hover {
     opacity: .5;
 }

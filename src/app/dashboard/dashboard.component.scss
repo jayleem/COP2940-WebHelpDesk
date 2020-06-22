@@ -1,12 +1,35 @@
 .sidebar{
     max-width:250px;
-    box-shadow: 6px 0px 2px 0px rgba(0,0,0,.15);
+    box-shadow: 4px 0px 2px 0px rgba(0,0,0,.15);
+    border-bottom: 2px solid #7c7c7c;
+    border-right: 2px solid #7c7c7c;
 }
 
 .sidebarToggle {
-    max-width:15px;
+    .btn {
+        max-width:15px;
+    }
+    .btn:hover {
+        background-color: #1C2A35 !important;
+        border-color: #1C2A35;
+        opacity: 1.0;
+    }
+    .btn:active {
+        background-color: #1C2A35 !important;
+        opacity: 1.0;
+    }
+    .btn:focus {
+        background-color: #1C2A35 !important;
+        opacity: 1.0;
+        outline:none;
+    }
 }
-
+.btn > .fa-angle-right, .fa-angle-left {
+    font-size: 2em;
+    background-color: transparent;
+    border:0;
+    color: #39bec1 !important;
+}
 p,a {
     margin:0;
     padding: .5em;
@@ -22,8 +45,8 @@ p,a {
 }
 li {
     .nav-link:hover {
-        border-left: 4px #39bec1 solid !important;
-        background-color: #1C2A35 !important;
+        border-right: 4px #39bec180 solid !important;
+        background-color: #2b4b61 !important;
         color:#39bec1 !important;
         opacity: 1 !important;
         i {
@@ -31,12 +54,20 @@ li {
         }
     }
     .nav-link.active {
-        background-color: #1C2A35 !important;
+        border-right: 4px #39bec140 solid !important;
+        background-color: #203848 !important;
         color:#39bec1 !important;
+        opacity: 1 !important;
         i {
             color:#39bec1 !important;
         }
     }
+}
+
+.position-absolute-bottom {
+    position: absolute;
+    bottom:0;
+    border-top: 2px solid #7c7c7c;
 }
 
 @media all and (max-width:900px) {
@@ -53,6 +84,10 @@ li {
             -moz-transform: rotate(-90deg); /* Firefox */
             -webkit-transform: rotate(-90deg);  /*safari and chrome */
         }
+    }
+    .position-absolute-bottom {
+        position: relative;
+        border-top: 1px solid #80808080;
     }
 }
 //menu animator
@@ -279,7 +314,7 @@ li {
         max-width: 250px;
     }
     to {
-        max-width: 0px;
+        max-width: 40px;
     }
 }
 
@@ -288,7 +323,7 @@ li {
         max-width: 250px;
     }
     to {
-        max-width: 0px;
+        max-width: 40px;
     }
 }
 
@@ -297,7 +332,7 @@ li {
         max-width: 250px;
     }
     to {
-        max-width: 0px;
+        max-width: 40px;
     }
 }
 
@@ -306,7 +341,7 @@ li {
         max-width: 250px;
     }
     to {
-        max-width: 0px;
+        max-width: 40px;
     }
 }
 
@@ -315,7 +350,7 @@ li {
         max-width: 250px;
     }
     to {
-        max-width: 0px;
+        max-width: 40px;
     }
 }
 
