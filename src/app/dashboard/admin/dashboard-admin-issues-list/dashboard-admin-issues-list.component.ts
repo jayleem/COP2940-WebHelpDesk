@@ -45,48 +45,65 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       .catch(err => {
         console.log(err);
       });
+    // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
+    // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
+    //
+    //
+    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
+      let dataArr = [];
+      console.log('oof');
+      if (data.length > 0) {
+        this.issues$ = data.map((e) => {
+          const data: any = e.payload.doc.data();
+          dataArr.push(...data.issues);
+        });
+      } else {
+        this.errors = 'ERROR: No documents were found';
+        this.issues$ = [];
+        this.issues = [];
+      }
+      this.issues$ = dataArr;
+      this.filterData();
+      return dataArr;
+    }));
   }
 
   ngOnInit() {
     this.getUsers();
-    this.getIssues();//default view get all issues
+    //this.getIssues();//default view get all issues
   }
 
-  // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
-  // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
+  // TO-DO
+  // fix issue list not fetching original data after filtering multiple times
   //
-  //
-  getIssues() {
-    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
-      if (data.length > 0) {
-        this.issues$ = data.map(e => {
-          return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
-        });
-      } else {
-        this.errors = 'ERROR: No documents were found';
-        this.issues$ = undefined;
-      }
-      this.filterData();
-    }));
-  }
-
   getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
-    this.issuesService.getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy)
-      .then(issues => {
-        if (issues.length > 0) {
-          this.issues$ = issues.map(e => {
-            return { id: e.id, ...e.data as {} } as Issue;
-          });
-        } else {
-          this.errors = 'ERROR: No documents were found';
-          this.issues = [];
-        }
-        this.filterData();
-      })
-      .catch(err => {
-        this.errors = 'ERROR: No documents were found';
-        this.issues = [];
-      });
+    let newIssues = this.issues;
+    //need way to sort data asc by priority and severity
+    //dont really like my logic here but it works
+    //
+    if (tech) {
+      newIssues = this.issues.filter((issue: any) => issue.tech == tech)
+      this.issues = newIssues;
+    };
+    if (status) {
+      newIssues = this.issues.filter((issue: any) => issue.status == status)
+      this.issues = newIssues;
+    };
+    if (priority) {
+      newIssues = this.issues.filter((issue: any) => issue.priority == priority)
+      this.issues = newIssues;
+    };
+    if (severity) {
+      newIssues = this.issues.filter((issue: any) => issue.severity == severity)
+      this.issues = newIssues;
+    };
+    if (difficulty) {
+      newIssues = this.issues.filter((issue: any) => issue.difficulty == difficulty)
+      this.issues = newIssues;
+    };
+    if (!orderBy) {
+      this.issues.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
+    }
   }
 
   getUsers() {
@@ -143,7 +160,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
         event.filters.currentDifficulty,
         event.filters.orderBy);
     } else {
-      this.getIssues();
+      this.getIssuesOrdered(null, null, null, null, null, null);
     }
   }
 
@@ -155,13 +172,11 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       .then(res => {
         console.log(res);
         this.userService.updateUserHistory(this.user.uid, "Deleted", id);
-        this.getIssues();
       })
       .catch(err => {
         console.log(err);
       });
   }
-
 
   // Unsubscribe from firestore real time listener
   //

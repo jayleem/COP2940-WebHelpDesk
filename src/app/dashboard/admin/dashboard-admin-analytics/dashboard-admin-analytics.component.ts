@@ -51,18 +51,22 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   }
 
   getIssues() {
+    let dataArr = [];
     this.firestoreSubscriptions.push(this.issuesService.getIssues()
       .subscribe(
         data => {
           if (data.length > 0) {
-            this.issues$ = data.map(e => {
-              return { id: e.payload.doc.id, ...e.payload.doc.data() as {} } as Issue;
+            this.issues$ = data.map((e) => {
+              const data: any = e.payload.doc.data();
+              dataArr.push(...data.issues);
+              return dataArr;
             })
-            this.updateChartData();
           } else {
             this.errors.push('ERROR: No documents were found');
             this.issues$ = '';
           }
+          this.issues$ = dataArr;
+          this.updateChartData();
         }));
   }
 
@@ -71,9 +75,9 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
-          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
-			 }
+          if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+            users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+          }
         });
         this.updateRecentHistory();
       } else {

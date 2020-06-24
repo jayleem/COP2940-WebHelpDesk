@@ -16,15 +16,25 @@ export class LoginGuardService {
     canActivate(): boolean {
         this.authService.getLoggedIn().subscribe(res => {
             if (!res) {
+                //can access login page
+                //
                 this.auth = true;
             } else {
-                //redirect user based on role to correct dashboard component
+                //redirect user away from login page based on role to correct dashboard component
                 //
-                let role = this.authService.getAccountRole(); 
-                if (role != 'admin') {
-                    this.router.navigate(['/dashboard/home']);                                        
+                let role:string = this.authService.getAccountRole();
+                let status:boolean = this.authService.getAccountStatus();
+                if (status && role =='admin') {
+                    this.router.navigate(['/dashboard/admin/home']);
+                }
+                else if (status && role !='admin') {
+                    this.router.navigate(['/dashboard/home']);
+                }
+                else if  (!status || role !='unassigned') {
+                    //something not right  
+                    this.router.navigate(['/role-assignment']);                 
                 } else {
-                    this.router.navigate(['/dashboard/admin/home']);            
+                    this.router.navigate(['/login']);                 
                 }
                 this.auth = false;
             }
@@ -33,6 +43,6 @@ export class LoginGuardService {
     }
 
     ngOnDestroy() {
-        
-     }
+
+    }
 }

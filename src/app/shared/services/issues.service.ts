@@ -51,7 +51,7 @@ export class IssuesService {
   //Get all issues in realtime
   //
   getIssues() {
-    return this.db.collection('issues').snapshotChanges();
+    return this.db.collection('aggregation').snapshotChanges();
   }
 
 
@@ -90,7 +90,7 @@ export class IssuesService {
   getIssuesOrdered(tech: string, status: string, priority: string, severity: string, difficulty: string, orderBy: string): Promise<any> {
     //console.log(tech, status, priority, severity, difficulty, orderBy)
     return new Promise(async (resolve, reject) => {
-      const ref = await this.db.collection('issues', ref => {
+      const ref = await this.db.collection('aggregation', ref => {
         //build dynamic query
         //
         let query: Query = ref;
@@ -226,7 +226,7 @@ export class IssuesService {
   //get aggregated document to reduce cost of reads
   //
   getAggregation() {
-    return this.db.collection('aggregation').get();
+    return this.db.collection('aggregation').snapshotChanges();
   }
 
 }

@@ -1,9 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IssuesService } from '../shared/services/issues.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ReportsListComponent } from './reports-list/reports-list.component';
-import { Issue } from '../models/issue.model';
 import { UserService } from '../shared/services/user.service';
 import { Subscription } from 'rxjs';
 import { User } from '../models/user.model';
@@ -22,8 +20,8 @@ export class ReportsComponent implements OnInit {
   //issues
   //
   issues$;
-  users$;
   issues;
+  users$;
   errors;
 
   newIssueForm: FormGroup;
@@ -37,17 +35,11 @@ export class ReportsComponent implements OnInit {
   public severity;
   public difficulty;
   public orderBy;
-  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService, private userService: UserService, private fireAuthService: AuthService) { }
 
   //current user;
   //
   currentUser: any;
-
-  ngOnInit() {
-    this.currentUser = this.fireAuthService.getUser();
-    //get users
-    //
-    this.getUsers();
+  constructor(private issueService: IssuesService, private router: Router, private route: ActivatedRoute, private issuesService: IssuesService, private userService: UserService, private fireAuthService: AuthService) {
     //get query parameters
     //
     this.route.queryParams.subscribe(queryParams => {
@@ -58,13 +50,17 @@ export class ReportsComponent implements OnInit {
       this.severity = queryParams.severity;
       this.difficulty = queryParams.difficulty;
       this.orderBy = queryParams.orderBy;
-      if (this.reportType != "search") {
-        this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy)
-      } else {
-        this.issues = null;
-        this.reportType = queryParams.reportType;
-      }
+      this.getIssues();
     });
+  }
+
+  ngOnInit() {
+    //get current user
+    //
+    this.currentUser = this.fireAuthService.getUser();
+    //get users
+    //
+    this.getUsers();
     this.newIssueForm = new FormGroup({
       'reportData': new FormGroup({
         'tech': new FormControl(null, [Validators.required]),
@@ -152,14 +148,14 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-   getUsers() {
+  getUsers() {
     let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
-          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
-			 }
+          if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+            users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+          }
         });
       } else {
         this.errors.push('ERROR: No documents were found');
@@ -169,22 +165,23 @@ export class ReportsComponent implements OnInit {
     return this.users$ = users;
   }
 
-  getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
-    this.issuesService.getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy)
-      .then(issues => {
-        if (issues.length > 0) {
-          this.issues$ = issues.map(e => {
-            return { id: e.id, ...e.data as {} } as Issue;
-          });
-        };
-        this.errors = '';
-        this.filterData();
-      })
-      .catch(err => {
-        console.log(err);
-        this.issues = [];
+  getIssues() {
+    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
+      let dataArr = [];
+      if (data.length > 0) {
+        this.issues$ = data.map((e) => {
+          const data: any = e.payload.doc.data();
+          dataArr.push(...data.issues);
+          return dataArr;
+        });
+      } else {
         this.errors = 'ERROR: No documents were found';
-      });
+        this.issues$ = [];
+        this.issues = [];
+      }
+      this.issues$ = dataArr;
+      this.filterData();
+    }));
   }
 
   filterData() {
@@ -212,7 +209,45 @@ export class ReportsComponent implements OnInit {
       }
     });
     this.generateOverviewReport();
+    this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
   }
+
+  getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
+    //console.log('admin', tech, status, priority, severity, difficulty, orderBy);
+    let newIssues = this.issues;
+    //need way to sort data asc by priority and severity
+    //dont really like my logic here but it works
+    //
+    if (tech) {
+      newIssues = this.issues.filter((issue: any) => issue.tech == tech)
+      this.issues = newIssues;
+    };
+    if (status) {
+      newIssues = this.issues.filter((issue: any) => issue.status == status)
+      this.issues = newIssues;
+    };
+    if (priority) {
+      newIssues = this.issues.filter((issue: any) => issue.priority == priority)
+      this.issues = newIssues;
+    };
+    if (severity) {
+      newIssues = this.issues.filter((issue: any) => issue.severity == severity)
+      this.issues = newIssues;
+    };
+    if (difficulty) {
+      newIssues = this.issues.filter((issue: any) => issue.difficulty == difficulty)
+      this.issues = newIssues;
+    };
+    if (orderBy) {
+      console.log(orderBy);
+      if (orderBy != "priority") {
+        this.issues.sort((a, b) => (a.severity > b.severity) ? 1 : -1);
+      } else {
+        this.issues.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
+      }
+    };
+  }
+
 
   //used for search report
   //

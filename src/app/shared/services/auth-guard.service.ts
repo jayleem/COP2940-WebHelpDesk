@@ -17,8 +17,6 @@ export class AuthGuardService implements CanActivate {
     //check if loggedIn
     return await this.authService.getLoggedIn().subscribe(res => {
       if (!res) {
-        //user not logged in
-        //
         this.router.navigate(['/login']);
         return false;
       } else {
@@ -32,7 +30,7 @@ export class AuthGuardService implements CanActivate {
         if (this.authService.getAccountStatus()) {
           return true;
         } else {
-          this.authService.signOut();
+          this.router.navigate(['/login']);
           return false;
         }
       }

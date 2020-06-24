@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     let role;
     this.authService.signIn(email, password)
       .then((res) => {
-        //user signed in
+        console.log(this.authService.getUser());
       })
       .catch(err => {
         //user sign in failed
