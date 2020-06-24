@@ -33,20 +33,20 @@ export class DashboardAdminUsersListComponent implements OnInit {
   // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
   //
   //
- getUsers() {
+  getUsers() {
     let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
           users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
-			 }
         });
+        //sort users
+        users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
       } else {
         this.errors.push('ERROR: No documents were found');
         users = [];
       }
-	  this.filterData();
+      this.filterData();
     }));
     return this.users$ = users;
   }
@@ -61,36 +61,35 @@ export class DashboardAdminUsersListComponent implements OnInit {
       if (!this.users.some(el => el.id === e.id)) {
         this.users.push(
           {
-            id: e.userId,
-            name: e.fName + " " + e.lName.slice(0,1) + '.',
+            id: e.id,
+            name: e.fName + " " + e.lName.slice(0, 1) + '.',
             username: e.username,
             role: e.role,
             status: e.accountStatus ? "Enabled" : "Disabled",
-          });        
-        }
-      });
-    };
-
-    //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
-    //
-    deleteIssue(event) {      
-      const id = event.id;
-      this.issuesService.deleteIssue(id)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-
-    // Unsubscribe from firestore real time listener
-    //
-    ngOnDestroy() {
-      for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
-        this.firestoreSubscriptions[i].unsubscribe();
+          });
       }
-    }
+    });
+  };
+
+  //Calls the deleteIssue method in issuesService to delete a document from the firebase database collection
+  //
+  deleteIssue(event) {
+    const id = event.id;
+    this.issuesService.deleteIssue(id)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
-  
+  // Unsubscribe from firestore real time listener
+  //
+  ngOnDestroy() {
+    for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
+      this.firestoreSubscriptions[i].unsubscribe();
+    }
+  }
+}
+

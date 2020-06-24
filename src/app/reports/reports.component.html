@@ -11,7 +11,7 @@
             <app-dynamic-table *ngIf="reportType == 'ordered' && issues"
                 [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
                 [tableDataFields]="['id','title','name','priority','severity','status','difficulty','dateStart','dateEnd']"
-                [tableLabel]=true [actions]=true [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="issues"
+                [tableLabel]=true [actions]=true [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="newIssues"
                 [orderBy]="orderBy" [filterControl]=false [pagination]=true>
             </app-dynamic-table>
             <app-dynamic-table *ngIf="reportType == 'overview' && issues"
@@ -40,10 +40,10 @@
                     </div>
                 </div>
             </form>
-            <app-dynamic-table *ngIf="issues"
+            <app-dynamic-table *ngIf="tech"
                 [tableHeaders]="['Id','Title','Technician','Priority','Severity','Status','Difficulty','Submitted','Completed']"
                 [tableDataFields]="['id','title','name','priority','severity','status','difficulty','dateStart','dateEnd']"
-                [tableLabel]=true [actions]=false [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="issues"
+                [tableLabel]=true [actions]=false [actionsType]="'issues'" [actionHeader]="'Actions'" [data]="newIssues"
                 [orderBy]="orderBy" [filterControl]=false [pagination]=true>
             </app-dynamic-table>
         </div>

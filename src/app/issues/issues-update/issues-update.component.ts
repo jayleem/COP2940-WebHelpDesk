@@ -7,6 +7,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Location } from '@angular/common';
+import { Issue } from 'src/app/models/issue.model';
 
 @Component({
   selector: 'app-issues-update',
@@ -22,15 +23,16 @@ export class IssuesUpdateComponent implements OnInit {
   user: any;
   issues$;
   errors;
+  success;
   modifiedDate: Date;
 
   constructor(
-    private issueService: IssuesService, 
+    private issuesService: IssuesService, 
     private userService: UserService, 
     private authService: AuthService, 
     private route: ActivatedRoute, 
-    private router: Router, 
-    private location: Location) { }
+    private router: Router
+    ) { }
   //Get the current route snapshot id paramater
   //
   ngOnInit() {
@@ -74,31 +76,41 @@ export class IssuesUpdateComponent implements OnInit {
   }
 
   getIssueById(id) {
-    this.issueService.getIssuesById(id)
-      .then(res => {
-        this.issues$ = res;
-        this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].data.assignedTech}`);
-        this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].data.priority}`);
-        this.updateIssueForm.get('issueData.severity').setValue(`${this.issues$[0].data.severity}`);
-        this.updateIssueForm.get('issueData.difficulty').setValue(`${this.issues$[0].data.difficulty}`);
-        this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].data.status}`);
-      })
-      .catch(err => {
+    let dataArr = [];
+    const getOnce = this.issuesService.getAggregation().subscribe(data => {
+      if (data.length > 0) {
+        this.issues$ = data.map(e => {
+          const data: any = e.payload.doc.data() as Issue;
+          dataArr.push(...data.issues);
+          return dataArr;
+        });
+      } else {
         this.issues$ = undefined;
-        this.errors = err;
-      });
+      }
+      setTimeout(()=>{ this.errors, this.success = '' }, 1000);
+      this.issues$ = dataArr.filter(issues => issues.id == id);
+      //update the updateIssueForm FormGroup with data from the retrieved data
+      //
+      this.updateIssueForm.get('issueData.tech').setValue(`${this.issues$[0].assignedTech}`);
+      this.updateIssueForm.get('issueData.priority').setValue(`${this.issues$[0].priority}`);
+      this.updateIssueForm.get('issueData.severity').setValue(`${this.issues$[0].severity}`);
+      this.updateIssueForm.get('issueData.difficulty').setValue(`${this.issues$[0].difficulty}`);
+      this.updateIssueForm.get('issueData.status').setValue(`${this.issues$[0].status}`);
+      getOnce.unsubscribe();//should work
+    });
   }
 
   onSubmit() {
-    this.issueService.updateIssue(this.id, this.user.email, this.updateIssueForm, this.modifiedDate)
+    this.issuesService.updateIssue(this.id, this.user.email, this.updateIssueForm, this.modifiedDate)
       .then(res => {
+        this.success = res;
         console.log(res);
         //Update user history
         //
         this.userService.updateUserHistory(this.user.uid, "Updated", this.id);
-        //Navigate back to issues
+        //Reload the issue
         //
-        this.router.navigate(['dashboard/home']);
+        this.getIssueById(this.id);
       })
       .catch(err => {
         this.errors = err;

@@ -75,10 +75,9 @@ export class UserService {
   //update user based on userID
   //
   updateUser(id: string, formData): Promise<any> {
-
     return new Promise(async (resolve, reject) => {
       try {
-        const ref = await this.db.collection('users', ref => ref.where('userId', '==', id))
+        const ref = await this.db.collection('users', ref => ref.where(firestore.FieldPath.documentId(), '==', id))
           .get()
           .toPromise()
           .then(users => {
@@ -89,9 +88,9 @@ export class UserService {
                     role: formData.get('userData.role').value,
                     accountStatus: formData.get('userData.status').value,
                   });
+                  resolve("Success: Updated User");
             })
           });
-        resolve("Success: Updated User");
       }
       catch (error) {
         reject(error);

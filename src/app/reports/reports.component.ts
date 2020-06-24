@@ -6,6 +6,7 @@ import { UserService } from '../shared/services/user.service';
 import { Subscription } from 'rxjs';
 import { User } from '../models/user.model';
 import { AuthService } from '../shared/services/auth.service';
+import { padNumber } from '@ng-bootstrap/ng-bootstrap/util/util';
 
 @Component({
   selector: 'app-reports',
@@ -153,9 +154,12 @@ export class ReportsComponent implements OnInit {
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-          if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          const role = user.payload.doc.data().role;
+          if (role != 'admin') {
             users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
           }
+          //sort users
+          users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
         });
       } else {
         this.errors.push('ERROR: No documents were found');
@@ -166,7 +170,7 @@ export class ReportsComponent implements OnInit {
   }
 
   getIssues() {
-    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
+    this.firestoreSubscriptions.push(this.issuesService.getAggregation().subscribe(data => {
       let dataArr = [];
       if (data.length > 0) {
         this.issues$ = data.map((e) => {
@@ -212,47 +216,39 @@ export class ReportsComponent implements OnInit {
     this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
   }
 
+  //bakes the retrieved data for client view using array filters which reduces cost by not needing additional queries
+  //
+  newIssues = [];
   getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
-    //console.log('admin', tech, status, priority, severity, difficulty, orderBy);
-    let newIssues = this.issues;
-    //need way to sort data asc by priority and severity
-    //dont really like my logic here but it works
-    //
+    this.newIssues = this.issues;
     if (tech) {
-      newIssues = this.issues.filter((issue: any) => issue.tech == tech)
-      this.issues = newIssues;
+      this.newIssues = this.newIssues.filter((issue: any) => issue.tech == tech)
     };
     if (status) {
-      newIssues = this.issues.filter((issue: any) => issue.status == status)
-      this.issues = newIssues;
+      this.newIssues = this.newIssues.filter((issue: any) => issue.status == status)
     };
     if (priority) {
-      newIssues = this.issues.filter((issue: any) => issue.priority == priority)
-      this.issues = newIssues;
+      this.newIssues = this.newIssues.filter((issue: any) => issue.priority == priority)
     };
     if (severity) {
-      newIssues = this.issues.filter((issue: any) => issue.severity == severity)
-      this.issues = newIssues;
+      this.newIssues = this.newIssues.filter((issue: any) => issue.severity == severity)
     };
     if (difficulty) {
-      newIssues = this.issues.filter((issue: any) => issue.difficulty == difficulty)
-      this.issues = newIssues;
+      this.newIssues = this.newIssues.filter((issue: any) => issue.difficulty == difficulty)
     };
     if (orderBy) {
-      console.log(orderBy);
       if (orderBy != "priority") {
-        this.issues.sort((a, b) => (a.severity > b.severity) ? 1 : -1);
+        this.newIssues = this.newIssues.sort((a, b) => (a.severity.toUpperCase() < b.severity.toUpperCase()) ? -1 : (a.severity.toUpperCase() > b.severity.toUpperCase()) ? 1 : 0);
       } else {
-        this.issues.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
+        this.newIssues = this.newIssues.sort((a, b) => (a.priority.toUpperCase() < b.priority.toUpperCase()) ? -1 : (a.priority.toUpperCase() > b.priority.toUpperCase()) ? 1 : 0);
       }
     };
   }
 
-
   //used for search report
   //
   onSubmit() {
-    const tech = this.newIssueForm.value.reportData.tech;
-    this.getIssuesOrdered(tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
+    this.tech = this.newIssueForm.value.reportData.tech;
+    this.getIssuesOrdered(this.tech, this.status, this.priority, this.severity, this.difficulty, this.orderBy);
   }
 }

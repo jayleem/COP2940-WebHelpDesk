@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { Issue } from 'src/app/models/issue.model';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -20,10 +20,10 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   //
   public issues$;
   public users$;
-  //errors
+  //messages
   //
   public errors;
-
+  public success;
   //data
   //
   public issues = [];
@@ -48,20 +48,19 @@ export class DashboardAdminIssuesListComponent implements OnInit {
     // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
     // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
     //
-    //
-    this.firestoreSubscriptions.push(this.issuesService.getIssues().subscribe(data => {
+    this.firestoreSubscriptions.push(this.issuesService.getAggregation().subscribe(data => {
       let dataArr = [];
-      console.log('oof');
       if (data.length > 0) {
         this.issues$ = data.map((e) => {
-          const data: any = e.payload.doc.data();
+          const data: any = e.payload.doc.data() as Issue;
           dataArr.push(...data.issues);
         });
       } else {
         this.errors = 'ERROR: No documents were found';
-        this.issues$ = [];
-        this.issues = [];
+        this.issues$ = null;
+        this.issues = null;
       }
+      setTimeout(()=>{ this.errors, this.success = '' }, 1000);
       this.issues$ = dataArr;
       this.filterData();
       return dataArr;
@@ -70,17 +69,20 @@ export class DashboardAdminIssuesListComponent implements OnInit {
 
   ngOnInit() {
     this.getUsers();
-    //this.getIssues();//default view get all issues
   }
 
-  // TO-DO
-  // fix issue list not fetching original data after filtering multiple times
+  //gets the original issues$ data
+  //
+  getIssues() {
+    this.issues = this.issues$;
+    this.filterData();
+  }
+
+  //bakes the retrieved data for client view using array filter which reduces cost by not needing additional queries
   //
   getIssuesOrdered(tech, status, priority, severity, difficulty, orderBy) {
     let newIssues = this.issues;
-    //need way to sort data asc by priority and severity
-    //dont really like my logic here but it works
-    //
+
     if (tech) {
       newIssues = this.issues.filter((issue: any) => issue.tech == tech)
       this.issues = newIssues;
@@ -101,11 +103,18 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       newIssues = this.issues.filter((issue: any) => issue.difficulty == difficulty)
       this.issues = newIssues;
     };
-    if (!orderBy) {
-      this.issues.sort((a, b) => (a.priority > b.priority) ? 1 : -1);
-    }
+    if (orderBy) {
+      if (orderBy != "priority") {
+        newIssues = newIssues.sort((a, b) => (a.severity.toUpperCase() < b.severity.toUpperCase()) ? -1 : (a.severity.toUpperCase() > b.severity.toUpperCase()) ? 1 : 0);
+      } else {
+        newIssues = newIssues.sort((a, b) => (a.priority.toUpperCase() < b.priority.toUpperCase()) ? -1 : (a.priority.toUpperCase() > b.priority.toUpperCase()) ? 1 : 0);
+      }
+    };
   }
 
+  //TO-DO implement aggregation for users as well
+  //gets users currently doesn't use the same aggregation as issues
+  //
   getUsers() {
     let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
@@ -123,8 +132,8 @@ export class DashboardAdminIssuesListComponent implements OnInit {
     return this.users$ = users;
   }
 
-  //Note the data here is filtered specifically for the table in issues-list component
-  //
+  // "filterData" is probabaly not the best name for this function, but it filters/strips unncessary data for the dynamic table component
+  // 
   filterData() {
     this.issues = [];
     this.issues$.map(e => {
@@ -150,8 +159,11 @@ export class DashboardAdminIssuesListComponent implements OnInit {
     });
   };
 
+  //detects changes from a user changing the different filters status, priority, etc.
+  //
   filtersChanged(event) {
     if (event.filters) {
+      this.getIssues();
       this.getIssuesOrdered(
         event.filters.currentTech,
         event.filters.currentStatus,
@@ -160,7 +172,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
         event.filters.currentDifficulty,
         event.filters.orderBy);
     } else {
-      this.getIssuesOrdered(null, null, null, null, null, null);
+      this.getIssues();
     }
   }
 
@@ -170,7 +182,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
     const id = event.id;
     this.issuesService.deleteIssue(id)
       .then(res => {
-        console.log(res);
+        this.success = res;
         this.userService.updateUserHistory(this.user.uid, "Deleted", id);
       })
       .catch(err => {
@@ -178,7 +190,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       });
   }
 
-  // Unsubscribe from firestore real time listener
+  // Unsubscribes each subscription in the firestoreSubscriptions array to remove the real time listeners
   //
   ngOnDestroy() {
     for (let i = 0; i < this.firestoreSubscriptions.length; i++) {

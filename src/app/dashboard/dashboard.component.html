@@ -1,3 +1,4 @@
+<!-- TODO display messages from message service-->
 <!-- Dashboard Sidebar -->
 <div class="container-fluid">
     <div class="row">
@@ -83,7 +84,7 @@
                     <div *ngIf="role != 'unassigned'; else unassigned">
                         <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                             (click)="subMenu0 = !subMenu0" aria-controls="navbarSupportedContent"
-                            [attr.aria-expanded]="!subMenu0" aria-label="Toggle navigation">Issues
+                            [attr.aria-expanded]="!subMenu0" aria-label="Toggle navigation">User
                             <span>
                                 <i [ngClass]="subMenu0 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
                             </span>
@@ -96,19 +97,12 @@
                                         [routerLinkActiveOptions]="{exact: true}"><i
                                             class="mr-1 fas fa-chart-bar"></i>Analytics</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
-                                        [routerLinkActiveOptions]="{exact: true}"><i
-                                            class="mr-1 fas fa-file-alt"></i>Submit
-                                        Issue</a>
-                                </li>
                             </div>
                         </ul>
                         <hr class="border-0">
-                        <!--Reports Menu-->
                         <button class="btn-custom w-100 border-0 navbar-toggler text-left" type="button"
                             (click)="subMenu1 = !subMenu1" aria-controls="navbarSupportedContent"
-                            [attr.aria-expanded]="!subMenu1" aria-label="Toggle navigation">Reports
+                            [attr.aria-expanded]="!subMenu1" aria-label="Toggle navigation">Issues
                             <span>
                                 <i [ngClass]="subMenu1 ? 'fas fa-angle-right' : 'fas fa-angle-down'"></i>
                             </span>
@@ -116,6 +110,12 @@
                         <ul class="nav flex-column">
                             <div [ngbCollapse]="subMenu1" class="collapse navbar-collapse" id="collapsible"
                                 [ngClass]="!subMenu1 ? 'animate fadeInOut' : ''">
+                                <li class="nav-item">
+                                    <a class="nav-link" routerLink="/dashboard/issues/new" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{exact: true}"><i
+                                            class="mr-1 fas fa-file-alt"></i>Submit
+                                        Issue</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" routerLink="/dashboard/reports/"
                                         [queryParams]=" { tech:user.email, status:'Open', orderBy:'priority', reportType:'ordered' }"

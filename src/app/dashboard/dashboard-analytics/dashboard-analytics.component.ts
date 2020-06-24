@@ -63,28 +63,26 @@ export class DashboardAnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.setDates();
-    this.getIssuesByTech(); 
+    this.getIssuesByTech();
   }
 
-
   getIssuesByTech() {
+    let dataArr = [];
     const tech = this.user.email;
-    this.issuesService.getIssuesByTech(tech)
-      .then(data => {
-        console.log(data.length);
-        if (data.length > 0) {
-          this.issues$ = data.map(e => {
-            return { id: e.id, ...e.data as {} } as Issue;
-          });
-        } else {
-          this.issues$ = undefined;
-        }
-        this.errors = ''
-        this.updateChartData();
-      })
-      .catch(err => {
-        this.errors = 'ERROR: No documents were found';
-      });
+    this.issuesService.getAggregation().subscribe(data => {
+      if (data.length > 0) {
+        this.issues$ = data.map(e => {
+          const data: any = e.payload.doc.data();
+          dataArr.push(...data.issues);
+          return dataArr;
+        });
+      } else {
+        this.issues$ = undefined;
+      }
+      this.errors = ''
+      this.issues$ = dataArr.filter(issues => issues.assignedTech == tech);
+      this.updateChartData();
+    });
   }
 
   //Charts

@@ -21,15 +21,20 @@ export class ReportsListComponent implements OnInit {
   }
 
   getIssues() {
-    this.issuesService.getIssuesByTech(this.id)
-      .then(issues => {
-        if (issues.length > 0) {
-          this.issues$ = issues;
-        } else {
-          this.errors = 'ERROR: No documents were found';
-        }
-        this.filterData();
-      })
+    let dataArr = [];
+    this.issuesService.getAggregation().subscribe(data => {
+      if (data.length > 0) {
+        this.issues$ = data.map(e => {
+          const data: any = e.payload.doc.data() as Issue;
+          dataArr.push(...data.issues);
+          return dataArr;
+        });
+      } else {
+        this.issues$ = undefined;
+      }
+      this.errors = ''
+      this.issues$ = dataArr;
+    });
   }
 
   filterData() {

@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 import { Query, AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,6 @@ export class IssuesService {
   //Create new issue
   //
   addIssue(username, data): Promise<any> {
-    console.log(username, data);
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues')
@@ -40,16 +40,18 @@ export class IssuesService {
               assignedTech: data.get('issueData.tech').value,
               escalatedBy: null
             })
+        console.log(`Success: issue with id ${ref.id} created`);
         resolve(ref.id);
       }
       catch (error) {
-        reject("Error: Adding issue failed");
+        reject("Error: adding issue failed");
       }
     });
   }
 
   //Get all issues in realtime
   //
+  /*
   getIssues() {
     return this.db.collection('aggregation').snapshotChanges();
   }
@@ -150,6 +152,7 @@ export class IssuesService {
       }
     });
   }
+  */
 
 
   //Update issue using id and data params
@@ -178,7 +181,7 @@ export class IssuesService {
           .toPromise()
           .then((doc) => {
             if (!doc.exists) {
-              reject('ERROR: No existing document was found.');
+              reject(`Error: document with id ${id} no longer exists`);
             } else {
               const docModifiedDate = doc.data().lastModified.seconds;
               if (modifiedDateTimestamp > docModifiedDate) {
@@ -194,13 +197,13 @@ export class IssuesService {
                       lastModified: new Date(),
                       dateEnd: dateEnd,
                       notes: firestore.FieldValue.arrayUnion(formData.get('issueData.notes').value)
-                    });                
+                    });
+                resolve(`Success: document with id ${id} updated`);
               } else {
-                reject('ERROR: Document was updated by another technician.');
+                reject(`ERROR: document with id ${id} was modified by another user.`);
               }
             }
           });
-        resolve("Success: Updated Issue.");
       }
       catch (error) {
         reject(error);
@@ -214,8 +217,16 @@ export class IssuesService {
     return new Promise(async (resolve, reject) => {
       try {
         const ref = await this.db.collection('issues').doc(id)
-          .delete();
-        resolve("Success: Deleted Issue");
+          .get()
+          .toPromise()
+          .then(doc => {
+            if (!doc.exists) {
+              reject(`Error: document with id ${id} no longer exists`);              
+            } else {
+              doc.ref.delete();
+              resolve(`Success: document with id ${id} deleted`);
+            }
+          })
       }
       catch (error) {
         reject(error)
@@ -225,7 +236,7 @@ export class IssuesService {
 
   //get aggregated document to reduce cost of reads
   //
-  getAggregation() {
+  getAggregation(): Observable<any> {
     return this.db.collection('aggregation').snapshotChanges();
   }
 

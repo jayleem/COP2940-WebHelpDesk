@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IssuesService } from 'src/app/shared/services/issues.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Issue } from 'src/app/models/issue.model';
 
 @Component({
   selector: 'app-issues-detail',
@@ -24,14 +25,22 @@ export class IssuesDetailComponent implements OnInit {
 
   //Calls the getIssueById method in issuesService for a matching document by id from the firebase database collection
   //
-  async getIssueById(id) {
-    await this.issuesService.getIssuesById(id)
-    .then(res => {
-      this.issues$ = res;
-    })
-    .catch(err => {
-      this.issues$ = undefined;
-      this.errors = err;
-    })
+  getIssueById(id) {
+    let dataArr = [];
+    const getOnce = this.issuesService.getAggregation().subscribe(data => {
+      if (data.length > 0) {
+        this.issues$ = data.map(e => {
+          const data: any = e.payload.doc.data() as Issue;
+          dataArr.push(...data.issues);
+          return dataArr;
+        });
+      } else {
+        this.issues$ = undefined;
+      }
+      this.errors = ''
+      this.issues$ = dataArr.filter(issues => issues.id == id);
+      console.log(this.issues$[0].id);
+      getOnce.unsubscribe();
+    });
   }
 }

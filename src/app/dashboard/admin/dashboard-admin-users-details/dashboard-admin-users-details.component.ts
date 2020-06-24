@@ -13,6 +13,7 @@ export class DashboardAdminUsersDetailsComponent implements OnInit {
   updateUserForm: FormGroup;
 
   user$: any;
+  success: string;
   errors: string;
   id: string;
 
@@ -37,8 +38,10 @@ export class DashboardAdminUsersDetailsComponent implements OnInit {
     this.userService.getUserById(id)
       .then(res => {
         this.user$ = res;
-        this.updateUserForm.get('userData.role').setValue(`${this.user$[0].data.role}`);
-        this.updateUserForm.get('userData.status').setValue(`${this.user$[0].data.accountStatus}`);
+        console.log(this.user$[0].data.accountStatus);
+        this.updateUserForm.get('userData.role').setValue(this.user$[0].data.role);
+        this.updateUserForm.get('userData.status').setValue(this.user$[0].data.accountStatus);
+        setTimeout(()=>{ this.errors, this.success = '' }, 1000);
       })
       .catch(err => {
         this.user$ = null;
@@ -49,7 +52,15 @@ export class DashboardAdminUsersDetailsComponent implements OnInit {
   //
   resetUserPassword() {
     const email = this.user$.email;
-    this.authService.resetPassword(email);
+    this.authService.resetPassword(email)
+    .then(() => {
+      this.success = '';
+      this.success = `Success: Sent password reset email to ${this.user$[0].data.username}`;
+    })
+    .catch(err => {
+      this.errors = '';
+      this.errors = `Error: Failed sending email to to ${this.user$[0].data.username}`;
+    });
   }
 
   //Update the users role and account status
@@ -57,8 +68,11 @@ export class DashboardAdminUsersDetailsComponent implements OnInit {
   onSubmit() {
       this.userService.updateUser(this.id, this.updateUserForm)
         .then(res => {
-          console.log(res);
-          this.router.navigate(['/dashboard/admin/users']);
+          this.success = '';
+          this.success = res;
+          //reload user
+          //
+          this.getUserById(this.id);
         })
         .catch(err => {
           this.errors = err;

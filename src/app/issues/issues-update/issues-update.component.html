@@ -1,4 +1,6 @@
 <div *ngIf="issues$" class="row justify-content-center">
+    <h6 *ngIf="success" class="text-center alert alert-danger bg-success text-white border-success rounded-0 w-100"
+        role="alert">{{success}}</h6>
     <h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
         role="alert">{{errors}}</h6>
     <div class="mt-5 col-xs-12 col-sm-10 col-md-8">

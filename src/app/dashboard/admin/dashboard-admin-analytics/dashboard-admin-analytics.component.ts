@@ -52,7 +52,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
   getIssues() {
     let dataArr = [];
-    this.firestoreSubscriptions.push(this.issuesService.getIssues()
+    this.firestoreSubscriptions.push(this.issuesService.getAggregation()
       .subscribe(
         data => {
           if (data.length > 0) {
@@ -419,7 +419,6 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   ngOnDestroy() {
     for (let i = 0; i < this.firestoreSubscriptions.length; i++) {
       this.firestoreSubscriptions[i].unsubscribe();
-      console.log('destroyed: ', i);
     }
   }
 
