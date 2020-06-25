@@ -47,6 +47,7 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     this.setDates();
     this.getUsers();
     this.getIssues();
+    this.updateRecentHistory();
     this.errors = [];
   }
 
@@ -75,15 +76,15 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-          if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
+          if (user.payload.doc.data().role != 'admin') {
             users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
           }
         });
-        this.updateRecentHistory();
       } else {
         this.errors.push('ERROR: No documents were found');
         users = [];
       }
+      this.updateRecentHistory();
     }));
     return this.users$ = users;
   }
@@ -95,7 +96,6 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
   //
   userHistory = [];
   updateRecentHistory() {
-
     for (const user in this.users$) {
       for (const item in this.users$[user].recentHistory)
         this.userHistory.push(
@@ -299,42 +299,46 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
 
       //add only unique technicans
       //
-      if (!this.techs.some(el => el.tech === e.assignedTech)) {
-        const index = this.users$.findIndex(el => el.username === e.assignedTech)
-        let userObj = this.users$[index];
-        this.techs.push(
-          {
-            tech: e.assignedTech,
-            name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
-            open: 0,
-            pending: 0,
-            closed: 0,
-            progress: 0
-          });
+      if (!this.techs.some(el => el.tech == e.assignedTech)) {
+        const index = this.users$.findIndex(el => el.username == e.assignedTech)
+        if (index >= 0) {
+          let userObj = this.users$[index];
+          this.techs.push(
+            {
+              tech: e.assignedTech,
+              name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
+              open: 0,
+              pending: 0,
+              closed: 0,
+              progress: 0
+            });
+        }
       }
 
       //get index of current tech on issue
       //
       const index = this.techs.findIndex(el => el.tech === e.assignedTech)
-      let techObj = this.techs[index];
-      if (e.assignedTech === techObj.tech && e.status === 'Open') {
-        this.techs[index].open++;
-        this.ticketStats.status.open++;
-      } else if (e.assignedTech === techObj.tech && e.status === 'Pending') {
-        this.techs[index].pending++;
-        this.ticketStats.status.pending++;
-      } else {
-        this.techs[index].closed++;
-        this.ticketStats.status.closed++;
-      }
-      if (e.priority === 'Low') {
-        this.ticketStats.priority.low++;
-      } else if (e.priority === 'Normal') {
-        this.ticketStats.priority.normal++;
-      } else if (e.priority === 'High') {
-        this.ticketStats.priority.high++;
-      } else {
-        this.ticketStats.priority.urgent++;
+      if (index >= 0) {
+        let techObj = this.techs[index];
+        if (e.assignedTech === techObj.tech && e.status === 'Open') {
+          this.techs[index].open++;
+          this.ticketStats.status.open++;
+        } else if (e.assignedTech === techObj.tech && e.status === 'Pending') {
+          this.techs[index].pending++;
+          this.ticketStats.status.pending++;
+        } else {
+          this.techs[index].closed++;
+          this.ticketStats.status.closed++;
+        }
+        if (e.priority === 'Low') {
+          this.ticketStats.priority.low++;
+        } else if (e.priority === 'Normal') {
+          this.ticketStats.priority.normal++;
+        } else if (e.priority === 'High') {
+          this.ticketStats.priority.high++;
+        } else {
+          this.ticketStats.priority.urgent++;
+        }
       }
     });
     this.setChartData();
@@ -412,6 +416,8 @@ export class DashboardAdminAnalyticsComponent implements OnInit {
       this.techs[tech].progress = this.techs[tech].closed / (this.techs[tech].open + this.techs[tech].pending + this.techs[tech].closed);
       isFinite(this.techs[tech].progress) ? null : this.techs[tech].progress = 0;
     }
+
+    this.techs = this.techs.sort((a, b) => (a.tech.toUpperCase() < b.tech.toUpperCase()) ? -1 : (a.tech.toUpperCase() > b.tech.toUpperCase()) ? 1 : 0);
   }
 
   // Unsubscribe from firestore real time listener

@@ -44,39 +44,42 @@ export class AuthService {
 
   //Signup method
   //
-  signUp(email: string, password: string) {
+  signUp(email: string, password: string): Promise<any> {
     return this.firebaseAuth.createUserWithEmailAndPassword(email, password);
   }
 
   //Sign in method
   //
-  signIn(email: string, password: string) {
+  signIn(email: string, password: string): Promise<any>  {
     return this.firebaseAuth.signInWithEmailAndPassword(email, password);
   }
 
   //signOut method
   //
-  signOut(): any {
+  signOut(): Promise<any> {
+    console.log('oof');
     this.setAccountStatus(false);
     this.setUser(null);
     this.setLoggedIn(false);
     //I'm using this to avoid the FirebaseError: [code=permission-denied] when the account is disabled while in use
-    //This method is much easier than using a global subscription scope as my components alredy unsubscribe w/ ngOnDestroy
+    //This method is much easier than using a global subscription scope as my components already unsubscribe w/ ngOnDestroy
     //
-    window.location.reload();
-    this.router.navigate(['/login']);
-    return this.firebaseAuth.signOut();
+    return this.firebaseAuth.signOut()
+    .then(() => {
+      window.location.reload();
+      this.router.navigate(['/login']);      
+    });
   }
 
   //resetPassword method
   //
-  resetPassword(email: string) {
+  resetPassword(email: string): Promise<any> {
     return this.firebaseAuth.sendPasswordResetEmail(email);
   }
 
   //getUser method
   //
-  getUser() {
+  getUser(): any {
     return this.user;
   }
 
@@ -112,14 +115,14 @@ export class AuthService {
 
   //get user meta data
   //
-  getMetadata() {
+  getMetadata(): Promise<firebase.User> {
     return this.firebaseAuth.currentUser;
   }
 
   //reauthenticate user
   //must be async or it wil return a ZoneAwarePromise 
   //
-  async reauthenticateUser(password: string) {
+  async reauthenticateUser(password: string): Promise<boolean> {
     const username = await this.firebaseAuth.currentUser.then(res => { return res.email });
     const oldPassword = password;
 
@@ -136,9 +139,9 @@ export class AuthService {
 
   //update user password
   //
-  async updatePassword(password: string) {
+  async updatePassword(password: string): Promise<any> {
     const newPassword = password;
-    const currentUser = await this.firebaseAuth.currentUser
+    const currentUser = this.firebaseAuth.currentUser
       .then(currentUser => {
         currentUser.updatePassword(newPassword);
         return "Success: Password Changed";

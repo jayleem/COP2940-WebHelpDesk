@@ -49,27 +49,34 @@ export class IssuesNewComponent implements OnInit {
   //get users only enabled accounts and non admin roles
   //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //
- getUsers() {
+  getUsers() {
     let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
-          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
-			 }
+          if (user.payload.doc.data().accountStatus && user.payload.doc.data().role != 'admin') {
+            users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+          }
         });
+        //filter + sort data
+        //
+        users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
+        if (this.user.role != 'admin') {
+          users = users.filter((user: any) => user.id == this.user.uid);
+        }
       } else {
         users = [];
       }
+      return this.users$ = users;
     }));
-    return this.users$ = users;
   }
 
   onSubmit() {
     //add issue
     //
-    console.log(this.user)
-    this.issueService.addIssue(this.user.email, this.newIssueForm)
+    const user = this.newIssueForm.get('issueData.tech').value;
+    console.log(user);
+    this.issueService.addIssue(user, this.newIssueForm)
       //update user history
       //
       .then(res => {

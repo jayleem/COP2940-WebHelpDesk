@@ -4,6 +4,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
+import { map } from 'rxjs/operators';
+import { User } from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'

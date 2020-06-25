@@ -22,19 +22,19 @@ export class LoginGuardService {
             } else {
                 //redirect user away from login page based on role to correct dashboard component
                 //
-                let role:string = this.authService.getAccountRole();
-                let status:boolean = this.authService.getAccountStatus();
-                if (status && role =='admin') {
+                let role: string = this.authService.getAccountRole();
+                let status: boolean = this.authService.getAccountStatus();
+                if (status && role == 'admin') {
                     this.router.navigate(['/dashboard/admin/home']);
                 }
-                else if (status && role !='admin') {
+                else if (status && role != 'admin') {
                     this.router.navigate(['/dashboard/home']);
                 }
-                else if  (!status || role !='unassigned') {
+                else if (!status || role == 'unassigned' && this.authService.getLoggedIn()) {
                     //something not right  
-                    this.router.navigate(['/role-assignment']);                 
+                    this.router.navigate(['/role-assignment']);
                 } else {
-                    this.router.navigate(['/login']);                 
+                    this.router.navigate(['/login']);
                 }
                 this.auth = false;
             }

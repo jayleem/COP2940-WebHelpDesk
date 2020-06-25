@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { User } from '../models/user.model';
 import { AuthService } from '../shared/services/auth.service';
 import { padNumber } from '@ng-bootstrap/ng-bootstrap/util/util';
+import { Issue } from '../models/issue.model';
 
 @Component({
   selector: 'app-reports',
@@ -51,6 +52,7 @@ export class ReportsComponent implements OnInit {
       this.severity = queryParams.severity;
       this.difficulty = queryParams.difficulty;
       this.orderBy = queryParams.orderBy;
+      this.getUsers();
       this.getIssues();
     });
   }
@@ -59,9 +61,8 @@ export class ReportsComponent implements OnInit {
     //get current user
     //
     this.currentUser = this.fireAuthService.getUser();
-    //get users
+    //init form group
     //
-    this.getUsers();
     this.newIssueForm = new FormGroup({
       'reportData': new FormGroup({
         'tech': new FormControl(null, [Validators.required]),
@@ -154,12 +155,9 @@ export class ReportsComponent implements OnInit {
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-          const role = user.payload.doc.data().role;
-          if (role != 'admin') {
+          if (user.payload.doc.data().role != 'admin') {
             users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
           }
-          //sort users
-          users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
         });
       } else {
         this.errors.push('ERROR: No documents were found');
@@ -174,17 +172,17 @@ export class ReportsComponent implements OnInit {
       let dataArr = [];
       if (data.length > 0) {
         this.issues$ = data.map((e) => {
-          const data: any = e.payload.doc.data();
+          const data: any = e.payload.doc.data() as Issue;
           dataArr.push(...data.issues);
-          return dataArr;
         });
       } else {
         this.errors = 'ERROR: No documents were found';
-        this.issues$ = [];
-        this.issues = [];
+        this.issues$ = null;
+        this.issues = null;
       }
       this.issues$ = dataArr;
       this.filterData();
+      return dataArr;
     }));
   }
 
@@ -196,6 +194,7 @@ export class ReportsComponent implements OnInit {
       if (!this.issues.some(el => el.id === e.id)) {
         const index = this.users$.findIndex(el => el.username === e.assignedTech)
         let userObj = this.users$[index];
+
         this.issues.push(
           {
             id: e.id,
@@ -204,12 +203,12 @@ export class ReportsComponent implements OnInit {
             name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
             priority: e.priority,
             severity: e.severity,
-            status: e.status,
             difficulty: e.difficulty,
+            status: e.status,
             dateStart: e.dateStart,
-            dateEnd: e.dateEnd,
-            //summary: e.desc.summary
+            dateEnd: e.dateEnd
           });
+
       }
     });
     this.generateOverviewReport();

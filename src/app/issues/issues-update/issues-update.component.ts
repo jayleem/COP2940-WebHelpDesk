@@ -27,12 +27,12 @@ export class IssuesUpdateComponent implements OnInit {
   modifiedDate: Date;
 
   constructor(
-    private issuesService: IssuesService, 
-    private userService: UserService, 
-    private authService: AuthService, 
-    private route: ActivatedRoute, 
+    private issuesService: IssuesService,
+    private userService: UserService,
+    private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
-    ) { }
+  ) { }
   //Get the current route snapshot id paramater
   //
   ngOnInit() {
@@ -58,21 +58,27 @@ export class IssuesUpdateComponent implements OnInit {
   //get users only enabled accounts and non admin roles
   //refactored as the template was accessing the array before finishing the logic and async/await didn't solve the issue
   //
-   getUsers() {
+  getUsers() {
     let users = [];
     this.firestoreSubscriptions.push(this.userService.getUsers().subscribe(data => {
       if (data.length > 0) {
         data.map(user => {
-			 if (user.payload.doc.data().accountStatus == true && user.payload.doc.data().role != 'admin') {
-          users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
-			 }
+          if (user.payload.doc.data().accountStatus && user.payload.doc.data().role != 'admin') {
+            users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
+          }
         });
+        //filter + sort data
+        //
+        users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
+        if (this.user.role != 'admin') {
+          users = users.filter((user: any) => user.id == this.user.uid);
+        }
       } else {
         this.errors.push('ERROR: No documents were found');
         users = [];
       }
+      return this.users$ = users;
     }));
-    return this.users$ = users;
   }
 
   getIssueById(id) {
@@ -87,7 +93,7 @@ export class IssuesUpdateComponent implements OnInit {
       } else {
         this.issues$ = undefined;
       }
-      setTimeout(()=>{ this.errors, this.success = '' }, 1000);
+      setTimeout(() => { this.errors, this.success = '' }, 1000);
       this.issues$ = dataArr.filter(issues => issues.id == id);
       //update the updateIssueForm FormGroup with data from the retrieved data
       //
@@ -101,7 +107,8 @@ export class IssuesUpdateComponent implements OnInit {
   }
 
   onSubmit() {
-    this.issuesService.updateIssue(this.id, this.user.email, this.updateIssueForm, this.modifiedDate)
+    const user = this.updateIssueForm.get('issueData.tech').value;
+    this.issuesService.updateIssue(this.id, user, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         this.success = res;
         console.log(res);
