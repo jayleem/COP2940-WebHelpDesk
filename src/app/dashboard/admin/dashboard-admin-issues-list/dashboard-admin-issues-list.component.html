@@ -1,7 +1,8 @@
-<h6 *ngIf="success" class="text-center alert alert-danger bg-success text-white border-success rounded-0 w-100"
+<h6 *ngIf="success"
+    class="sticky-top text-center alert alert-success bg-success text-white border-success rounded-0 w-100"
     role="alert">{{success}}</h6>
-<h6 *ngIf="errors" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
-    role="alert">{{errors}}</h6>
+<h6 *ngIf="error" class="text-center alert alert-danger bg-danger text-white border-danger rounded-0 w-100"
+    role="alert">{{error}}</h6>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8 col-md-12">
@@ -11,8 +12,8 @@
     <div class="row" *ngIf="issues">
         <div class="col-sm-8 col-md-12">
             <app-dynamic-table
-                [tableHeaders]="['Id','Title','Technician','Priority','Severity','Difficulty','Status','Submitted','Completed']"
-                [tableDataFields]="['id','title','name','priority','severity','difficulty','status','dateStart','dateEnd']"
+                [tableHeaders]="['Id','Title','Technician','Status','Priority','Severity','Difficulty','Submitted','Completed']"
+                [tableDataFields]="['id','title','name','status','priority','severity','difficulty','dateStart','dateEnd']"
                 [tableLabel]=true [actions]=true [actionsType]="'manageIssues'" [actionHeader]="'Actions'"
                 [data]="newIssues" [filterControl]=true [pagination]=true (onFiltersApplied)="filtersChanged($event)"
                 (onFiltersCleared)="filtersChanged($event)" (onDeleteClicked)="deleteIssue($event)">

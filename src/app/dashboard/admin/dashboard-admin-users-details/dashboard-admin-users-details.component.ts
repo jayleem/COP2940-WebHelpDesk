@@ -41,7 +41,7 @@ export class DashboardAdminUsersDetailsComponent implements OnInit {
         console.log(this.user$[0].data.accountStatus);
         this.updateUserForm.get('userData.role').setValue(this.user$[0].data.role);
         this.updateUserForm.get('userData.status').setValue(this.user$[0].data.accountStatus);
-        setTimeout(()=>{ this.errors, this.success = '' }, 1000);
+        setTimeout(()=>{ this.errors, this.success = '' }, 3000);
       })
       .catch(err => {
         this.user$ = null;

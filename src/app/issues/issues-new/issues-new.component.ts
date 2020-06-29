@@ -75,7 +75,6 @@ export class IssuesNewComponent implements OnInit {
     //add issue
     //
     const user = this.newIssueForm.get('issueData.tech').value;
-    console.log(user);
     this.issueService.addIssue(user, this.newIssueForm)
       //update user history
       //
@@ -87,7 +86,7 @@ export class IssuesNewComponent implements OnInit {
         this.router.navigate(['/dashboard/home']);
       })
       .catch(err => {
-        console.log(err);
+        //adding issue failed
       });
   }
 

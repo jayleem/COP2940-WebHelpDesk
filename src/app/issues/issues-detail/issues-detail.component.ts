@@ -39,7 +39,6 @@ export class IssuesDetailComponent implements OnInit {
       }
       this.errors = ''
       this.issues$ = dataArr.filter(issues => issues.id == id);
-      console.log(this.issues$[0].id);
       getOnce.unsubscribe();
     });
   }

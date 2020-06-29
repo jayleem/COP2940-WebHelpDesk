@@ -77,10 +77,10 @@ export class DashboardAdminUsersListComponent implements OnInit {
     const id = event.id;
     this.issuesService.deleteIssue(id)
       .then(res => {
-        console.log(res);
+        //success
       })
       .catch(err => {
-        console.log(err);
+        //failure
       });
   }
 

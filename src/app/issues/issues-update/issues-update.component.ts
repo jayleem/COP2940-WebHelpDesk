@@ -111,7 +111,6 @@ export class IssuesUpdateComponent implements OnInit {
     this.issuesService.updateIssue(this.id, user, this.updateIssueForm, this.modifiedDate)
       .then(res => {
         this.success = res;
-        console.log(res);
         //Update user history
         //
         this.userService.updateUserHistory(this.user.uid, "Updated", this.id);

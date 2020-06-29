@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
         this.role = res[0].data.role;
       })
       .catch(err => {
-        console.log(err);
+       //no user found
       });
   }
 }

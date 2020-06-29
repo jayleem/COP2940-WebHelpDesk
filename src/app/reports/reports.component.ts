@@ -159,6 +159,7 @@ export class ReportsComponent implements OnInit {
             users.push({ id: user.payload.doc.id, ...user.payload.doc.data() as {} } as User);
           }
         });
+        users = users.sort((a, b) => (a.role.toUpperCase() < b.role.toUpperCase()) ? -1 : (a.role.toUpperCase() > b.role.toUpperCase()) ? 1 : 0);
       } else {
         this.errors.push('ERROR: No documents were found');
         users = [];
@@ -201,10 +202,10 @@ export class ReportsComponent implements OnInit {
             title: e.title,
             tech: e.assignedTech,
             name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
+            status: e.status,
             priority: e.priority,
             severity: e.severity,
             difficulty: e.difficulty,
-            status: e.status,
             dateStart: e.dateStart,
             dateEnd: e.dateEnd
           });

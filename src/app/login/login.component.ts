@@ -37,18 +37,25 @@ export class LoginComponent implements OnInit {
     let disabled;
     let role;
     this.authService.signIn(email, password)
-      .then((res) => {
-        console.log(this.authService.getUser());
+      .then(() => {
+        //user signed in
       })
       .catch(err => {
         //user sign in failed
-        this.errorMessage = "Invalid username or password."
+        this.errorMessage = "There was an error with your E-Mail/Password combination. Please try again."
       });
-    //if account is disabled show error message
-    //
-    if(disabled && !this.errorMessage) {
-      console.log(this.authService.getLoggedIn());
-      this.errorMessage = "Your account has been disabled. Please contact an adminstrator if you need assistance.";
     }
+
+  resetPassword() {
+    const email = this.credentialDataForm.get('credentialData.email').value;
+    this.authService.resetPassword(email)
+      .then(res => {
+        this.errorMessage = "Further instructions with how to reset your password were sent to the provided email address.";
+      })
+      .catch(err => {
+        //account doesn't exist
+        //
+        this.errorMessage = "No accounts were found associated with the provided email address.";
+      })
   }
 }

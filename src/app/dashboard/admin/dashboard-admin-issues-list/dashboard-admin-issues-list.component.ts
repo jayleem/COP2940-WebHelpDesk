@@ -22,7 +22,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
   public users$;
   //messages
   //
-  public errors;
+  public error;
   public success;
   //data
   //
@@ -44,7 +44,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
         this.recentHistory = res[0].data.recentHistory;
       })
       .catch(err => {
-        console.log(err);
+        //no users found
       });
     // Calls the getIssues method in issuesService for a list of documents from the firebase database collection
     // To get realtime data from Firestore we must use subscribe i.e. can't return a promise from
@@ -68,11 +68,10 @@ export class DashboardAdminIssuesListComponent implements OnInit {
           dataArr.push(...data.issues);
         });
       } else {
-        this.errors = 'ERROR: No documents were found';
+        this.error = 'ERROR: No documents were found';
         this.issues$ = null;
         this.issues = null;
       }
-      setTimeout(() => { this.errors, this.success = '' }, 1000);
       this.issues$ = dataArr;
       this.filterData();
       return dataArr;
@@ -92,7 +91,7 @@ export class DashboardAdminIssuesListComponent implements OnInit {
           }
         });
       } else {
-        this.errors.push('ERROR: No documents were found');
+        this.error = ('ERROR: No documents were found');
         users = [];
       }
     }));
@@ -116,10 +115,10 @@ export class DashboardAdminIssuesListComponent implements OnInit {
               title: e.title,
               tech: e.assignedTech,
               name: userObj ? userObj.fName + ' ' + userObj.lName.slice(0, 1) + '.' : e.assignedTech,
+              status: e.status,
               priority: e.priority,
               severity: e.severity,
               difficulty: e.difficulty,
-              status: e.status,
               dateStart: e.dateStart,
               dateEnd: e.dateEnd
             });
@@ -183,12 +182,12 @@ export class DashboardAdminIssuesListComponent implements OnInit {
       .then(res => {
         this.success = res;
         this.userService.updateUserHistory(this.user.uid, "Deleted", id);
+        setTimeout(() => { this.error, this.success = '' }, 3000);
       })
       .catch(err => {
-        console.log(err);
+        this.error = (`ERROR: Document with id ${id} could not be deleted.`);
       });
   }
-
   // Unsubscribes each subscription in the firestoreSubscriptions array to remove the real time listeners
   //
   ngOnDestroy() {

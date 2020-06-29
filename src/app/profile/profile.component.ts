@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
       })
       .catch(err => {
         this.metadata = null;
-        console.log(err);
+        //failed prob no user logged in
       });
   }
 
@@ -89,7 +89,6 @@ export class ProfileComponent implements OnInit {
       })
       .catch(err => {
         //do something on failure
-        console.log(err)
       });
   }
 }

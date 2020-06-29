@@ -57,7 +57,7 @@ export class DashboardAnalyticsComponent implements OnInit {
         this.recentHistory = res[0].data.recentHistory;
       })
       .catch(err => {
-        console.log(err);
+        // no users found
       });
   }
 
